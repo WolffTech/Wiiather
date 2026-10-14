@@ -391,3 +391,41 @@ IconId nws_large_icon(const char *icon_url)
 #undef IS
 	return ICON_NO_DATA;
 }
+
+bool nws_get_alerts(double lat, double lon, Alerts *out, time_t *now, char *err, size_t err_len)
+{
+	char url[128];
+	snprintf(url, sizeof url, API "/alerts/active?point=%.4f,%.4f&status=actual", lat, lon);
+	json_t *root = get_json(url, GEOJSON, now, err, err_len);
+	if (!root)
+		return false;
+	json_t *features = json_object_get(root, "features");
+	if (!json_is_array(features)) {
+		snprintf(err, err_len, "Alerts response has no features");
+		json_decref(root);
+		return false;
+	}
+	out->count = 0;
+	size_t i;
+	json_t *feature;
+	json_array_foreach(features, i, feature) {
+		if (out->count == ALERTS_MAX)
+			break;
+		json_t *props = json_object_get(feature, "properties");
+		Alert *a = &out->alerts[out->count++];
+		copy_string(a->id, sizeof a->id, json_object_get(feature, "id"));
+		alert_copy_text(a->event, sizeof a->event, string_field(props, "event"));
+		alert_copy_text(a->description, sizeof a->description, string_field(props, "description"));
+		a->severity = alert_severity(string_field(props, "severity"));
+		const char *urgency = string_field(props, "urgency");
+		a->immediate = urgency && strcmp(urgency, "Immediate") == 0;
+		const char *expires = string_field(props, "expires");
+		if (!expires || !utc_parse_iso8601(expires, &a->expires))
+			a->expires = 0;
+	}
+	json_decref(root);
+	alerts_select(out);
+	if (*now)
+		alerts_drop_expired(out, *now);
+	return true;
+}

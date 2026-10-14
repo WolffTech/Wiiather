@@ -87,7 +87,7 @@ clean:
 # Host-side tests for the platform-independent logic.
 HOST_CC		?=	cc
 TEST_LIB	:=	source/weather/obs.c source/weather/forecast.c source/util/utc.c
-TEST_LIB	+=	source/weather/latest_obs.c source/weather/sun_moon.c
+TEST_LIB	+=	source/weather/latest_obs.c source/weather/sun_moon.c source/weather/alerts.c
 TESTS		:=	$(patsubst tests/%.c,$(BUILD)/host/%,$(wildcard tests/test_*.c))
 
 test: $(TESTS)

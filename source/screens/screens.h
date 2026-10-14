@@ -65,3 +65,26 @@ void almanac_view_prepare(const WeatherSnapshot *snap, AlmanacView *out);
 // Whether the RTC's date has changed since the view was prepared.
 bool almanac_view_outdated(const AlmanacView *view);
 void almanac_view_draw(const AlmanacView *view);
+
+// Hazards: unviewed alerts wrapped for a full-screen vertical scroll, plus
+// the most severe alert's crawl for the bottom bar.
+#define HAZARDS_MAX_LINES 640
+
+typedef struct {
+	AlertsViewed viewed; // persists across prepares
+	size_t shown_count; // unviewed alerts on the display
+	char shown_ids[ALERTS_MAX][ALERT_ID_MAX];
+	size_t line_count;
+	int line_top[HAZARDS_MAX_LINES]; // relative to the top of the scrolling content
+	char lines[HAZARDS_MAX_LINES][GFX_LINE_MAX];
+	int content_height;
+	char crawl_event[ALERT_EVENT_MAX]; // empty when there are no alerts
+	char crawl[ALERT_EVENT_MAX + ALERT_DESCRIPTION_MAX];
+	int crawl_width;
+} HazardsView;
+
+void hazards_prepare(const WeatherSnapshot *snap, HazardsView *view);
+u32 hazards_ms(const HazardsView *view);
+void hazards_draw(const HazardsView *view, u32 elapsed_ms);
+// Called once the display has run its course, like ws4kp's viewedAlerts.
+void hazards_mark_viewed(HazardsView *view);

@@ -26,6 +26,7 @@ FONTS = [
     ("STAR4000_LARGE_32", "Star4000 Large.woff", 32),
     ("STAR4000_LARGE_20", "Star4000 Large.woff", 20),
     ("STAR4000_SMALL_32", "Star4000 Small.woff", 32),
+    ("STAR4000_SMALL_26", "Star4000 Small.woff", 26),
 ]
 
 # (enum suffix, path under server/images)

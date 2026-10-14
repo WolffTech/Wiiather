@@ -22,6 +22,8 @@ typedef struct {
 	Forecast forecast;
 	bool has_latest_observations; // kept from an earlier refresh if a later one fails
 	LatestObservations latest_observations;
+	Alerts alerts; // kept from earlier fetches if later ones fail, minus expired ones
+	u32 alert_fetches; // attempts so far; ws4kp re-shows viewed alerts every tenth
 	u32 generation; // increments whenever any data changes
 } WeatherSnapshot;
 

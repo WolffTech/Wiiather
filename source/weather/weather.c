@@ -7,12 +7,14 @@
 #include <stdarg.h>
 #include <stdio.h>
 #include <string.h>
+#include <time.h>
 #include <unistd.h>
 
 #include "net/https.h"
 
 #define REFRESH_SECONDS (10 * 60)
 #define RETRY_SECONDS 60
+#define ALERTS_SECONDS 60 // ws4kp refreshes hazards every minute
 #define STACK_SIZE (128 * 1024)
 
 static lwp_t thread;
@@ -113,6 +115,34 @@ static bool refresh(NwsPoint *point, bool *have_point)
 	return true;
 }
 
+// Alerts are optional and need only the location, so failures never block
+// other data. A failed fetch keeps the old alerts until they expire, judged by
+// the RTC's time since the last server clock reading.
+static void refresh_alerts(void)
+{
+	static Alerts alerts;
+	static time_t server_utc, local_at_server;
+	char err[128];
+	time_t now = 0;
+	bool ok = nws_get_alerts(location_lat, location_lon, &alerts, &now, err, sizeof err);
+	if (now) {
+		server_utc = now;
+		local_at_server = time(NULL);
+	}
+	LWP_MutexLock(lock);
+	Alerts before = shared.alerts;
+	if (ok)
+		shared.alerts = alerts;
+	else if (server_utc)
+		alerts_drop_expired(&shared.alerts, server_utc + (time(NULL) - local_at_server));
+	shared.alert_fetches++;
+	// Every display re-prepares on a new generation, so skip unchanged polls,
+	// except when the viewed-alert reset is due.
+	if (memcmp(&before, &shared.alerts, sizeof before) != 0 || shared.alert_fetches % ALERTS_VIEWED_FETCHES == 1)
+		shared.generation++;
+	LWP_MutexUnlock(lock);
+}
+
 static void *worker(void *arg)
 {
 	while (!bring_up_network())
@@ -120,9 +150,14 @@ static void *worker(void *arg)
 
 	NwsPoint point;
 	bool have_point = false;
+	int until_refresh = 0;
 	for (;;) {
-		bool ok = refresh(&point, &have_point);
-		sleep(ok ? REFRESH_SECONDS : RETRY_SECONDS);
+		// Alerts first so the Hazards display can lead the first rotation.
+		refresh_alerts();
+		if (until_refresh <= 0)
+			until_refresh = refresh(&point, &have_point) ? REFRESH_SECONDS : RETRY_SECONDS;
+		sleep(ALERTS_SECONDS);
+		until_refresh -= ALERTS_SECONDS;
 	}
 	return NULL;
 }

@@ -2,6 +2,7 @@
 #include <stdbool.h>
 #include <stddef.h>
 
+#include "alerts.h"
 #include "assets_gen.h"
 #include "forecast.h"
 #include "latest_obs.h"
@@ -28,3 +29,7 @@ bool nws_get_forecast(const NwsPoint *point, Forecast *out, char *err, size_t er
 bool nws_get_latest_observations(double lat, double lon, LatestObservations *out);
 
 IconId nws_large_icon(const char *icon_url);
+
+// Active alerts for the location, selected and ordered like ws4kp's Hazards,
+// with expired ones dropped. `now` receives the server's clock (UTC, 0 if unknown).
+bool nws_get_alerts(double lat, double lon, Alerts *out, time_t *now, char *err, size_t err_len);

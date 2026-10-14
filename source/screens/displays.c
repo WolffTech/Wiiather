@@ -11,6 +11,24 @@ typedef struct {
 	void (*draw)(const DisplayData *d, size_t screen, u32 time_ms);
 } Display;
 
+// For displays that animate from their start rather than from boot.
+static u32 screen_started_ms;
+
+static size_t hazards_count(const DisplayData *d)
+{
+	return d->hazards.shown_count > 0;
+}
+
+static u32 hazards_screen_ms(const DisplayData *d, size_t screen)
+{
+	return hazards_ms(&d->hazards);
+}
+
+static void hazards_display_draw(const DisplayData *d, size_t screen, u32 time_ms)
+{
+	hazards_draw(&d->hazards, time_ms - screen_started_ms);
+}
+
 static size_t current_count(const DisplayData *d)
 {
 	return d->has_current;
@@ -98,6 +116,7 @@ static void almanac_draw(const DisplayData *d, size_t screen, u32 time_ms)
 
 // ws4kp's order, limited to the displays ported so far.
 static const Display displays[] = {
+	{ hazards_count, hazards_screen_ms, hazards_display_draw },
 	{ current_count, current_ms, current_draw },
 	{ latest_observations_count, latest_observations_ms, latest_observations_screen },
 	{ local_count, local_ms, local_draw },
@@ -124,6 +143,7 @@ void displays_prepare(const WeatherSnapshot *snap, DisplayData *out)
 	else
 		out->latest_observations.count = 0;
 	almanac_view_prepare(snap, &out->almanac);
+	hazards_prepare(snap, &out->hazards);
 }
 
 void displays_tick(const WeatherSnapshot *snap, DisplayData *data)
@@ -132,8 +152,12 @@ void displays_tick(const WeatherSnapshot *snap, DisplayData *data)
 		almanac_view_prepare(snap, &data->almanac);
 }
 
-void rotation_update(Rotation *r, const DisplayData *data, u32 now_ms)
+void rotation_update(Rotation *r, DisplayData *data, u32 now_ms)
 {
+	if (!r->running) {
+		r->running = true;
+		r->started_ms = now_ms;
+	}
 	const Display *d = &displays[r->display];
 	size_t screens = d->screen_count(data);
 	if (r->screen < screens && now_ms - r->started_ms < d->screen_ms(data, r->screen))
@@ -143,6 +167,9 @@ void rotation_update(Rotation *r, const DisplayData *data, u32 now_ms)
 		r->screen++;
 		return;
 	}
+	// ws4kp shows alerts once, until they change or ten fetches pass.
+	if (r->screen < screens && d->draw == hazards_display_draw)
+		hazards_mark_viewed(&data->hazards);
 	r->screen = 0;
 	for (size_t i = 1; i <= DISPLAY_COUNT; i++) {
 		size_t next = (r->display + i) % DISPLAY_COUNT;
@@ -156,6 +183,13 @@ void rotation_update(Rotation *r, const DisplayData *data, u32 now_ms)
 void displays_draw(const Rotation *r, const DisplayData *data, u32 now_ms)
 {
 	const Display *d = &displays[r->display];
+	screen_started_ms = r->started_ms;
 	if (r->screen < d->screen_count(data))
 		d->draw(data, r->screen, now_ms);
+}
+
+bool displays_scroll_visible(const Rotation *r)
+{
+	// Hazards fills the screen; ws4kp sets okToDrawCurrentConditions = false.
+	return displays[r->display].draw != hazards_display_draw;
 }

@@ -11,8 +11,6 @@
 #include "screens/displays.h"
 #include "weather/weather.h"
 
-#define SCROLL_LINE_MS 4000
-
 static volatile bool quit, power_off;
 
 static void on_reset(u32 irq, void *ctx)
@@ -45,6 +43,7 @@ int main(int argc, char **argv)
 	static WeatherSnapshot snap;
 	static DisplayData data;
 	Rotation rotation = { 0 };
+	ScrollBar scroll_bar = { 0 };
 	u32 shown_generation = 0;
 	while (!quit) {
 		WPAD_ScanPads();
@@ -66,7 +65,7 @@ int main(int argc, char **argv)
 		if (data.has_current) {
 			rotation_update(&rotation, &data, now_ms);
 			displays_draw(&rotation, &data, now_ms);
-			scroll_draw(data.current.scroll[(now_ms / SCROLL_LINE_MS) % data.current.scroll_count]);
+			scroll_bar_draw(&scroll_bar, &data, displays_scroll_visible(&rotation), now_ms);
 		} else {
 			gfx_image(IMG_BACKGROUND_1, 0, 0);
 			header_draw("Current", "Conditions", true);
