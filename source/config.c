@@ -26,12 +26,14 @@ bool config_load(const char *argv0, Config *out)
 {
 	*out = defaults;
 
-	char path[256];
 	const char *slash = argv0 ? strrchr(argv0, '/') : NULL;
 	if (slash)
-		snprintf(path, sizeof path, "%.*s/settings.ini", (int)(slash - argv0), argv0);
+		snprintf(out->dir, sizeof out->dir, "%.*s", (int)(slash - argv0), argv0);
 	else
-		snprintf(path, sizeof path, DEFAULT_DIR "/settings.ini");
+		snprintf(out->dir, sizeof out->dir, DEFAULT_DIR);
+
+	char path[sizeof out->dir + 16];
+	snprintf(path, sizeof path, "%s/settings.ini", out->dir);
 
 	FILE *f = fopen(path, "r");
 	if (!f)

@@ -17,7 +17,7 @@ include $(DEVKITPPC)/wii_rules
 #---------------------------------------------------------------------------------
 TARGET		:=	wiiather
 BUILD		:=	build
-SOURCES		:=	source source/gen source/util source/net source/weather source/render source/screens
+SOURCES		:=	source source/audio source/gen source/util source/net source/weather source/render source/screens
 DATA		:=	data
 INCLUDES	:=	source source/gen
 DIST		:=	dist/apps/wiiather
@@ -34,7 +34,7 @@ LDFLAGS		=	-g $(MACHDEP) -Wl,-Map,$(notdir $@).map
 #---------------------------------------------------------------------------------
 LIBS	:=	-lgrrlib -lpngu -lfreetype -lbz2 -lbrotlidec -lbrotlicommon -lpng16 -ljpeg -lz \
 			-lmbedtls -lmbedx509 -lmbedcrypto -ljansson \
-			-lfat -lwiiuse -lbte -logc -lm
+			-lfat -lwiiuse -lbte -lasnd -lmad -logc -lm
 
 #---------------------------------------------------------------------------------
 # list of directories containing libraries, this must be the top level containing

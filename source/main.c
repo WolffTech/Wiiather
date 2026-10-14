@@ -2,8 +2,10 @@
 #include <gccore.h>
 #include <grrlib.h>
 #include <ogc/lwp_watchdog.h>
+#include <stdio.h>
 #include <wiiuse/wpad.h>
 
+#include "audio/music.h"
 #include "config.h"
 #include "render/gfx.h"
 #include "screens/displays.h"
@@ -35,6 +37,9 @@ int main(int argc, char **argv)
 	Config config;
 	config_load(argc > 0 ? argv[0] : NULL, &config);
 	weather_start(config.lat, config.lon);
+	char music_dir[sizeof config.dir + 8];
+	snprintf(music_dir, sizeof music_dir, "%s/music", config.dir);
+	music_start(music_dir);
 
 	u64 start = gettime();
 	static WeatherSnapshot snap;
@@ -43,8 +48,12 @@ int main(int argc, char **argv)
 	u32 shown_generation = 0;
 	while (!quit) {
 		WPAD_ScanPads();
-		if (WPAD_ButtonsDown(0) & WPAD_BUTTON_HOME)
+		u32 pressed = WPAD_ButtonsDown(0);
+		if (pressed & WPAD_BUTTON_HOME)
 			break;
+		if (pressed & WPAD_BUTTON_A)
+			music_toggle();
+		music_update();
 
 		u32 now_ms = ticks_to_millisecs(gettime() - start);
 		weather_snapshot(&snap);
