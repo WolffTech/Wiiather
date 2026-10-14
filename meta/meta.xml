@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<app version="1">
+	<name>Wiiather</name>
+	<coder>Wolff.Tech</coder>
+	<version>0.1.0</version>
+	<release_date>20261014000000</release_date>
+	<short_description>WeatherStar 4000 local forecasts</short_description>
+	<long_description>A recreation of The Weather Channel's WeatherStar 4000, based on ws4kp by Matt Walsh. Shows live National Weather Service data for a US location.
+
+Set the location in settings.ini next to boot.dol:
+lat=38.8951
+lon=-77.0364
+
+Not for use in life-threatening weather situations.</long_description>
+</app>
