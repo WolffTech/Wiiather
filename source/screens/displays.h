@@ -13,9 +13,14 @@ typedef struct {
 	LocalForecastPages local;
 	ExtendedForecastView extended;
 	LatestObservationsView latest_observations;
+	AlmanacView almanac;
 } DisplayData;
 
 void displays_prepare(const WeatherSnapshot *snap, DisplayData *out);
+
+// Refreshes displays that depend on the date as well as the data. Call every
+// frame.
+void displays_tick(const WeatherSnapshot *snap, DisplayData *data);
 
 typedef struct {
 	size_t display;

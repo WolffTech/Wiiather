@@ -61,6 +61,7 @@ int main(int argc, char **argv)
 			displays_prepare(&snap, &data);
 			shown_generation = snap.generation;
 		}
+		displays_tick(&snap, &data);
 
 		if (data.has_current) {
 			rotation_update(&rotation, &data, now_ms);

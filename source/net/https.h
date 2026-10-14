@@ -18,3 +18,7 @@ bool https_init(char *err, size_t err_len);
 bool https_get(const char *url, const char *accept, HttpResponse *out, char *err, size_t err_len);
 
 void http_response_free(HttpResponse *res);
+
+// The latest response's Date header in UTC and the RTC reading when it was
+// parsed, for deriving the RTC's UTC offset. False until a response has one.
+bool https_last_date(time_t *utc, time_t *rtc);

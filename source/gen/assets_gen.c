@@ -32,6 +32,12 @@
 #include "img_background_2_png.h"
 #include "img_logo_corner_png.h"
 #include "img_noaa_png.h"
+#include "img_background_3_png.h"
+#include "img_moon_new_png.h"
+#include "img_moon_first_png.h"
+#include "img_moon_full_png.h"
+#include "img_moon_full_degraded_png.h"
+#include "img_moon_last_png.h"
 
 const FontAsset font_assets[FONT_COUNT] = {
 	[FONT_STAR4000_32] = { font_star4000_32_png, 29, 7, 1, {
@@ -1032,4 +1038,10 @@ const ImageAsset image_assets[IMG_COUNT] = {
 	[IMG_BACKGROUND_2] = { img_background_2_png, 640, 480 },
 	[IMG_LOGO_CORNER] = { img_logo_corner_png, 85, 67 },
 	[IMG_NOAA] = { img_noaa_png, 44, 42 },
+	[IMG_BACKGROUND_3] = { img_background_3_png, 640, 480 },
+	[IMG_MOON_NEW] = { img_moon_new_png, 100, 94 },
+	[IMG_MOON_FIRST] = { img_moon_first_png, 100, 94 },
+	[IMG_MOON_FULL] = { img_moon_full_png, 100, 94 },
+	[IMG_MOON_FULL_DEGRADED] = { img_moon_full_degraded_png, 100, 94 },
+	[IMG_MOON_LAST] = { img_moon_last_png, 100, 94 },
 };

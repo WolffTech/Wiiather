@@ -3,10 +3,11 @@
 
 #include "render/gfx.h"
 #include "weather/format.h"
+#include "weather/sun_moon.h"
 #include "weather/weather.h"
 
-// Header shared by most displays: logo, two-line title, clock, and
-// optionally the NOAA logo.
+// Header shared by most displays: logo, two-line title (or one line when
+// `title_bottom` is NULL), clock, and optionally the NOAA logo.
 void header_draw(const char *title_top, const char *title_bottom, bool noaa_logo);
 
 // Bottom bar text (ws4kp's "scroll" area).
@@ -52,3 +53,15 @@ typedef struct {
 
 void latest_observations_prepare(const LatestObservations *obs, LatestObservationsView *out);
 void latest_observations_draw(const LatestObservationsView *view);
+
+// Almanac: today's and tomorrow's sun times and the next four moon phases.
+typedef struct {
+	bool ready; // false until the RTC's UTC offset is known
+	long rtc_day; // the RTC date `text` is for, in days since the epoch
+	AlmanacText text;
+} AlmanacView;
+
+void almanac_view_prepare(const WeatherSnapshot *snap, AlmanacView *out);
+// Whether the RTC's date has changed since the view was prepared.
+bool almanac_view_outdated(const AlmanacView *view);
+void almanac_view_draw(const AlmanacView *view);

@@ -34,6 +34,12 @@ IMAGES = [
     ("BACKGROUND_2", "backgrounds/2.png"),
     ("LOGO_CORNER", "logos/logo-corner.png"),
     ("NOAA", "logos/noaa.gif"),
+    ("BACKGROUND_3", "backgrounds/3.png"),
+    ("MOON_NEW", "icons/moon-phases/New-Moon.gif"),
+    ("MOON_FIRST", "icons/moon-phases/First-Quarter.gif"),
+    ("MOON_FULL", "icons/moon-phases/Full-Moon.gif"),
+    ("MOON_FULL_DEGRADED", "icons/moon-phases/Full-Moon-Degraded.gif"),
+    ("MOON_LAST", "icons/moon-phases/Last-Quarter.gif"),
 ]
 
 ICON_DIR = "icons/current-conditions"

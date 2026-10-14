@@ -1,5 +1,6 @@
 #include "weather.h"
 
+#include <math.h>
 #include <network.h>
 #include <ogc/lwp.h>
 #include <ogc/mutex.h>
@@ -51,6 +52,18 @@ static bool bring_up_network(void)
 	return true;
 }
 
+// Call with the lock held.
+static void update_utc_offset(void)
+{
+	time_t utc, rtc;
+	if (!https_last_date(&utc, &rtc))
+		return;
+	// Zones are offset in multiples of 15 minutes, so rounding absorbs request
+	// latency and RTC drift.
+	shared.utc_offset = lround(difftime(rtc, utc) / 900) * 900;
+	shared.has_utc_offset = true;
+}
+
 static bool refresh(NwsPoint *point, bool *have_point)
 {
 	char err[128];
@@ -74,6 +87,7 @@ static bool refresh(NwsPoint *point, bool *have_point)
 	shared.message[0] = '\0';
 	shared.point = *point;
 	shared.observation = obs;
+	update_utc_offset();
 	shared.generation++;
 	LWP_MutexUnlock(lock);
 
@@ -118,6 +132,8 @@ void weather_start(double lat, double lon)
 	location_lat = lat;
 	location_lon = lon;
 	shared.status = WEATHER_LOADING;
+	shared.lat = lat;
+	shared.lon = lon;
 	snprintf(shared.message, sizeof shared.message, "Starting...");
 	LWP_MutexInit(&lock, false);
 	LWP_CreateThread(&thread, worker, NULL, NULL, STACK_SIZE, 48);

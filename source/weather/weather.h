@@ -14,6 +14,9 @@ typedef struct {
 	WeatherStatus status;
 	char message[128];
 	NwsPoint point;
+	double lat, lon; // the configured location
+	bool has_utc_offset;
+	long utc_offset; // RTC (local time) minus UTC in seconds, a multiple of 15 minutes
 	Observation observation;
 	bool has_forecast; // kept from an earlier refresh if a later one fails
 	Forecast forecast;

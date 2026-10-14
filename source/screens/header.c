@@ -19,8 +19,12 @@ static void upcase(char *s)
 void header_draw(const char *title_top, const char *title_bottom, bool noaa_logo)
 {
 	gfx_image(IMG_LOGO_CORNER, 50, 30);
-	gfx_text(&title_style, 170, 27, ALIGN_LEFT, title_top);
-	gfx_text(&title_style, 170, 56, ALIGN_LEFT, title_bottom);
+	if (title_bottom) {
+		gfx_text(&title_style, 170, 27, ALIGN_LEFT, title_top);
+		gfx_text(&title_style, 170, 56, ALIGN_LEFT, title_bottom);
+	} else {
+		gfx_text(&title_style, 170, 40, ALIGN_LEFT, title_top);
+	}
 	if (noaa_logo)
 		gfx_image(IMG_NOAA, 356, 39);
 

@@ -29,6 +29,7 @@ static mbedtls_entropy_context entropy;
 static mbedtls_ctr_drbg_context drbg;
 static mbedtls_x509_crt ca_chain;
 static bool initialized;
+static time_t last_date, last_date_rtc;
 
 static void set_err(char *err, size_t err_len, const char *fmt, ...)
 {
@@ -361,6 +362,10 @@ static bool parse_response(Buffer *raw, HttpResponse *out, char *location, size_
 		if (!utc_parse_http_date(date, &out->date))
 			out->date = 0;
 	}
+	if (out->date) {
+		last_date = out->date;
+		last_date_rtc = time(NULL);
+	}
 	if ((value_len = find_header(headers, "Transfer-Encoding", &value)) > 0 &&
 	    strncasecmp(value, "chunked", 7) == 0) {
 		long decoded = dechunk(body, body_len);
@@ -423,4 +428,11 @@ void http_response_free(HttpResponse *res)
 {
 	free(res->body);
 	*res = (HttpResponse){ 0 };
+}
+
+bool https_last_date(time_t *utc, time_t *rtc)
+{
+	*utc = last_date;
+	*rtc = last_date_rtc;
+	return last_date != 0;
 }
