@@ -57,5 +57,5 @@ typedef struct {
 	char wind[24];
 } LatestObsRow;
 
-// Formats every station, sorted by location. Returns the row count.
+// Formats every station, nearest first. Returns the row count.
 size_t latest_obs_format(const LatestObservations *obs, LatestObsRow *rows);

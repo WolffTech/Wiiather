@@ -83,34 +83,34 @@ static void test_format(void)
 	LatestObsRow rows[LATEST_OBS_STATIONS];
 	CHECK(latest_obs_format(&obs, rows) == 6);
 
-	// Sorted by the displayed location.
-	CHECK_STR(rows[0].location, "Camp Springs");
-	CHECK_STR(rows[0].temperature, "31");
-	CHECK_STR(rows[0].weather, "L Rain Fo");
-	CHECK_STR(rows[0].wind, "Calm");
+	// Kept in distance order, like the live site.
+	CHECK_STR(rows[0].location, "Washington");
+	CHECK_STR(rows[0].temperature, "85");
+	CHECK_STR(rows[0].weather, "M Cloudy");
+	CHECK_STR(rows[0].wind, "S   9");
 
-	CHECK_STR(rows[1].location, "Gaithersburg M"); // 14 characters
-	CHECK_STR(rows[1].temperature, "32");
-	CHECK_STR(rows[1].weather, "L Snw/Fog");
-	CHECK_STR(rows[1].wind, "W   1");
+	CHECK_STR(rows[1].location, "West Chicago");
+	CHECK_STR(rows[1].temperature, "82");
+	CHECK_STR(rows[1].weather, "A F Cloud");
+	CHECK_STR(rows[1].wind, "WNW14");
 
-	CHECK_STR(rows[2].location, "Love Field");
-	CHECK_STR(rows[2].weather, "T'storm");
-	CHECK_STR(rows[2].wind, "NNE99");
+	CHECK_STR(rows[2].location, "Camp Springs");
+	CHECK_STR(rows[2].temperature, "31");
+	CHECK_STR(rows[2].weather, "L Rain Fo");
+	CHECK_STR(rows[2].wind, "Calm");
 
-	CHECK_STR(rows[3].location, "Washington");
-	CHECK_STR(rows[3].temperature, "85");
-	CHECK_STR(rows[3].weather, "M Cloudy");
-	CHECK_STR(rows[3].wind, "S   9");
+	CHECK_STR(rows[3].location, "Love Field");
+	CHECK_STR(rows[3].weather, "T'storm");
+	CHECK_STR(rows[3].wind, "NNE99");
 
-	CHECK_STR(rows[4].location, "Waukegan");
-	CHECK_STR(rows[4].weather, "P Cloudy");
-	CHECK_STR(rows[4].wind, "NNW62");
+	CHECK_STR(rows[4].location, "Gaithersburg M"); // 14 characters
+	CHECK_STR(rows[4].temperature, "32");
+	CHECK_STR(rows[4].weather, "L Snw/Fog");
+	CHECK_STR(rows[4].wind, "W   1");
 
-	CHECK_STR(rows[5].location, "West Chicago");
-	CHECK_STR(rows[5].temperature, "82");
-	CHECK_STR(rows[5].weather, "A F Cloud");
-	CHECK_STR(rows[5].wind, "WNW14");
+	CHECK_STR(rows[5].location, "Waukegan");
+	CHECK_STR(rows[5].weather, "P Cloudy");
+	CHECK_STR(rows[5].wind, "NNW62");
 }
 
 int main(void)

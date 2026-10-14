@@ -171,16 +171,10 @@ static void format_row(const LatestStation *s, LatestObsRow *row)
 
 size_t latest_obs_format(const LatestObservations *obs, LatestObsRow *rows)
 {
+	// ws4kp means to sort by station name, but compares a property that
+	// doesn't exist, so the live site keeps distance order. Match the site.
 	size_t count = obs->count < LATEST_OBS_STATIONS ? obs->count : LATEST_OBS_STATIONS;
-	// Stable insertion sort by location: ws4kp means to sort by station name,
-	// but compares a property that doesn't exist, so it keeps distance order.
-	for (size_t i = 0; i < count; i++) {
-		LatestObsRow row;
-		format_row(&obs->stations[i], &row);
-		size_t j = i;
-		for (; j > 0 && strcmp(rows[j - 1].location, row.location) > 0; j--)
-			rows[j] = rows[j - 1];
-		rows[j] = row;
-	}
+	for (size_t i = 0; i < count; i++)
+		format_row(&obs->stations[i], &rows[i]);
 	return count;
 }
