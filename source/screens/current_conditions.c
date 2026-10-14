@@ -9,7 +9,6 @@
 #define COL_WIDTH 255
 #define COL_TOP 110
 #define RIGHT_COL_LEFT (MAIN_RIGHT - COL_WIDTH)
-#define LEFT_LINE 37 // "normal" line height for the 32px Star4000 fonts
 #define ROW_PITCH 36 // 24px line plus 12px margin
 
 static const TextStyle temp_style = { FONT_STAR4000_LARGE_32, RGBA_WHITE, true, false, 0 };
@@ -29,10 +28,11 @@ void current_conditions_draw(const CurrentConditionsText *cc, u32 time_ms)
 {
 	f32 center = MAIN_LEFT + COL_WIDTH / 2.0f;
 	f32 y = COL_TOP;
+	const f32 line = gfx_line_height(FONT_STAR4000_EXTENDED_32);
 	gfx_text(&temp_style, center, y, ALIGN_CENTER, cc->temperature);
-	y += LEFT_LINE;
+	y += line;
 	gfx_text(&left_style, center, y, ALIGN_CENTER, cc->condition);
-	y += LEFT_LINE;
+	y += line;
 
 	const IconAsset *icon = &icon_assets[cc->icon];
 	gfx_icon(cc->icon, MAIN_LEFT + (COL_WIDTH - icon->w) / 2, y, time_ms);
@@ -41,7 +41,7 @@ void current_conditions_draw(const CurrentConditionsText *cc, u32 time_ms)
 	// The wind value floats right in a row with a 10px left margin.
 	gfx_text(&left_style, MAIN_LEFT + 10, y, ALIGN_LEFT, "Wind:");
 	gfx_text(&left_style, MAIN_LEFT + COL_WIDTH, y, ALIGN_RIGHT, cc->wind);
-	y += LEFT_LINE;
+	y += line;
 	if (cc->gusts[0])
 		gfx_text(&left_style, MAIN_LEFT + COL_WIDTH, y, ALIGN_RIGHT, cc->gusts);
 

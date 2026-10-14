@@ -31,6 +31,7 @@ FONTS = [
 # (enum suffix, path under server/images)
 IMAGES = [
     ("BACKGROUND_1", "backgrounds/1.png"),
+    ("BACKGROUND_2", "backgrounds/2.png"),
     ("LOGO_CORNER", "logos/logo-corner.png"),
     ("NOAA", "logos/noaa.gif"),
 ]
@@ -64,6 +65,15 @@ def save_padded(img: Image.Image, name: str) -> str:
     return f"{name}_png"
 
 
+def line_metrics(path: Path, size: int) -> tuple[int, int, int]:
+    """Chrome's ascent, descent and line gap: unhinted, each rounded separately.
+    Their sum is the height of a line-height: normal line box."""
+    face = freetype.Face(str(path))
+    scale = size / face.units_per_EM
+    gap = face.height - face.ascender + face.descender
+    return round(face.ascender * scale), round(-face.descender * scale), round(gap * scale)
+
+
 def hinted_advances(path: Path, size: int) -> dict[int, int]:
     """Chrome on Linux lays text out with fully hinted TrueType advances, which
     differ per glyph even in these monospaced fonts. Pillow only reports
@@ -81,7 +91,7 @@ def hinted_advances(path: Path, size: int) -> dict[int, int]:
 def build_font(enum: str, path: Path, size: int):
     font = ImageFont.truetype(str(path), size)
     advances = hinted_advances(path, size)
-    ascent, descent = font.getmetrics()
+    ascent, descent, line_gap = line_metrics(path, size)
     glyphs = {}
     boxes = []
     for code in CHARS:
@@ -112,7 +122,8 @@ def build_font(enum: str, path: Path, size: int):
     atlas = Image.new("RGBA", mask.size, (255, 255, 255, 0))
     atlas.putalpha(mask)
     sym = save_padded(atlas, f"font_{enum.lower()}")
-    return {"enum": enum, "sym": sym, "ascent": ascent, "descent": descent, "glyphs": glyphs}
+    return {"enum": enum, "sym": sym, "ascent": ascent, "descent": descent, "line_gap": line_gap,
+            "glyphs": glyphs}
 
 
 def build_icon(path: Path):
@@ -157,7 +168,7 @@ def write_c(fonts, icons, images, source_rev: str):
         "",
         "typedef struct {",
         "\tconst u8 *png;",
-        "\tu8 ascent, descent;",
+        "\tu8 ascent, descent, line_gap;",
         "\tGlyphInfo glyphs[256]; // indexed by Latin-1 code",
         "} FontAsset;",
         "",
@@ -201,7 +212,7 @@ def write_c(fonts, icons, images, source_rev: str):
         c.append(f'#include "{sym}.h"')
     c += ["", "const FontAsset font_assets[FONT_COUNT] = {"]
     for f in fonts:
-        c.append(f"\t[FONT_{f['enum']}] = {{ {f['sym']}, {f['ascent']}, {f['descent']}, {{")
+        c.append(f"\t[FONT_{f['enum']}] = {{ {f['sym']}, {f['ascent']}, {f['descent']}, {f['line_gap']}, {{")
         for code, (x, y, w, gh, xo, yo, adv) in sorted(f["glyphs"].items()):
             c.append(f"\t\t[{code}] = {{ {x}, {y}, {w}, {gh}, {xo}, {yo}, {adv} }},")
         c.append("\t} },")

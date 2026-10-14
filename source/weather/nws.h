@@ -3,6 +3,7 @@
 #include <stddef.h>
 
 #include "assets_gen.h"
+#include "forecast.h"
 #include "obs.h"
 
 typedef struct {
@@ -18,5 +19,8 @@ bool nws_get_point(double lat, double lon, NwsPoint *out, char *err, size_t err_
 // Walks the nearby stations until one has usable data, like ws4kp, patching
 // gaps from the METAR report and forecast.weather.gov's MapClick feed.
 bool nws_get_current_observation(const NwsPoint *point, Observation *out, char *err, size_t err_len);
+
+// The 12-hour forecast with expired periods removed.
+bool nws_get_forecast(const NwsPoint *point, Forecast *out, char *err, size_t err_len);
 
 IconId nws_large_icon(const char *icon_url);

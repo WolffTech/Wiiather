@@ -221,6 +221,55 @@ bool nws_get_current_observation(const NwsPoint *point, Observation *out, char *
 	return found;
 }
 
+static int number_or_value(json_t *v)
+{
+	// Newer API responses wrap numbers as {"value": n}.
+	if (json_is_object(v))
+		v = json_object_get(v, "value");
+	return (int)json_number_value(v);
+}
+
+bool nws_get_forecast(const NwsPoint *point, Forecast *out, char *err, size_t err_len)
+{
+	char url[200];
+	snprintf(url, sizeof url, "%s?units=us", point->forecast_url);
+	time_t now;
+	json_t *root = get_json(url, GEOJSON, &now, err, err_len);
+	if (!root)
+		return false;
+	json_t *periods = json_object_get(json_object_get(root, "properties"), "periods");
+	*out = (Forecast){ 0 };
+	size_t i;
+	json_t *period;
+	json_array_foreach(periods, i, period) {
+		if (out->count == FORECAST_MAX_PERIODS)
+			break;
+		ForecastPeriod *p = &out->periods[out->count++];
+		copy_string(p->name, sizeof p->name, json_object_get(period, "name"));
+		forecast_weekday(string_field(period, "startTime"), p->weekday);
+		const char *end = string_field(period, "endTime");
+		if (!end || !utc_parse_iso8601(end, &p->end))
+			p->end = 0;
+		p->is_daytime = json_is_true(json_object_get(period, "isDaytime"));
+		json_t *temperature = json_object_get(period, "temperature");
+		p->has_temperature = json_is_number(temperature) ||
+				     json_is_number(json_object_get(temperature, "value"));
+		p->temperature = p->has_temperature ? number_or_value(temperature) : 0;
+		copy_string(p->short_forecast, sizeof p->short_forecast, json_object_get(period, "shortForecast"));
+		copy_string(p->detailed_forecast, sizeof p->detailed_forecast,
+			json_object_get(period, "detailedForecast"));
+		copy_string(p->icon_url, sizeof p->icon_url, json_object_get(period, "icon"));
+	}
+	json_decref(root);
+	if (now)
+		forecast_drop_expired(out, now);
+	if (out->count == 0) {
+		snprintf(err, err_len, "Forecast has no current periods");
+		return false;
+	}
+	return true;
+}
+
 // Port of ws4kp icons-parse.mjs + icons-large.mjs.
 IconId nws_large_icon(const char *icon_url)
 {

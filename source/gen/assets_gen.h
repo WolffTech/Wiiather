@@ -12,7 +12,7 @@ typedef struct {
 
 typedef struct {
 	const u8 *png;
-	u8 ascent, descent;
+	u8 ascent, descent, line_gap;
 	GlyphInfo glyphs[256]; // indexed by Latin-1 code
 } FontAsset;
 
@@ -67,6 +67,7 @@ typedef enum {
 
 typedef enum {
 	IMG_BACKGROUND_1,
+	IMG_BACKGROUND_2,
 	IMG_LOGO_CORNER,
 	IMG_NOAA,
 	IMG_COUNT

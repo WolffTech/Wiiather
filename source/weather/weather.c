@@ -64,12 +64,11 @@ static bool refresh(NwsPoint *point, bool *have_point)
 	}
 
 	set_status(WEATHER_LOADING, "Loading current conditions...");
-	Observation obs;
+	static Observation obs;
 	if (!nws_get_current_observation(point, &obs, err, sizeof err)) {
 		set_status(WEATHER_FAILED, "%s", err);
 		return false;
 	}
-
 	LWP_MutexLock(lock);
 	shared.status = WEATHER_READY;
 	shared.message[0] = '\0';
@@ -77,6 +76,16 @@ static bool refresh(NwsPoint *point, bool *have_point)
 	shared.observation = obs;
 	shared.generation++;
 	LWP_MutexUnlock(lock);
+
+	// The forecast is optional: displays that need it are skipped without it.
+	static Forecast forecast;
+	if (nws_get_forecast(point, &forecast, err, sizeof err)) {
+		LWP_MutexLock(lock);
+		shared.has_forecast = true;
+		shared.forecast = forecast;
+		shared.generation++;
+		LWP_MutexUnlock(lock);
+	}
 	return true;
 }
 

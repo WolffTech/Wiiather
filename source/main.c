@@ -6,8 +6,7 @@
 
 #include "config.h"
 #include "render/gfx.h"
-#include "screens/screens.h"
-#include "weather/format.h"
+#include "screens/displays.h"
 #include "weather/weather.h"
 
 #define SCROLL_LINE_MS 4000
@@ -38,7 +37,9 @@ int main(int argc, char **argv)
 	weather_start(config.lat, config.lon);
 
 	u64 start = gettime();
-	CurrentConditionsText cc;
+	static WeatherSnapshot snap;
+	static DisplayData data;
+	Rotation rotation = { 0 };
 	u32 shown_generation = 0;
 	while (!quit) {
 		WPAD_ScanPads();
@@ -46,22 +47,22 @@ int main(int argc, char **argv)
 			break;
 
 		u32 now_ms = ticks_to_millisecs(gettime() - start);
-		WeatherSnapshot snap;
 		weather_snapshot(&snap);
-		if (snap.status == WEATHER_READY && snap.generation != shown_generation) {
-			format_current_conditions(&snap.observation, &cc);
+		if (snap.generation != shown_generation) {
+			displays_prepare(&snap, &data);
 			shown_generation = snap.generation;
 		}
 
-		gfx_image(IMG_BACKGROUND_1, 0, 0);
-		header_draw("Current", "Conditions");
-		if (shown_generation) {
-			current_conditions_draw(&cc, now_ms);
-			scroll_draw(cc.scroll[(now_ms / SCROLL_LINE_MS) % cc.scroll_count]);
+		if (data.has_current) {
+			rotation_update(&rotation, &data, now_ms);
+			displays_draw(&rotation, &data, now_ms);
+			scroll_draw(data.current.scroll[(now_ms / SCROLL_LINE_MS) % data.current.scroll_count]);
 		} else {
+			gfx_image(IMG_BACKGROUND_1, 0, 0);
+			header_draw("Current", "Conditions", true);
 			status_draw(&snap);
 		}
-		GRRLIB_Render();
+		gfx_present();
 	}
 
 	GRRLIB_Exit();

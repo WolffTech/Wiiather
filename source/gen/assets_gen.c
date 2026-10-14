@@ -29,11 +29,12 @@
 #include "icon_thunderstorm_png.h"
 #include "icon_windy_png.h"
 #include "img_background_1_png.h"
+#include "img_background_2_png.h"
 #include "img_logo_corner_png.h"
 #include "img_noaa_png.h"
 
 const FontAsset font_assets[FONT_COUNT] = {
-	[FONT_STAR4000_32] = { font_star4000_32_png, 29, 7, {
+	[FONT_STAR4000_32] = { font_star4000_32_png, 29, 7, 1, {
 		[32] = { 0, 0, 15, 0, 0, 0, 15 },
 		[33] = { 16, 0, 15, 22, 0, -22, 15 },
 		[34] = { 32, 0, 15, 23, 0, -23, 15 },
@@ -226,7 +227,7 @@ const FontAsset font_assets[FONT_COUNT] = {
 		[254] = { 496, 108, 15, 0, 0, 0, 15 },
 		[255] = { 0, 109, 15, 0, 0, 0, 15 },
 	} },
-	[FONT_STAR4000_EXTENDED_32] = { font_star4000_extended_32_png, 29, 7, {
+	[FONT_STAR4000_EXTENDED_32] = { font_star4000_extended_32_png, 29, 7, 1, {
 		[32] = { 0, 0, 17, 0, 0, 0, 17 },
 		[33] = { 18, 0, 6, 22, 0, -22, 6 },
 		[34] = { 25, 0, 8, 23, 0, -23, 9 },
@@ -419,7 +420,7 @@ const FontAsset font_assets[FONT_COUNT] = {
 		[254] = { 281, 95, 1, 0, 0, 0, 1 },
 		[255] = { 283, 95, 1, 0, 0, 0, 1 },
 	} },
-	[FONT_STAR4000_LARGE_32] = { font_star4000_large_32_png, 29, 7, {
+	[FONT_STAR4000_LARGE_32] = { font_star4000_large_32_png, 29, 7, 1, {
 		[32] = { 0, 0, 19, 0, 0, 0, 19 },
 		[33] = { 20, 0, 19, 34, 0, -34, 18 },
 		[34] = { 40, 0, 19, 35, 0, -35, 19 },
@@ -612,7 +613,7 @@ const FontAsset font_assets[FONT_COUNT] = {
 		[254] = { 171, 215, 18, 0, 0, 0, 18 },
 		[255] = { 190, 215, 16, 0, 0, 0, 16 },
 	} },
-	[FONT_STAR4000_LARGE_20] = { font_star4000_large_20_png, 19, 5, {
+	[FONT_STAR4000_LARGE_20] = { font_star4000_large_20_png, 18, 4, 1, {
 		[32] = { 0, 0, 12, 0, 0, 0, 12 },
 		[33] = { 13, 0, 12, 22, 0, -22, 12 },
 		[34] = { 26, 0, 12, 22, 0, -22, 13 },
@@ -805,7 +806,7 @@ const FontAsset font_assets[FONT_COUNT] = {
 		[254] = { 359, 90, 11, 0, 0, 0, 11 },
 		[255] = { 371, 90, 10, 0, 0, 0, 10 },
 	} },
-	[FONT_STAR4000_SMALL_32] = { font_star4000_small_32_png, 29, 7, {
+	[FONT_STAR4000_SMALL_32] = { font_star4000_small_32_png, 29, 7, 1, {
 		[32] = { 0, 0, 15, 0, 0, 0, 15 },
 		[33] = { 16, 0, 15, 12, 0, -12, 15 },
 		[34] = { 32, 0, 15, 12, 0, -12, 15 },
@@ -1028,6 +1029,7 @@ const IconAsset icon_assets[ICON_COUNT] = {
 
 const ImageAsset image_assets[IMG_COUNT] = {
 	[IMG_BACKGROUND_1] = { img_background_1_png, 640, 480 },
+	[IMG_BACKGROUND_2] = { img_background_2_png, 640, 480 },
 	[IMG_LOGO_CORNER] = { img_logo_corner_png, 85, 67 },
 	[IMG_NOAA] = { img_noaa_png, 44, 42 },
 };

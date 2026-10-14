@@ -3,6 +3,7 @@
 
 #include "nws.h"
 
+// Status of the current observation, which every display depends on.
 typedef enum {
 	WEATHER_LOADING, // no data yet; `message` describes progress
 	WEATHER_READY,
@@ -14,7 +15,9 @@ typedef struct {
 	char message[128];
 	NwsPoint point;
 	Observation observation;
-	u32 generation; // increments on each successful refresh
+	bool has_forecast; // kept from an earlier refresh if a later one fails
+	Forecast forecast;
+	u32 generation; // increments whenever any data changes
 } WeatherSnapshot;
 
 // Starts the background thread that brings up the network and refreshes
