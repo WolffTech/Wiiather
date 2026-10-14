@@ -17,6 +17,8 @@ typedef struct {
 	Observation observation;
 	bool has_forecast; // kept from an earlier refresh if a later one fails
 	Forecast forecast;
+	bool has_latest_observations; // kept from an earlier refresh if a later one fails
+	LatestObservations latest_observations;
 	u32 generation; // increments whenever any data changes
 } WeatherSnapshot;
 

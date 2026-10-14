@@ -86,6 +86,16 @@ static bool refresh(NwsPoint *point, bool *have_point)
 		shared.generation++;
 		LWP_MutexUnlock(lock);
 	}
+
+	// Latest Observations are optional too.
+	static LatestObservations latest;
+	if (nws_get_latest_observations(location_lat, location_lon, &latest)) {
+		LWP_MutexLock(lock);
+		shared.has_latest_observations = true;
+		shared.latest_observations = latest;
+		shared.generation++;
+		LWP_MutexUnlock(lock);
+	}
 	return true;
 }
 

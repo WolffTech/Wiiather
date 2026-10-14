@@ -43,3 +43,12 @@ typedef struct {
 
 void extended_forecast_prepare(const Forecast *f, ExtendedForecastView *out);
 void extended_forecast_draw(const ExtendedForecastView *view, size_t screen, u32 time_ms);
+
+// Latest Observations: one row per nearby station.
+typedef struct {
+	size_t count;
+	LatestObsRow rows[LATEST_OBS_STATIONS];
+} LatestObservationsView;
+
+void latest_observations_prepare(const LatestObservations *obs, LatestObservationsView *out);
+void latest_observations_draw(const LatestObservationsView *view);

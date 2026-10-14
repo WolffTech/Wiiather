@@ -2,6 +2,7 @@
 
 #define CURRENT_CONDITIONS_MS 9000 // ws4kp's default baseDelay
 #define EXTENDED_SCREEN_MS 9000
+#define LATEST_OBSERVATIONS_MS 9000
 
 typedef struct {
 	size_t (*screen_count)(const DisplayData *d);
@@ -24,6 +25,23 @@ static void current_draw(const DisplayData *d, size_t screen, u32 time_ms)
 	gfx_image(IMG_BACKGROUND_1, 0, 0);
 	header_draw(d->stale ? "Recent" : "Current", "Conditions", true);
 	current_conditions_draw(&d->current, time_ms);
+}
+
+static size_t latest_observations_count(const DisplayData *d)
+{
+	return d->latest_observations.count > 0;
+}
+
+static u32 latest_observations_ms(const DisplayData *d, size_t screen)
+{
+	return LATEST_OBSERVATIONS_MS;
+}
+
+static void latest_observations_screen(const DisplayData *d, size_t screen, u32 time_ms)
+{
+	gfx_image(IMG_BACKGROUND_1, 0, 0);
+	header_draw("Latest", "Observations", true);
+	latest_observations_draw(&d->latest_observations);
 }
 
 static size_t local_count(const DisplayData *d)
@@ -63,6 +81,7 @@ static void extended_draw(const DisplayData *d, size_t screen, u32 time_ms)
 // ws4kp's order, limited to the displays ported so far.
 static const Display displays[] = {
 	{ current_count, current_ms, current_draw },
+	{ latest_observations_count, latest_observations_ms, latest_observations_screen },
 	{ local_count, local_ms, local_draw },
 	{ extended_count, extended_ms, extended_draw },
 };
@@ -81,6 +100,10 @@ void displays_prepare(const WeatherSnapshot *snap, DisplayData *out)
 		out->local.page_count = 0;
 		out->extended.count = 0;
 	}
+	if (snap->has_latest_observations)
+		latest_observations_prepare(&snap->latest_observations, &out->latest_observations);
+	else
+		out->latest_observations.count = 0;
 }
 
 void rotation_update(Rotation *r, const DisplayData *data, u32 now_ms)

@@ -4,6 +4,7 @@
 
 #include "assets_gen.h"
 #include "forecast.h"
+#include "latest_obs.h"
 #include "obs.h"
 
 typedef struct {
@@ -22,5 +23,8 @@ bool nws_get_current_observation(const NwsPoint *point, Observation *out, char *
 
 // The 12-hour forecast with expired periods removed.
 bool nws_get_forecast(const NwsPoint *point, Forecast *out, char *err, size_t err_len);
+
+// The nearest stations with complete latest observations, as ws4kp picks them.
+bool nws_get_latest_observations(double lat, double lon, LatestObservations *out);
 
 IconId nws_large_icon(const char *icon_url);

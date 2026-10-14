@@ -270,6 +270,45 @@ bool nws_get_forecast(const NwsPoint *point, Forecast *out, char *err, size_t er
 	return true;
 }
 
+static bool get_latest_station(const StationInfo *station, LatestStation *out)
+{
+	char url[128], err[128];
+	snprintf(url, sizeof url, API "/stations/%s/observations/latest", station->id);
+	time_t now;
+	json_t *root = get_json(url, GEOJSON, &now, err, sizeof err);
+	if (!root)
+		return false;
+	json_t *props = json_object_get(root, "properties");
+	ObsReading r = reading_from_json(props);
+	obs_augment_with_metar(&r, string_field(props, "rawMessage"));
+	json_decref(root);
+
+	ObsReading mapclick;
+	if (latest_obs_needs_mapclick(&r, now) && get_mapclick(station->id, now, &mapclick) &&
+	    latest_obs_prefer_mapclick(&r, &mapclick)) {
+		mapclick.timestamp = r.timestamp;
+		r = mapclick;
+	}
+	return latest_obs_accept(&r, station->city, out);
+}
+
+bool nws_get_latest_observations(double lat, double lon, LatestObservations *out)
+{
+	static StationDistance ranked[STATION_COUNT];
+	for (size_t i = 0; i < STATION_COUNT; i++)
+		ranked[i] = (StationDistance){ i, latest_obs_distance(station_info[i].lat, station_info[i].lon, lat, lon) };
+	latest_obs_sort_by_distance(ranked, STATION_COUNT);
+
+	// ws4kp fetches the nearest in batches only as large as the shortfall, so
+	// trying one at a time picks the same stations.
+	*out = (LatestObservations){ 0 };
+	for (size_t i = 0; i < LATEST_OBS_CANDIDATES && out->count < LATEST_OBS_STATIONS; i++) {
+		if (get_latest_station(&station_info[ranked[i].index], &out->stations[out->count]))
+			out->count++;
+	}
+	return out->count > 0;
+}
+
 // Port of ws4kp icons-parse.mjs + icons-large.mjs.
 IconId nws_large_icon(const char *icon_url)
 {

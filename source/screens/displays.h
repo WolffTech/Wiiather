@@ -12,6 +12,7 @@ typedef struct {
 	CurrentConditionsText current;
 	LocalForecastPages local;
 	ExtendedForecastView extended;
+	LatestObservationsView latest_observations;
 } DisplayData;
 
 void displays_prepare(const WeatherSnapshot *snap, DisplayData *out);
