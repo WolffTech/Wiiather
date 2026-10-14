@@ -11,21 +11,30 @@ US locations only, since all data comes from the NWS.
 
 1. Build `dist/` (below) or download a release.
 2. Copy `dist/apps/` to the root of the SD card.
-3. Optionally, set the location in `apps/wiiather/settings.ini`:
-
-   ```ini
-   lat=38.8951
-   lon=-77.0364
-   ```
-
-   Without the file, Wiiather shows Washington, DC.
-4. Optionally, add background music: copy `.mp3` files to
+3. Optionally, add background music: copy `.mp3` files to
    `apps/wiiather/music/`. They play in random order, and the Wii Remote's
    A button turns music on and off. ws4kp's royalty-free tracks in
    [`server/music/default`](https://github.com/netbymatt/ws4kp/tree/main/server/music/default)
    work well.
-5. Launch Wiiather from the Homebrew Channel. The Wii needs a working
+4. Launch Wiiather from the Homebrew Channel. The Wii needs a working
    internet connection set up in the system settings.
+
+## Location
+
+On first launch, Wiiather asks for a ZIP code. It suggests one based on the
+Wii's public IP address, looked up with [ipinfo.io](https://ipinfo.io), which
+sees that address. Change digits with the D-pad's up and down, move between
+them with left and right, and press A to save. Press + at any time to pick a
+new location, and B to back out.
+
+The location is saved in `apps/wiiather/settings.ini`. To use exact
+coordinates instead, for example for a place without a ZIP code, edit the
+file:
+
+```ini
+lat=38.8951
+lon=-77.0364
+```
 
 ## Build
 
@@ -54,6 +63,14 @@ converted in `data/` and `source/gen/`. To redo the conversion:
 ```zsh
 uv run --with pillow --with freetype-py tools/build_assets.py /path/to/ws4kp
 uv run --with pillow tools/build_hbc_icon.py /path/to/ws4kp
+```
+
+The ZIP code table comes from the Census Bureau's
+[ZCTA Gazetteer file](https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html).
+To regenerate it from a newer year's extracted `.txt`:
+
+```zsh
+python3 tools/build_zips.py /path/to/2025_Gaz_zcta_national.txt
 ```
 
 ## Disclaimer

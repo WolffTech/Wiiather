@@ -45,7 +45,7 @@ void almanac_view_prepare(const WeatherSnapshot *snap, AlmanacView *out)
 		return;
 	time_t now = time(NULL);
 	out->rtc_day = rtc_day(now);
-	almanac_format(snap->lat, snap->lon, now, snap->utc_offset, &out->text);
+	almanac_format(snap->location.lat, snap->location.lon, now, snap->utc_offset, &out->text);
 }
 
 bool almanac_view_outdated(const AlmanacView *view)

@@ -88,14 +88,15 @@ clean:
 HOST_CC		?=	cc
 TEST_LIB	:=	source/weather/obs.c source/weather/forecast.c source/util/utc.c
 TEST_LIB	+=	source/weather/latest_obs.c source/weather/sun_moon.c source/weather/alerts.c
+TEST_LIB	+=	source/config.c source/weather/location.c source/gen/stations_gen.c source/gen/zips_gen.c
 TESTS		:=	$(patsubst tests/%.c,$(BUILD)/host/%,$(wildcard tests/test_*.c))
 
 test: $(TESTS)
 	@for t in $(TESTS); do echo $$t; $$t || exit 1; done
 
-$(BUILD)/host/%: tests/%.c $(TEST_LIB) $(wildcard source/weather/*.h source/util/*.h)
+$(BUILD)/host/%: tests/%.c $(TEST_LIB) $(wildcard source/*.h source/weather/*.h source/util/*.h)
 	@mkdir -p $(dir $@)
-	$(HOST_CC) -std=gnu11 -Wall -Wextra -Werror -iquote source -o $@ $< $(TEST_LIB) -lm
+	$(HOST_CC) -std=gnu11 -Wall -Wextra -Werror -iquote source -iquote source/gen -o $@ $< $(TEST_LIB) -lm
 
 #---------------------------------------------------------------------------------
 run: $(BUILD)
