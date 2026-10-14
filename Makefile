@@ -107,7 +107,7 @@ run: $(BUILD)
 dist: $(BUILD)
 	@mkdir -p $(DIST)
 	@cp $(OUTPUT).dol $(DIST)/boot.dol
-	@cp meta/meta.xml meta/icon.png $(DIST)/
+	@cp meta/meta.xml meta/icon.png LICENSE THIRD_PARTY_NOTICES.md $(DIST)/
 	@echo dist ... $(DIST)
 
 #---------------------------------------------------------------------------------

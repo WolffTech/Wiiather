@@ -83,4 +83,12 @@ The WeatherSTAR 4000 name and design belong to The Weather Channel. Wiiather
 is a free, non-commercial fan project and is not affiliated with The Weather
 Channel, the NWS or Nintendo.
 
-See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) for credits and licenses.
+## License
+
+Wiiather is free software: you can redistribute it and/or modify it under
+the terms of the GNU General Public License as published by the Free
+Software Foundation, either version 3 of the License, or (at your option)
+any later version. See [LICENSE](LICENSE).
+
+It includes or links third-party work under other licenses; see
+[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) for credits and licenses.

@@ -7,9 +7,9 @@
 	<short_description>WeatherStar 4000 local forecasts</short_description>
 	<long_description>A recreation of The Weather Channel's WeatherStar 4000, based on ws4kp by Matt Walsh. Shows live National Weather Service data for a US location.
 
-Set the location in settings.ini next to boot.dol:
-lat=38.8951
-lon=-77.0364
+Enter a ZIP code on first launch, and press + to change it later.
+
+Licensed under the GNU GPL, version 3 or later.
 
 Not for use in life-threatening weather situations.</long_description>
 </app>
