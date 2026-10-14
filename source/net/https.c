@@ -18,6 +18,7 @@
 #include <psa/crypto.h>
 
 #include "cacert_pem.h"
+#include "util/utc.h"
 
 #define USER_AGENT "Wiiather/0.1 (Wii homebrew; WeatherStar 4000 simulator)"
 #define IO_TIMEOUT_MS 15000
@@ -352,6 +353,13 @@ static bool parse_response(Buffer *raw, HttpResponse *out, char *location, size_
 	if ((value_len = find_header(headers, "Location", &value)) > 0 && (size_t)value_len < location_len) {
 		memcpy(location, value, value_len);
 		location[value_len] = '\0';
+	}
+	char date[40];
+	if ((value_len = find_header(headers, "Date", &value)) > 0 && (size_t)value_len < sizeof date) {
+		memcpy(date, value, value_len);
+		date[value_len] = '\0';
+		if (!utc_parse_http_date(date, &out->date))
+			out->date = 0;
 	}
 	if ((value_len = find_header(headers, "Transfer-Encoding", &value)) > 0 &&
 	    strncasecmp(value, "chunked", 7) == 0) {

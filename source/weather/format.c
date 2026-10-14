@@ -6,7 +6,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "stations_gen.h"
+#include "stations.h"
 
 #define DEGREE "\xB0"
 
@@ -87,15 +87,9 @@ static void location_cleanup(char *s)
 	}
 }
 
-static int compare_station(const void *key, const void *elem)
-{
-	return strcmp(key, ((const StationInfo *)elem)->id);
-}
-
 void format_station_location(const char *station_id, const char *nws_name, char *out, size_t out_len)
 {
-	const StationInfo *info = bsearch(station_id, station_info, STATION_COUNT, sizeof station_info[0],
-		compare_station);
+	const StationInfo *info = station_find(station_id);
 	char name[64];
 	if (info) {
 		snprintf(name, sizeof name, "%s", info->city);

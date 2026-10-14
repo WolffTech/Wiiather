@@ -17,7 +17,7 @@ include $(DEVKITPPC)/wii_rules
 #---------------------------------------------------------------------------------
 TARGET		:=	wiiather
 BUILD		:=	build
-SOURCES		:=	source source/gen source/net source/weather source/render source/screens
+SOURCES		:=	source source/gen source/util source/net source/weather source/render source/screens
 DATA		:=	data
 INCLUDES	:=	source source/gen
 DIST		:=	dist/apps/wiiather
@@ -71,7 +71,7 @@ export INCLUDE	:=	$(foreach dir,$(INCLUDES), -iquote $(CURDIR)/$(dir)) \
 
 export LIBPATHS	:= -L$(LIBOGC_LIB) $(foreach dir,$(LIBDIRS),-L$(dir)/lib)
 
-.PHONY: $(BUILD) clean run dist
+.PHONY: $(BUILD) clean run dist test
 
 #---------------------------------------------------------------------------------
 $(BUILD):
@@ -82,6 +82,19 @@ $(BUILD):
 clean:
 	@echo clean ...
 	@rm -fr $(BUILD) $(OUTPUT).elf $(OUTPUT).dol dist
+
+#---------------------------------------------------------------------------------
+# Host-side tests for the platform-independent logic.
+HOST_CC		?=	cc
+TEST_LIB	:=	source/weather/obs.c source/util/utc.c
+TESTS		:=	$(patsubst tests/%.c,$(BUILD)/host/%,$(wildcard tests/test_*.c))
+
+test: $(TESTS)
+	@for t in $(TESTS); do echo $$t; $$t || exit 1; done
+
+$(BUILD)/host/%: tests/%.c $(TEST_LIB) $(wildcard source/weather/*.h source/util/*.h)
+	@mkdir -p $(dir $@)
+	$(HOST_CC) -std=gnu11 -Wall -Wextra -Werror -iquote source -o $@ $< $(TEST_LIB) -lm
 
 #---------------------------------------------------------------------------------
 run: $(BUILD)

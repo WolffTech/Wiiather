@@ -1,11 +1,13 @@
 #pragma once
 #include <stdbool.h>
 #include <stddef.h>
+#include <time.h>
 
 typedef struct {
 	int status;
 	char *body; // NUL-terminated; owned by the response
 	size_t len;
+	time_t date; // server's Date header in UTC, 0 if absent
 } HttpResponse;
 
 // Loads the CA bundle and seeds the DRBG. Call once after the network is up.

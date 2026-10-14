@@ -6,17 +6,22 @@
 #include <string.h>
 
 #include "net/https.h"
+#include "stations.h"
+#include "util/utc.h"
 
 #define API "https://api.weather.gov"
 #define GEOJSON "application/geo+json"
 #define MAX_STATIONS 6
 #define OBSERVATION_HISTORY 5
 
-static json_t *get_json(const char *url, char *err, size_t err_len)
+// `date`, if given, receives the server's clock in UTC (0 if unknown).
+static json_t *get_json(const char *url, const char *accept, time_t *date, char *err, size_t err_len)
 {
 	HttpResponse res;
-	if (!https_get(url, GEOJSON, &res, err, err_len))
+	if (!https_get(url, accept, &res, err, err_len))
 		return NULL;
+	if (date)
+		*date = res.date;
 	if (res.status != 200) {
 		snprintf(err, err_len, "HTTP %d from %.80s", res.status, url);
 		http_response_free(&res);
@@ -49,7 +54,7 @@ bool nws_get_point(double lat, double lon, NwsPoint *out, char *err, size_t err_
 	// NWS redirects coordinates with more than 4 decimal places.
 	char url[128];
 	snprintf(url, sizeof url, API "/points/%.4f,%.4f", lat, lon);
-	json_t *root = get_json(url, err, err_len);
+	json_t *root = get_json(url, GEOJSON, NULL, err, err_len);
 	if (!root)
 		return false;
 
@@ -78,18 +83,71 @@ static int compare_timestamp_desc(const void *a, const void *b)
 	return strcmp(tb ? tb : "", ta ? ta : "");
 }
 
-// Latest non-null value across observations sorted newest first (ws4kp backfill).
-static Measure backfill(json_t **obs, size_t count, const char *key)
+static ObsReading reading_from_json(json_t *props)
 {
-	for (size_t i = 0; i < count; i++) {
-		Measure m = measure(json_object_get(obs[i], "properties"), key);
-		if (m.valid)
-			return m;
-	}
-	return (Measure){ false, 0 };
+	ObsReading r = { 0 };
+	const char *timestamp = json_string_value(json_object_get(props, "timestamp"));
+	if (!timestamp || !utc_parse_iso8601(timestamp, &r.timestamp))
+		r.timestamp = 0;
+	copy_string(r.text_description, sizeof r.text_description, json_object_get(props, "textDescription"));
+	copy_string(r.icon_url, sizeof r.icon_url, json_object_get(props, "icon"));
+	r.temperature = measure(props, "temperature");
+	r.dewpoint = measure(props, "dewpoint");
+	r.wind_direction = measure(props, "windDirection");
+	r.wind_speed = measure(props, "windSpeed");
+	r.wind_gust = measure(props, "windGust");
+	r.pressure = measure(props, "barometricPressure");
+	r.visibility = measure(props, "visibility");
+	r.relative_humidity = measure(props, "relativeHumidity");
+	r.heat_index = measure(props, "heatIndex");
+	r.wind_chill = measure(props, "windChill");
+	// No layers means clear skies, not missing data.
+	json_t *layers = json_object_get(props, "cloudLayers");
+	r.has_cloud_layer = json_array_size(layers) > 0;
+	r.ceiling = measure(json_array_get(layers, 0), "base");
+	return r;
 }
 
-static bool parse_observations(json_t *root, Observation *out)
+static const char *string_field(json_t *obj, const char *key)
+{
+	return json_string_value(json_object_get(obj, key));
+}
+
+// MapClick serves airport stations from a faster feed than api.weather.gov.
+static bool get_mapclick(const char *station_id, time_t now, ObsReading *out)
+{
+	const StationInfo *station = station_find(station_id);
+	if (!station)
+		return false;
+	char url[200], err[128];
+	snprintf(url, sizeof url, "https://forecast.weather.gov/MapClick.php?FcstType=json&lat=%.4f&lon=%.4f&station=%s",
+		station->lat, station->lon, station_id);
+	json_t *root = get_json(url, "application/json", NULL, err, sizeof err);
+	json_t *cur = json_object_get(root, "currentobservation");
+	if (!json_is_object(cur)) {
+		json_decref(root);
+		return false;
+	}
+	MapClickObservation m = {
+		.date = string_field(cur, "Date"),
+		.temp = string_field(cur, "Temp"),
+		.dewp = string_field(cur, "Dewp"),
+		.relh = string_field(cur, "Relh"),
+		.winds = string_field(cur, "Winds"),
+		.windd = string_field(cur, "Windd"),
+		.gust = string_field(cur, "Gust"),
+		.weather = string_field(cur, "Weather"),
+		.weatherimage = string_field(cur, "Weatherimage"),
+		.visibility = string_field(cur, "Visibility"),
+		.slp = string_field(cur, "SLP"),
+		.windchill = string_field(cur, "WindChill"),
+	};
+	obs_from_mapclick(&m, now, out);
+	json_decref(root);
+	return true;
+}
+
+static bool select_observation(json_t *root, const char *station_id, time_t now, Observation *out)
 {
 	json_t *features = json_object_get(root, "features");
 	size_t count = json_array_size(features);
@@ -102,39 +160,28 @@ static bool parse_observations(json_t *root, Observation *out)
 		obs[i] = json_array_get(features, i);
 	qsort(obs, count, sizeof obs[0], compare_timestamp_desc);
 
-	json_t *latest = json_object_get(obs[0], "properties");
-	copy_string(out->text_description, sizeof out->text_description, json_object_get(latest, "textDescription"));
-	copy_string(out->icon_url, sizeof out->icon_url, json_object_get(latest, "icon"));
-	out->temperature = backfill(obs, count, "temperature");
-	out->dewpoint = backfill(obs, count, "dewpoint");
-	out->wind_direction = backfill(obs, count, "windDirection");
-	out->wind_speed = backfill(obs, count, "windSpeed");
-	out->wind_gust = backfill(obs, count, "windGust");
-	out->pressure = backfill(obs, count, "barometricPressure");
-	out->visibility = backfill(obs, count, "visibility");
-	out->relative_humidity = backfill(obs, count, "relativeHumidity");
-	out->heat_index = backfill(obs, count, "heatIndex");
-	out->wind_chill = backfill(obs, count, "windChill");
-	// cloudLayers has no "value" key, so ws4kp takes it from the latest
-	// observation only. No layers means clear skies, not missing data.
-	json_t *layers = json_object_get(latest, "cloudLayers");
-	out->ceiling = measure(json_array_get(layers, 0), "base");
-	bool ceiling_missing = json_array_size(layers) > 0 && !out->ceiling.valid;
-	out->pressure_previous = count > 1 ? measure(json_object_get(obs[1], "properties"), "barometricPressure")
-					   : (Measure){ false, 0 };
+	ObsReading readings[OBSERVATION_HISTORY];
+	for (size_t i = 0; i < count; i++)
+		readings[i] = reading_from_json(json_object_get(obs[i], "properties"));
 
-	// ws4kp requires temperature and a description, and tolerates one
-	// missing optional field.
-	if (!out->temperature.valid || !out->text_description[0])
+	ObsReading *latest = &readings[0];
+	obs_augment_with_metar(latest, string_field(json_object_get(obs[0], "properties"), "rawMessage"));
+	ObsReading mapclick;
+	if (obs_needs_mapclick(latest, now) && get_mapclick(station_id, now, &mapclick) &&
+	    obs_prefer_mapclick(latest, &mapclick)) {
+		// ws4kp keeps the API timestamp, so stale data still reads "Recent".
+		mapclick.timestamp = latest->timestamp;
+		*latest = mapclick;
+	}
+	if (!obs_quality_ok(obs_quality(latest)))
 		return false;
-	int missing = !out->wind_speed.valid + !out->dewpoint.valid + !out->pressure.valid + !out->visibility.valid +
-		      !out->relative_humidity.valid + ceiling_missing;
-	return missing <= 1;
+	obs_merge(readings, count, now, out);
+	return true;
 }
 
 bool nws_get_current_observation(const NwsPoint *point, Observation *out, char *err, size_t err_len)
 {
-	json_t *stations = get_json(point->observation_stations_url, err, err_len);
+	json_t *stations = get_json(point->observation_stations_url, GEOJSON, NULL, err, err_len);
 	if (!stations)
 		return false;
 
@@ -148,19 +195,20 @@ bool nws_get_current_observation(const NwsPoint *point, Observation *out, char *
 		json_t *station = json_array_get(features, i);
 		json_t *props = json_object_get(station, "properties");
 		const char *station_url = json_string_value(json_object_get(station, "id"));
-		if (!station_url)
+		const char *station_id = string_field(props, "stationIdentifier");
+		if (!station_url || !station_id)
 			continue;
 
 		char url[200];
 		snprintf(url, sizeof url, "%s/observations?limit=%d", station_url, OBSERVATION_HISTORY);
-		json_t *obs = get_json(url, err, err_len);
+		time_t now;
+		json_t *obs = get_json(url, GEOJSON, &now, err, err_len);
 		if (!obs)
 			continue;
-		*out = (Observation){ 0 };
-		found = parse_observations(obs, out);
+		found = select_observation(obs, station_id, now, out);
 		json_decref(obs);
 		if (found) {
-			copy_string(out->station_id, sizeof out->station_id, json_object_get(props, "stationIdentifier"));
+			snprintf(out->station_id, sizeof out->station_id, "%s", station_id);
 			copy_string(out->station_name, sizeof out->station_name, json_object_get(props, "name"));
 		}
 	}
