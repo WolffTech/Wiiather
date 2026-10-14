@@ -4,3 +4,4 @@
 *.dol
 *.map
 __pycache__/
+.claude/
