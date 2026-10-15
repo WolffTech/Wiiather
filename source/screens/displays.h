@@ -11,6 +11,7 @@ typedef struct {
 	bool stale;
 	CurrentConditionsText current;
 	HourlyView hourly;
+	HourlyGraphView hourly_graph;
 	LocalForecastPages local;
 	ExtendedForecastView extended;
 	LatestObservationsView latest_observations;

@@ -322,6 +322,7 @@ bool nws_get_hourly(const NwsPoint *point, HourlyForecast *out, char *err, size_
 	*out = (HourlyForecast){ .start = now - now % 3600 };
 	out->count = expand_series(props, "temperature", out->start, out->temperature, NULL);
 	expand_series(props, "apparentTemperature", out->start, out->apparent_temperature, NULL);
+	expand_series(props, "dewpoint", out->start, out->dewpoint, NULL);
 	expand_series(props, "windSpeed", out->start, out->wind_speed, NULL);
 	expand_series(props, "windDirection", out->start, out->wind_direction, NULL);
 	expand_series(props, "skyCover", out->start, out->sky_cover, NULL);

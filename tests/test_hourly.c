@@ -138,6 +138,54 @@ static void test_rows(void)
 	CHECK(hourly_rows(&f, 38.8951, -77.0364, now + 40 * HOUR, -4 * HOUR, rows) == 0);
 }
 
+static void test_graph(void)
+{
+	static HourlyForecast f;
+	f = (HourlyForecast){ .start = iso("2026-10-15T03:00:00Z"), .count = 48 };
+	for (size_t i = 0; i < f.count; i++) {
+		f.temperature[i] = m(20); // 68 F
+		f.dewpoint[i] = m(10); // 50 F
+	}
+	f.temperature[5] = m(22.2); // 72 F
+	f.dewpoint[6] = m(8.6); // 47.48 F, rounded before scaling
+	f.dewpoint[7].valid = false;
+	f.sky_cover[2] = m(45);
+
+	// Washington, DC at 12:30 AM EDT on Thursday: the graph starts with the
+	// current hour.
+	static HourlyGraph g;
+	time_t now = iso("2026-10-15T04:30:00Z");
+	CHECK(hourly_graph(&f, now, -4 * HOUR, &g));
+	CHECK(g.count == HOURLY_GRAPH_HOURS);
+	CHECK(g.temperature[4].value == 72);
+	CHECK(g.dewpoint[5].value == 47);
+	CHECK(!g.dewpoint[6].valid);
+	CHECK(g.sky_cover[1].value == 45);
+	CHECK(g.has_temperature_axis && g.temperature_min == 47 && g.temperature_max == 72);
+	CHECK_STR(g.y_labels[0], "72\xb0");
+	CHECK_STR(g.y_labels[1], "64\xb0"); // 47 + 2 * 25 / 3 = 63.7
+	CHECK_STR(g.y_labels[2], "55\xb0");
+	CHECK_STR(g.y_labels[3], "47\xb0");
+	// Every 9 hours from 12 AM, with the weekday when it changes.
+	CHECK_STR(g.x_labels[0], "12A");
+	CHECK_STR(g.x_labels[1], "9A");
+	CHECK_STR(g.x_labels[2], "6P");
+	CHECK_STR(g.x_labels[3], "Fri 3A");
+	CHECK_STR(g.x_labels[4], "12P");
+
+	// Three-digit temperatures lose the degree sign; quarters of fewer hours
+	// fall between them.
+	f.temperature[47] = m(40); // 104 F
+	CHECK(hourly_graph(&f, now + 29 * HOUR, -4 * HOUR, &g));
+	CHECK(g.count == 18);
+	CHECK_STR(g.y_labels[0], "104");
+	CHECK_STR(g.x_labels[0], "5A");
+	CHECK_STR(g.x_labels[1], "9A"); // 9:30, 4.5 hours later
+	CHECK_STR(g.x_labels[4], "11P");
+
+	CHECK(!hourly_graph(&f, now + 50 * HOUR, -4 * HOUR, &g));
+}
+
 static void test_timing(void)
 {
 	// 24 rows are 1738 px in ws4kp's 310 px main area: 3 s, 714 counts at
@@ -155,6 +203,7 @@ int main(void)
 	test_weather_flags();
 	test_icon();
 	test_rows();
+	test_graph();
 	test_timing();
 	if (failures) {
 		fprintf(stderr, "%d check(s) failed\n", failures);
