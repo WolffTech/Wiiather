@@ -165,6 +165,18 @@ void gfx_image(ImageId id, f32 x, f32 y)
 	GRRLIB_DrawImg(x, y, image_tex[id], 0, 1, 1, RGBA_WHITE);
 }
 
+void gfx_clip(f32 x, f32 y, f32 w, f32 h)
+{
+	// The scissor works in framebuffer pixels, and the framebuffer may be taller than 480.
+	f32 sx = rmode->fbWidth / (f32)SCREEN_WIDTH, sy = rmode->efbHeight / (f32)SCREEN_HEIGHT;
+	GRRLIB_ClipDrawing(x * sx, y * sy, w * sx, h * sy);
+}
+
+void gfx_clip_reset(void)
+{
+	GRRLIB_ClipReset();
+}
+
 void gfx_icon_scaled(IconId id, f32 x, f32 y, f32 w, f32 h, u32 time_ms)
 {
 	const IconAsset *icon = &icon_assets[id];

@@ -47,6 +47,10 @@ void gfx_text(const TextStyle *style, f32 x, f32 top, TextAlign align, const cha
 
 void gfx_image(ImageId id, f32 x, f32 y);
 
+// Limits drawing to a rectangle in layout coordinates until gfx_clip_reset().
+void gfx_clip(f32 x, f32 y, f32 w, f32 h);
+void gfx_clip_reset(void);
+
 // Draws the animation frame for `time_ms`, with (x, y) as the top-left corner.
 void gfx_icon(IconId id, f32 x, f32 y, u32 time_ms);
 

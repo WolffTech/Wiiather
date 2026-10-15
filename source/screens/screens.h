@@ -18,6 +18,20 @@ void current_conditions_draw(const CurrentConditionsText *cc, u32 time_ms);
 // Placeholder body while data loads or after a failure.
 void status_draw(const WeatherSnapshot *snap);
 
+// Hourly Forecast: the next 24 hours, scrolling up under column headers.
+typedef struct {
+	long rtc_hour; // the RTC hour the rows start from, in hours since the epoch
+	size_t count; // 0 without data
+	HourlyRow rows[HOURLY_ROWS];
+	int content_height;
+} HourlyView;
+
+void hourly_view_prepare(const WeatherSnapshot *snap, HourlyView *out);
+// Whether the hour has changed since the view was prepared.
+bool hourly_view_outdated(const HourlyView *view);
+u32 hourly_view_ms(const HourlyView *view);
+void hourly_view_draw(const HourlyView *view, u32 elapsed_ms, u32 time_ms);
+
 // Local Forecast: each period's text wrapped and split into 7-line pages.
 #define LOCAL_FORECAST_PAGE_LINES 7
 #define LOCAL_FORECAST_MAX_PAGES 18

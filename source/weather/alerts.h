@@ -6,6 +6,8 @@
 #include <stdint.h>
 #include <time.h>
 
+#include "util/scroll_timing.h"
+
 #define ALERTS_MAX 5 // ws4kp only considers the first five alerts
 #define ALERT_ID_MAX 128
 #define ALERT_EVENT_MAX 64
@@ -73,10 +75,8 @@ void alerts_viewed_update(AlertsViewed *v, uint32_t fetches);
 bool alerts_viewed_has(const AlertsViewed *v, const char *id);
 void alerts_viewed_add(AlertsViewed *v, const char *id);
 
-// ws4kp's calculateScrollTiming() for Hazards: a 3 s pause, 50 px/s, then a
-// 2 s pause, counted in 40 ms steps; 5 s total when nothing needs to scroll.
-uint32_t hazards_display_ms(int content_height, int view_height);
-int hazards_scroll_offset(int content_height, int view_height, uint32_t elapsed_ms);
+// Hazards pauses 3 s before scrolling and 2 s after.
+#define HAZARDS_SCROLL_TIMING ((ScrollTiming){ 75, 50 })
 
 // ws4kp's bottom-bar crawl: 1 s pause, 100 px/s (at least 2 s), 1 s pause,
 // rounded up to the bar's 500 ms ticks.

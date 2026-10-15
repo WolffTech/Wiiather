@@ -29,6 +29,38 @@
 #include "icon_sunny_png.h"
 #include "icon_thunderstorm_png.h"
 #include "icon_windy_png.h"
+#include "icon_small_blowing_snow_png.h"
+#include "icon_small_clear_1992_png.h"
+#include "icon_small_clear_wind_1994_png.h"
+#include "icon_small_cloudy_wind_png.h"
+#include "icon_small_cloudy_png.h"
+#include "icon_small_cold_png.h"
+#include "icon_small_fog_png.h"
+#include "icon_small_freezing_rain_1992_png.h"
+#include "icon_small_freezing_rain_snow_1994_png.h"
+#include "icon_small_haze_png.h"
+#include "icon_small_heavy_snow_1994_png.h"
+#include "icon_small_hot_png.h"
+#include "icon_small_light_snow_png.h"
+#include "icon_small_mostly_cloudy_1994_png.h"
+#include "icon_small_partly_clear_1994_png.h"
+#include "icon_small_partly_cloudy_night_png.h"
+#include "icon_small_partly_cloudy_png.h"
+#include "icon_small_rain_1992_png.h"
+#include "icon_small_rain_sleet_png.h"
+#include "icon_small_rain_snow_1992_png.h"
+#include "icon_small_scattered_showers_1994_png.h"
+#include "icon_small_scattered_showers_night_1994_png.h"
+#include "icon_small_scattered_tstorms_1994_png.h"
+#include "icon_small_scattered_tstorms_night_1994_png.h"
+#include "icon_small_sleet_png.h"
+#include "icon_small_smoke_png.h"
+#include "icon_small_snow_sleet_png.h"
+#include "icon_small_sunny_wind_1994_png.h"
+#include "icon_small_sunny_png.h"
+#include "icon_small_thundersnow_png.h"
+#include "icon_small_thunderstorm_png.h"
+#include "icon_small_wind_png.h"
 #include "img_background_1_png.h"
 #include "img_background_2_png.h"
 #include "img_logo_corner_png.h"
@@ -1225,6 +1257,38 @@ const IconAsset icon_assets[ICON_COUNT] = {
 	[ICON_SUNNY] = { icon_sunny_png, 112, 108, 112, 108, 7, 7, 130 },
 	[ICON_THUNDERSTORM] = { icon_thunderstorm_png, 142, 118, 144, 120, 7, 7, 130 },
 	[ICON_WINDY] = { icon_windy_png, 104, 78, 104, 80, 1, 1, 0 },
+	[ICON_SMALL_BLOWING_SNOW] = { icon_small_blowing_snow_png, 56, 50, 56, 52, 1, 1, 0 },
+	[ICON_SMALL_CLEAR_1992] = { icon_small_clear_1992_png, 36, 38, 36, 40, 1, 1, 0 },
+	[ICON_SMALL_CLEAR_WIND_1994] = { icon_small_clear_wind_1994_png, 70, 54, 72, 56, 1, 1, 0 },
+	[ICON_SMALL_CLOUDY_WIND] = { icon_small_cloudy_wind_png, 66, 58, 68, 60, 1, 1, 0 },
+	[ICON_SMALL_CLOUDY] = { icon_small_cloudy_png, 52, 36, 52, 36, 1, 1, 0 },
+	[ICON_SMALL_COLD] = { icon_small_cold_png, 60, 67, 60, 68, 7, 7, 130 },
+	[ICON_SMALL_FOG] = { icon_small_fog_png, 48, 46, 48, 48, 1, 1, 0 },
+	[ICON_SMALL_FREEZING_RAIN_1992] = { icon_small_freezing_rain_1992_png, 50, 36, 52, 36, 7, 7, 140 },
+	[ICON_SMALL_FREEZING_RAIN_SNOW_1994] = { icon_small_freezing_rain_snow_1994_png, 50, 47, 52, 48, 7, 7, 140 },
+	[ICON_SMALL_HAZE] = { icon_small_haze_png, 60, 56, 60, 56, 1, 1, 0 },
+	[ICON_SMALL_HEAVY_SNOW_1994] = { icon_small_heavy_snow_1994_png, 46, 49, 48, 52, 1, 1, 0 },
+	[ICON_SMALL_HOT] = { icon_small_hot_png, 60, 56, 60, 56, 1, 1, 0 },
+	[ICON_SMALL_LIGHT_SNOW] = { icon_small_light_snow_png, 44, 45, 44, 48, 1, 1, 0 },
+	[ICON_SMALL_MOSTLY_CLOUDY_1994] = { icon_small_mostly_cloudy_1994_png, 60, 56, 60, 56, 7, 7, 140 },
+	[ICON_SMALL_PARTLY_CLEAR_1994] = { icon_small_partly_clear_1994_png, 65, 39, 68, 40, 1, 1, 0 },
+	[ICON_SMALL_PARTLY_CLOUDY_NIGHT] = { icon_small_partly_cloudy_night_png, 46, 38, 48, 40, 1, 1, 0 },
+	[ICON_SMALL_PARTLY_CLOUDY] = { icon_small_partly_cloudy_png, 60, 56, 60, 56, 7, 7, 140 },
+	[ICON_SMALL_RAIN_1992] = { icon_small_rain_1992_png, 44, 40, 44, 40, 7, 7, 140 },
+	[ICON_SMALL_RAIN_SLEET] = { icon_small_rain_sleet_png, 62, 64, 64, 64, 7, 7, 140 },
+	[ICON_SMALL_RAIN_SNOW_1992] = { icon_small_rain_snow_1992_png, 45, 55, 48, 56, 7, 7, 140 },
+	[ICON_SMALL_SCATTERED_SHOWERS_1994] = { icon_small_scattered_showers_1994_png, 60, 56, 60, 56, 7, 7, 140 },
+	[ICON_SMALL_SCATTERED_SHOWERS_NIGHT_1994] = { icon_small_scattered_showers_night_1994_png, 46, 38, 48, 40, 7, 7, 140 },
+	[ICON_SMALL_SCATTERED_TSTORMS_1994] = { icon_small_scattered_tstorms_1994_png, 64, 58, 64, 60, 7, 7, 140 },
+	[ICON_SMALL_SCATTERED_TSTORMS_NIGHT_1994] = { icon_small_scattered_tstorms_night_1994_png, 62, 50, 64, 52, 1, 1, 0 },
+	[ICON_SMALL_SLEET] = { icon_small_sleet_png, 46, 44, 48, 44, 7, 7, 140 },
+	[ICON_SMALL_SMOKE] = { icon_small_smoke_png, 55, 48, 56, 48, 1, 1, 0 },
+	[ICON_SMALL_SNOW_SLEET] = { icon_small_snow_sleet_png, 48, 48, 48, 48, 7, 7, 140 },
+	[ICON_SMALL_SUNNY_WIND_1994] = { icon_small_sunny_wind_1994_png, 66, 56, 68, 56, 7, 7, 140 },
+	[ICON_SMALL_SUNNY] = { icon_small_sunny_png, 60, 56, 60, 56, 7, 7, 140 },
+	[ICON_SMALL_THUNDERSNOW] = { icon_small_thundersnow_png, 70, 50, 72, 52, 1, 1, 0 },
+	[ICON_SMALL_THUNDERSTORM] = { icon_small_thunderstorm_png, 58, 60, 60, 60, 7, 7, 140 },
+	[ICON_SMALL_WIND] = { icon_small_wind_png, 56, 46, 56, 48, 1, 1, 0 },
 };
 
 const ImageAsset image_assets[IMG_COUNT] = {

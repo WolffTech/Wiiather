@@ -221,39 +221,6 @@ void alerts_viewed_add(AlertsViewed *v, const char *id)
 		v->count++;
 }
 
-#define COUNT_MS 40
-#define HAZARDS_SPEED 50 // px/s
-#define HAZARDS_INITIAL_COUNTS 75 // 3 s
-#define HAZARDS_FINAL_COUNTS 50 // 2 s
-#define HAZARDS_STATIC_COUNTS 125 // 5 s
-
-static uint32_t hazards_scroll_counts(int scrollable)
-{
-	// ceil(seconds * 1000 / 40) with seconds = px / 50
-	return (uint32_t)(scrollable * 1000 + HAZARDS_SPEED * COUNT_MS - 1) / (HAZARDS_SPEED * COUNT_MS);
-}
-
-uint32_t hazards_display_ms(int content_height, int view_height)
-{
-	int scrollable = content_height > view_height ? content_height - view_height : 0;
-	if (scrollable == 0)
-		return HAZARDS_STATIC_COUNTS * COUNT_MS;
-	return (HAZARDS_INITIAL_COUNTS + hazards_scroll_counts(scrollable) + HAZARDS_FINAL_COUNTS) * COUNT_MS;
-}
-
-int hazards_scroll_offset(int content_height, int view_height, uint32_t elapsed_ms)
-{
-	int scrollable = content_height > view_height ? content_height - view_height : 0;
-	if (scrollable == 0)
-		return 0;
-	// ws4kp moves in whole 40 ms counts, by scrollable / counts pixels each.
-	double per_count = (double)scrollable / hazards_scroll_counts(scrollable);
-	double offset = ((double)(elapsed_ms / COUNT_MS) - HAZARDS_INITIAL_COUNTS) * per_count;
-	if (offset > scrollable)
-		offset = scrollable;
-	return offset < 0 ? 0 : (int)floor(offset + 0.5);
-}
-
 #define TICK_MS 500
 #define CRAWL_SPEED 100 // px/s
 #define CRAWL_PAUSE_MS 1000 // before and after

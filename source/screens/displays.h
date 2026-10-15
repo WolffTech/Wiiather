@@ -10,6 +10,7 @@ typedef struct {
 	bool has_current;
 	bool stale;
 	CurrentConditionsText current;
+	HourlyView hourly;
 	LocalForecastPages local;
 	ExtendedForecastView extended;
 	LatestObservationsView latest_observations;

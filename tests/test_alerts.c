@@ -130,11 +130,11 @@ static void test_viewed(void)
 static void test_timing(void)
 {
 	// Measured on ws4kp: 5583 px of hazards in a 480 px view ran 107.08 s.
-	CHECK(hazards_display_ms(5583, 480) == 2677 * 40);
-	CHECK(hazards_display_ms(300, 480) == 5000);
-	CHECK(hazards_scroll_offset(5583, 480, 2999) == 0);
-	CHECK(hazards_scroll_offset(5583, 480, 3040) == 2);
-	CHECK(hazards_scroll_offset(5583, 480, 200000) == 5103);
+	CHECK(scroll_timing_ms(HAZARDS_SCROLL_TIMING, 5583, 480) == 2677 * 40);
+	CHECK(scroll_timing_ms(HAZARDS_SCROLL_TIMING, 300, 480) == 5000);
+	CHECK(scroll_timing_offset(HAZARDS_SCROLL_TIMING, 5583, 480, 2999) == 0);
+	CHECK(scroll_timing_offset(HAZARDS_SCROLL_TIMING, 5583, 480, 3040) == 2);
+	CHECK(scroll_timing_offset(HAZARDS_SCROLL_TIMING, 5583, 480, 200000) == 5103);
 
 	// ws4kp: scrollWidth 16680 in a 530 px bar gives "transform 161.5s linear".
 	CHECK(alert_scroll_ms(16680, 530) == 163500);

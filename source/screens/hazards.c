@@ -84,7 +84,7 @@ void hazards_prepare(const WeatherSnapshot *snap, HazardsView *view)
 
 u32 hazards_ms(const HazardsView *view)
 {
-	return hazards_display_ms(view->content_height, VIEW_HEIGHT);
+	return scroll_timing_ms(HAZARDS_SCROLL_TIMING, view->content_height, VIEW_HEIGHT);
 }
 
 void hazards_mark_viewed(HazardsView *view)
@@ -99,7 +99,7 @@ void hazards_mark_viewed(HazardsView *view)
 void hazards_draw(const HazardsView *view, u32 elapsed_ms)
 {
 	GRRLIB_Rectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, RGBA_HAZARD_RED, true);
-	int offset = hazards_scroll_offset(view->content_height, VIEW_HEIGHT, elapsed_ms);
+	int offset = scroll_timing_offset(HAZARDS_SCROLL_TIMING, view->content_height, VIEW_HEIGHT, elapsed_ms);
 	const int line_height = gfx_line_height(FONT_STAR4000_32);
 	// text-shadow with a zero offset: just the 1.5px outline.
 	static const f32 outline[][2] = {

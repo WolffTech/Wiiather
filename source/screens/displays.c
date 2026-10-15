@@ -63,6 +63,23 @@ static void latest_observations_screen(const DisplayData *d, size_t screen, u32 
 	latest_observations_draw(&d->latest_observations);
 }
 
+static size_t hourly_count(const DisplayData *d)
+{
+	return d->hourly.count > 0;
+}
+
+static u32 hourly_ms(const DisplayData *d, size_t screen)
+{
+	return hourly_view_ms(&d->hourly);
+}
+
+static void hourly_draw(const DisplayData *d, size_t screen, u32 time_ms)
+{
+	gfx_image(IMG_BACKGROUND_1, 0, 0);
+	header_draw("Hourly Forecast", NULL, false);
+	hourly_view_draw(&d->hourly, time_ms - screen_started_ms, time_ms);
+}
+
 static size_t local_count(const DisplayData *d)
 {
 	return d->local.page_count;
@@ -119,6 +136,7 @@ static const Display displays[] = {
 	{ hazards_count, hazards_screen_ms, hazards_display_draw },
 	{ current_count, current_ms, current_draw },
 	{ latest_observations_count, latest_observations_ms, latest_observations_screen },
+	{ hourly_count, hourly_ms, hourly_draw },
 	{ local_count, local_ms, local_draw },
 	{ extended_count, extended_ms, extended_draw },
 	{ almanac_count, almanac_ms, almanac_draw },
@@ -138,6 +156,7 @@ void displays_prepare(const WeatherSnapshot *snap, DisplayData *out)
 		out->local.page_count = 0;
 		out->extended.count = 0;
 	}
+	hourly_view_prepare(snap, &out->hourly);
 	if (snap->has_latest_observations)
 		latest_observations_prepare(&snap->latest_observations, &out->latest_observations);
 	else
@@ -150,6 +169,8 @@ void displays_tick(const WeatherSnapshot *snap, DisplayData *data)
 {
 	if (almanac_view_outdated(&data->almanac))
 		almanac_view_prepare(snap, &data->almanac);
+	if (hourly_view_outdated(&data->hourly))
+		hourly_view_prepare(snap, &data->hourly);
 }
 
 void rotation_update(Rotation *r, DisplayData *data, u32 now_ms)

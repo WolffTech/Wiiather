@@ -5,6 +5,7 @@
 #include "alerts.h"
 #include "assets_gen.h"
 #include "forecast.h"
+#include "hourly.h"
 #include "latest_obs.h"
 #include "obs.h"
 
@@ -13,6 +14,7 @@ typedef struct {
 	char state[8];
 	char observation_stations_url[160];
 	char forecast_url[160];
+	char forecast_grid_data_url[160];
 	char time_zone[48];
 } NwsPoint;
 
@@ -24,6 +26,9 @@ bool nws_get_current_observation(const NwsPoint *point, Observation *out, char *
 
 // The 12-hour forecast with expired periods removed.
 bool nws_get_forecast(const NwsPoint *point, Forecast *out, char *err, size_t err_len);
+
+// Gridpoint data expanded to hours from the server's current hour.
+bool nws_get_hourly(const NwsPoint *point, HourlyForecast *out, char *err, size_t err_len);
 
 // The nearest stations with complete latest observations, as ws4kp picks them.
 bool nws_get_latest_observations(double lat, double lon, LatestObservations *out);

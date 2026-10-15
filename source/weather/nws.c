@@ -66,6 +66,8 @@ bool nws_get_point(double lat, double lon, NwsPoint *out, char *err, size_t err_
 	copy_string(out->observation_stations_url, sizeof out->observation_stations_url,
 		json_object_get(props, "observationStations"));
 	copy_string(out->forecast_url, sizeof out->forecast_url, json_object_get(props, "forecast"));
+	copy_string(out->forecast_grid_data_url, sizeof out->forecast_grid_data_url,
+		json_object_get(props, "forecastGridData"));
 	copy_string(out->time_zone, sizeof out->time_zone, json_object_get(props, "timeZone"));
 	json_decref(root);
 
@@ -265,6 +267,71 @@ bool nws_get_forecast(const NwsPoint *point, Forecast *out, char *err, size_t er
 		forecast_drop_expired(out, now);
 	if (out->count == 0) {
 		snprintf(err, err_len, "Forecast has no current periods");
+		return false;
+	}
+	return true;
+}
+
+// Expands one gridpoint series into `measures`, or into `weather` flags for
+// the weather series. Returns the number of hours filled.
+static size_t expand_series(json_t *props, const char *key, time_t first_hour, Measure *measures, unsigned *weather)
+{
+	json_t *values = json_object_get(json_object_get(props, key), "values");
+	size_t len = 0, i;
+	json_t *item;
+	json_array_foreach(values, i, item) {
+		time_t start, end;
+		if (!hourly_parse_valid_time(string_field(item, "validTime"), &start, &end))
+			continue;
+		json_t *value = json_object_get(item, "value");
+		Measure m = { json_is_number(value), json_number_value(value) };
+		unsigned flags = 0;
+		if (weather) {
+			size_t j;
+			json_t *phenomenon;
+			json_array_foreach(value, j, phenomenon)
+				flags |= hourly_weather_flags(string_field(phenomenon, "weather"));
+		}
+		size_t added = hourly_expand(start, end, first_hour, len, HOURLY_MAX_HOURS);
+		for (size_t k = 0; k < added; k++, len++) {
+			if (weather)
+				weather[len] = flags;
+			else
+				measures[len] = m;
+		}
+	}
+	return len;
+}
+
+bool nws_get_hourly(const NwsPoint *point, HourlyForecast *out, char *err, size_t err_len)
+{
+	if (!point->forecast_grid_data_url[0]) {
+		snprintf(err, err_len, "No gridpoint data for this location");
+		return false;
+	}
+	time_t now;
+	json_t *root = get_json(point->forecast_grid_data_url, GEOJSON, &now, err, err_len);
+	if (!root)
+		return false;
+	if (!now) {
+		json_decref(root);
+		snprintf(err, err_len, "Gridpoint data has no server time");
+		return false;
+	}
+	json_t *props = json_object_get(root, "properties");
+	*out = (HourlyForecast){ .start = now - now % 3600 };
+	out->count = expand_series(props, "temperature", out->start, out->temperature, NULL);
+	expand_series(props, "apparentTemperature", out->start, out->apparent_temperature, NULL);
+	expand_series(props, "windSpeed", out->start, out->wind_speed, NULL);
+	expand_series(props, "windDirection", out->start, out->wind_direction, NULL);
+	expand_series(props, "skyCover", out->start, out->sky_cover, NULL);
+	expand_series(props, "probabilityOfPrecipitation", out->start, out->probability_of_precipitation, NULL);
+	expand_series(props, "snowfallAmount", out->start, out->snowfall_amount, NULL);
+	expand_series(props, "iceAccumulation", out->start, out->ice_accumulation, NULL);
+	expand_series(props, "weather", out->start, NULL, out->weather);
+	json_decref(root);
+	if (out->count == 0) {
+		snprintf(err, err_len, "Gridpoint data has no current hours");
 		return false;
 	}
 	return true;
