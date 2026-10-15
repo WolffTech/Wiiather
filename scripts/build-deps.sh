@@ -8,6 +8,8 @@ set -euo pipefail
 export DEVKITPRO DEVKITPPC PATH="$DEVKITPPC/bin:$PATH"
 
 GRRLIB_TAG=v4.6.1
+# Tags can move, so check the tag still points at the reviewed commit.
+GRRLIB_COMMIT=8feae891610ccd08ea2d2cb5d987fc74c47ad57c
 MBEDTLS_VERSION=3.6.7
 MBEDTLS_SHA256=a7e8bcbec0e6f761b4af24f25677626b35f762f68eef79c08677a363212d11f6
 
@@ -18,6 +20,12 @@ trap 'rm -rf "$WORK"' EXIT
 
 build_grrlib() {
 	git clone -q --depth 1 --branch "$GRRLIB_TAG" https://github.com/GRRLIB/GRRLIB.git "$WORK/GRRLIB"
+	local commit
+	commit="$(git -C "$WORK/GRRLIB" rev-parse HEAD)"
+	if [ "$commit" != "$GRRLIB_COMMIT" ]; then
+		echo "GRRLIB $GRRLIB_TAG is $commit, expected $GRRLIB_COMMIT" >&2
+		exit 1
+	fi
 	make -C "$WORK/GRRLIB/GRRLIB" all install
 }
 
