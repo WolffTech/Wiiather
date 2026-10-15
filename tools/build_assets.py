@@ -27,6 +27,7 @@ FONTS = [
     ("STAR4000_LARGE_20", "Star4000 Large.woff", 20),
     ("STAR4000_SMALL_32", "Star4000 Small.woff", 32),
     ("STAR4000_SMALL_26", "Star4000 Small.woff", 26),
+    ("STAR4000_SMALL_28", "Star4000 Small.woff", 28),
 ]
 
 # (enum suffix, path under server/images)
@@ -41,6 +42,7 @@ IMAGES = [
     ("MOON_FULL", "icons/moon-phases/Full-Moon.gif"),
     ("MOON_FULL_DEGRADED", "icons/moon-phases/Full-Moon-Degraded.gif"),
     ("MOON_LAST", "icons/moon-phases/Last-Quarter.gif"),
+    ("BACKGROUND_1_CHART", "backgrounds/1-chart.png"),
 ]
 
 ICON_DIR = "icons/current-conditions"

@@ -9,6 +9,8 @@
 // Header shared by most displays: logo, two-line title (or one line when
 // `title_bottom` is NULL), clock, and optionally the NOAA logo.
 void header_draw(const char *title_top, const char *title_bottom, bool noaa_logo);
+// Just the logo and title, for displays with something else in the clock's place.
+void header_title_draw(const char *title_top, const char *title_bottom);
 
 // Bottom bar text (ws4kp's "scroll" area).
 void scroll_draw(const char *text);
@@ -31,6 +33,19 @@ void hourly_view_prepare(const WeatherSnapshot *snap, HourlyView *out);
 bool hourly_view_outdated(const HourlyView *view);
 u32 hourly_view_ms(const HourlyView *view);
 void hourly_view_draw(const HourlyView *view, u32 elapsed_ms, u32 time_ms);
+
+// Hourly Graph: the next 36 hours of temperature, dewpoint, cloud cover and
+// chance of precipitation.
+typedef struct {
+	long rtc_hour; // the RTC hour the graph starts from, in hours since the epoch
+	bool ready; // false without data
+	HourlyGraph graph;
+} HourlyGraphView;
+
+void hourly_graph_view_prepare(const WeatherSnapshot *snap, HourlyGraphView *out);
+// Whether the hour has changed since the view was prepared.
+bool hourly_graph_view_outdated(const HourlyGraphView *view);
+void hourly_graph_view_draw(const HourlyGraphView *view);
 
 // Local Forecast: each period's text wrapped and split into 7-line pages.
 #define LOCAL_FORECAST_PAGE_LINES 7

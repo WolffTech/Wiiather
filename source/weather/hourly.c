@@ -145,10 +145,15 @@ static const char *direction_to_nsew(Measure dir)
 	return names[index < 0 ? index + 16 : index];
 }
 
+static int fahrenheit(double celsius)
+{
+	return js_round(celsius * 9 / 5 + 32);
+}
+
 static void format_temperature(Measure c, char *out, size_t out_len)
 {
 	if (c.valid)
-		snprintf(out, out_len, "%3d", js_round(c.value * 9 / 5 + 32));
+		snprintf(out, out_len, "%3d", fahrenheit(c.value));
 	else
 		snprintf(out, out_len, "  -");
 }
@@ -168,15 +173,26 @@ static void format_wind(Measure speed_kph, Measure direction, char *out, size_t 
 	snprintf(out, out_len, "%s%*s%s", dir, spaces > 0 ? spaces : 0, "", speed);
 }
 
-// Luxon's { weekday: 'short', hour: 'numeric' } in en-US.
-static void format_hour(time_t utc, long utc_offset, char *out, size_t out_len)
+static const char *const weekdays[] = { "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat" };
+
+static struct tm local_tm(time_t utc, long utc_offset)
 {
-	static const char *const weekdays[] = { "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat" };
 	time_t local = utc + utc_offset;
 	struct tm tm;
 	gmtime_r(&local, &tm);
-	int hour = tm.tm_hour % 12 ? tm.tm_hour % 12 : 12;
-	snprintf(out, out_len, "%s %d %s", weekdays[tm.tm_wday], hour, tm.tm_hour < 12 ? "AM" : "PM");
+	return tm;
+}
+
+static int hour_12(const struct tm *tm)
+{
+	return tm->tm_hour % 12 ? tm->tm_hour % 12 : 12;
+}
+
+// Luxon's { weekday: 'short', hour: 'numeric' } in en-US.
+static void format_hour(time_t utc, long utc_offset, char *out, size_t out_len)
+{
+	struct tm tm = local_tm(utc, utc_offset);
+	snprintf(out, out_len, "%s %d %s", weekdays[tm.tm_wday], hour_12(&tm), tm.tm_hour < 12 ? "AM" : "PM");
 }
 
 static int64_t floor_div(int64_t a, int64_t b)
@@ -206,11 +222,17 @@ static bool is_night(SunCache *cache, time_t hour, double lat, double lon, long 
 	return cache->has_times && (ms < cache->sunrise || ms >= cache->sunset);
 }
 
+// The index of the hour containing `now`.
+static size_t current_index(const HourlyForecast *f, time_t now)
+{
+	time_t current_hour = (time_t)(floor_div(now, HOUR) * HOUR);
+	return current_hour > f->start ? (size_t)((current_hour - f->start) / HOUR) : 0;
+}
+
 size_t hourly_rows(const HourlyForecast *f, double lat, double lon, time_t now, long utc_offset,
 	HourlyRow out[HOURLY_ROWS])
 {
-	time_t current_hour = (time_t)(floor_div(now, HOUR) * HOUR);
-	size_t first = current_hour > f->start ? (size_t)((current_hour - f->start) / HOUR) : 0;
+	size_t first = current_index(f, now);
 	SunCache sun = { 0 };
 	size_t n = 0;
 	for (size_t i = first; i < f->count && n < HOURLY_ROWS; i++, n++) {
@@ -231,4 +253,70 @@ size_t hourly_rows(const HourlyForecast *f, double lat, double lon, time_t now, 
 		row->icon = hourly_icon(f, i, is_night(&sun, hour, lat, lon, utc_offset));
 	}
 	return n;
+}
+
+static Measure to_fahrenheit(Measure c)
+{
+	return (Measure){ c.valid, c.valid ? fahrenheit(c.value) : 0 };
+}
+
+// ws4kp's (value + '\xb0').substring(0, 3), which drops the degree sign from
+// three-digit values.
+static void format_axis_temperature(int value, char out[4])
+{
+	char full[16];
+	snprintf(full, sizeof full, "%d\xb0", value);
+	snprintf(out, 4, "%.3s", full);
+}
+
+bool hourly_graph(const HourlyForecast *f, time_t now, long utc_offset, HourlyGraph *out)
+{
+	*out = (HourlyGraph){ 0 };
+	size_t first = current_index(f, now);
+	if (first >= f->count)
+		return false;
+	out->count = f->count - first < HOURLY_GRAPH_HOURS ? f->count - first : HOURLY_GRAPH_HOURS;
+	for (size_t i = 0; i < out->count; i++) {
+		out->temperature[i] = to_fahrenheit(f->temperature[first + i]);
+		out->dewpoint[i] = to_fahrenheit(f->dewpoint[first + i]);
+		out->sky_cover[i] = f->sky_cover[first + i];
+		out->probability_of_precipitation[i] = f->probability_of_precipitation[first + i];
+	}
+
+	for (size_t i = 0; i < out->count; i++) {
+		const Measure values[] = { out->temperature[i], out->dewpoint[i] };
+		for (size_t j = 0; j < 2; j++) {
+			if (!values[j].valid)
+				continue;
+			int v = (int)values[j].value;
+			if (!out->has_temperature_axis || v < out->temperature_min)
+				out->temperature_min = v;
+			if (!out->has_temperature_axis || v > out->temperature_max)
+				out->temperature_max = v;
+			out->has_temperature_axis = true;
+		}
+	}
+	if (out->has_temperature_axis) {
+		int min = out->temperature_min, max = out->temperature_max;
+		double third = (max - min) / 3.0;
+		const int ticks[HOURLY_GRAPH_Y_LABELS] = { max, js_round(min + third * 2), js_round(min + third), min };
+		for (size_t i = 0; i < HOURLY_GRAPH_Y_LABELS; i++)
+			format_axis_temperature(ticks[i], out->y_labels[i]);
+	}
+
+	// Labels split the hours into quarters, which needn't fall on the hour.
+	// Each shows the weekday when it differs from the previous label's.
+	time_t start = f->start + (time_t)first * HOUR;
+	int previous_day = local_tm(start, utc_offset).tm_wday;
+	for (size_t i = 0; i < HOURLY_GRAPH_X_LABELS; i++) {
+		double hours = (double)i * out->count / (HOURLY_GRAPH_X_LABELS - 1);
+		struct tm tm = local_tm(start + (time_t)js_round(hours * HOUR), utc_offset);
+		const char *half = tm.tm_hour < 12 ? "A" : "P";
+		if (tm.tm_wday != previous_day)
+			snprintf(out->x_labels[i], sizeof out->x_labels[i], "%s %d%s", weekdays[tm.tm_wday], hour_12(&tm), half);
+		else
+			snprintf(out->x_labels[i], sizeof out->x_labels[i], "%d%s", hour_12(&tm), half);
+		previous_day = tm.tm_wday;
+	}
+	return true;
 }

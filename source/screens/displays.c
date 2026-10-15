@@ -4,6 +4,7 @@
 #define EXTENDED_SCREEN_MS 9000
 #define LATEST_OBSERVATIONS_MS 9000
 #define ALMANAC_MS 9000
+#define HOURLY_GRAPH_MS 9000
 
 typedef struct {
 	size_t (*screen_count)(const DisplayData *d);
@@ -80,6 +81,23 @@ static void hourly_draw(const DisplayData *d, size_t screen, u32 time_ms)
 	hourly_view_draw(&d->hourly, time_ms - screen_started_ms, time_ms);
 }
 
+static size_t hourly_graph_count(const DisplayData *d)
+{
+	return d->hourly_graph.ready;
+}
+
+static u32 hourly_graph_ms(const DisplayData *d, size_t screen)
+{
+	return HOURLY_GRAPH_MS;
+}
+
+static void hourly_graph_draw(const DisplayData *d, size_t screen, u32 time_ms)
+{
+	gfx_image(IMG_BACKGROUND_1_CHART, 0, 0);
+	header_title_draw("Hourly Graph", NULL);
+	hourly_graph_view_draw(&d->hourly_graph);
+}
+
 static size_t local_count(const DisplayData *d)
 {
 	return d->local.page_count;
@@ -137,6 +155,7 @@ static const Display displays[] = {
 	{ current_count, current_ms, current_draw },
 	{ latest_observations_count, latest_observations_ms, latest_observations_screen },
 	{ hourly_count, hourly_ms, hourly_draw },
+	{ hourly_graph_count, hourly_graph_ms, hourly_graph_draw },
 	{ local_count, local_ms, local_draw },
 	{ extended_count, extended_ms, extended_draw },
 	{ almanac_count, almanac_ms, almanac_draw },
@@ -157,6 +176,7 @@ void displays_prepare(const WeatherSnapshot *snap, DisplayData *out)
 		out->extended.count = 0;
 	}
 	hourly_view_prepare(snap, &out->hourly);
+	hourly_graph_view_prepare(snap, &out->hourly_graph);
 	if (snap->has_latest_observations)
 		latest_observations_prepare(&snap->latest_observations, &out->latest_observations);
 	else
@@ -171,6 +191,8 @@ void displays_tick(const WeatherSnapshot *snap, DisplayData *data)
 		almanac_view_prepare(snap, &data->almanac);
 	if (hourly_view_outdated(&data->hourly))
 		hourly_view_prepare(snap, &data->hourly);
+	if (hourly_graph_view_outdated(&data->hourly_graph))
+		hourly_graph_view_prepare(snap, &data->hourly_graph);
 }
 
 void rotation_update(Rotation *r, DisplayData *data, u32 now_ms)

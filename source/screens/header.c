@@ -16,7 +16,7 @@ static void upcase(char *s)
 		*s = (char)toupper((unsigned char)*s);
 }
 
-void header_draw(const char *title_top, const char *title_bottom, bool noaa_logo)
+void header_title_draw(const char *title_top, const char *title_bottom)
 {
 	gfx_image(IMG_LOGO_CORNER, 50, 30);
 	if (title_bottom) {
@@ -25,6 +25,11 @@ void header_draw(const char *title_top, const char *title_bottom, bool noaa_logo
 	} else {
 		gfx_text(&title_style, 170, 40, ALIGN_LEFT, title_top);
 	}
+}
+
+void header_draw(const char *title_top, const char *title_bottom, bool noaa_logo)
+{
+	header_title_draw(title_top, title_bottom);
 	if (noaa_logo)
 		gfx_image(IMG_NOAA, 356, 39);
 

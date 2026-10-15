@@ -1,5 +1,6 @@
 // ws4kp's Hourly Forecast data (hourly.mjs, icons-hourly.mjs): NWS gridpoint
-// series expanded to one value per hour, then shaped into 24 display rows.
+// series expanded to one value per hour, then shaped into 24 display rows or
+// the Hourly Graph's 36 hours (hourly-graph.mjs).
 // Pure logic, testable on the host.
 #pragma once
 #include <stdbool.h>
@@ -27,6 +28,7 @@ typedef struct {
 	size_t count; // hours of temperature; other series may be shorter
 	Measure temperature[HOURLY_MAX_HOURS];
 	Measure apparent_temperature[HOURLY_MAX_HOURS];
+	Measure dewpoint[HOURLY_MAX_HOURS];
 	Measure wind_speed[HOURLY_MAX_HOURS];
 	Measure wind_direction[HOURLY_MAX_HOURS];
 	Measure sky_cover[HOURLY_MAX_HOURS];
@@ -90,3 +92,29 @@ typedef struct {
 // night is between the location's sunset and sunrise.
 size_t hourly_rows(const HourlyForecast *f, double lat, double lon, time_t now, long utc_offset,
 	HourlyRow out[HOURLY_ROWS]);
+
+#define HOURLY_GRAPH_HOURS 36
+#define HOURLY_GRAPH_X_LABELS 5 // at the start, end and each quarter between
+#define HOURLY_GRAPH_Y_LABELS 4
+
+// The Hourly Graph's series and axis labels in ws4kp's standard layout.
+typedef struct {
+	size_t count; // hours of temperature from the current one; other series may be shorter
+	// Whole degF, as ws4kp rounds them before plotting.
+	Measure temperature[HOURLY_GRAPH_HOURS];
+	Measure dewpoint[HOURLY_GRAPH_HOURS];
+	// Percentages.
+	Measure sky_cover[HOURLY_GRAPH_HOURS];
+	Measure probability_of_precipitation[HOURLY_GRAPH_HOURS];
+	// The temperature axis spans both temperature series. Without either,
+	// there's no axis and no labels.
+	bool has_temperature_axis;
+	int temperature_min, temperature_max;
+	char y_labels[HOURLY_GRAPH_Y_LABELS][4]; // top to bottom: "72\xb0", or "100"
+	char x_labels[HOURLY_GRAPH_X_LABELS][12]; // "6P", or "Fri 12A" when the day changes
+} HourlyGraph;
+
+// Fills `out` for the hours starting with the one containing `now` (UTC), and
+// returns false if the forecast has none. `utc_offset` is local minus UTC in
+// seconds.
+bool hourly_graph(const HourlyForecast *f, time_t now, long utc_offset, HourlyGraph *out);
