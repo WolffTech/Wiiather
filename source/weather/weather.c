@@ -11,17 +11,21 @@
 #include <time.h>
 #include <unistd.h>
 
+#include "net/ca_update.h"
 #include "net/geoip.h"
 #include "net/https.h"
 
 #define REFRESH_SECONDS (10 * 60)
 #define RETRY_SECONDS 60
 #define ALERTS_SECONDS 60 // ws4kp refreshes hazards every minute
+#define CA_CHECK_SECONDS (24 * 60 * 60)
+#define CA_RESCUE_SECONDS (60 * 60) // between unverified fetches after trust failures
 #define STACK_SIZE (128 * 1024)
 
 static lwp_t thread;
 static mutex_t lock;
 static WeatherSnapshot shared;
+static char app_dir[256];
 // Counts weather_set_location calls (0 means no location yet), so results
 // fetched for an earlier location are dropped.
 static u32 location_version;
@@ -75,6 +79,7 @@ static bool bring_up_network(void)
 		set_status(current_version(), WEATHER_FAILED, "%s", err);
 		return false;
 	}
+	ca_update_init(app_dir);
 	return true;
 }
 
@@ -191,9 +196,24 @@ static void *worker(void *arg)
 	NwsPoint point;
 	bool have_point = false;
 	u32 seen_version = 0;
-	u64 next_alerts = 0, next_refresh = 0;
+	u64 next_alerts = 0, next_refresh = 0, next_ca_rescue = 0;
+	// Let the weather load before the first CA check.
+	u64 next_ca_check = gettime() + secs_to_ticks(RETRY_SECONDS);
 	// Poll every second so a new location loads promptly.
 	for (;; sleep(1)) {
+		u64 now = gettime();
+		if (https_take_trust_failure() && now >= next_ca_rescue) {
+			// The CA list may be too old to verify the servers. Fetch the
+			// signed list without TLS verification, and retry right away if
+			// it was newer.
+			next_ca_rescue = now + secs_to_ticks(CA_RESCUE_SECONDS);
+			if (ca_update_check(true))
+				next_alerts = next_refresh = now;
+		} else if (now >= next_ca_check) {
+			ca_update_check(false);
+			next_ca_check = gettime() + secs_to_ticks(CA_CHECK_SECONDS);
+		}
+
 		LWP_MutexLock(lock);
 		u32 version = location_version;
 		Location loc = shared.location;
@@ -218,8 +238,9 @@ static void *worker(void *arg)
 	return NULL;
 }
 
-void weather_start(const Location *location)
+void weather_start(const Location *location, const char *dir)
 {
+	snprintf(app_dir, sizeof app_dir, "%s", dir);
 	LWP_MutexInit(&lock, false);
 	shared.status = WEATHER_LOADING;
 	snprintf(shared.message, sizeof shared.message, "Starting...");

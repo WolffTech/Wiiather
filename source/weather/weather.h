@@ -41,7 +41,8 @@ typedef struct {
 // Starts the background thread that brings up the network and refreshes
 // weather for the location periodically. Without a location, it guesses a
 // ZIP code from the IP address instead and waits for weather_set_location.
-void weather_start(const Location *location);
+// `dir` is the app's folder, which holds the downloaded CA bundle.
+void weather_start(const Location *location, const char *dir);
 
 // Switches to a new location, dropping the old location's data.
 void weather_set_location(const Location *location);

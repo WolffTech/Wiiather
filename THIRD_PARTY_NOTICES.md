@@ -9,7 +9,7 @@ Wiiather includes or links the following work.
 | WeatherStar 4000 fonts by Nick Smith ([TWCClassics](https://twcclassics.com/downloads.html)) | Star4000 fonts, distributed with ws4kp | Credited as in ws4kp |
 | Weather icons by Charles Abel, Nick Smith and Malek Masoud | Condition icons, distributed with ws4kp | Credited as in ws4kp |
 | [Census ZCTA Gazetteer](https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html), U.S. Census Bureau | ZIP code coordinates in `source/gen/zips_gen.c` | Public domain (U.S. government work) |
-| [Mozilla CA certificate bundle](https://curl.se/docs/caextract.html) | `data/cacert.pem`, unmodified, for TLS verification | MPL 2.0 |
+| [Mozilla CA certificate bundle](https://curl.se/docs/caextract.html) | `data/cacert.pem` and updates downloaded from the `ca-bundle` branch, unmodified, for TLS verification | MPL 2.0 |
 | [Mbed TLS](https://github.com/Mbed-TLS/mbedtls) | HTTPS | Apache 2.0 |
 | [GRRLIB](https://github.com/GRRLIB/GRRLIB) | Graphics | MIT |
 | [Jansson](https://github.com/akheron/jansson) | JSON parsing | MIT |

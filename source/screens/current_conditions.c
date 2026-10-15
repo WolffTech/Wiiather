@@ -61,5 +61,8 @@ void status_draw(const WeatherSnapshot *snap)
 {
 	const char *headline = snap->status == WEATHER_FAILED ? "Unable to load weather" : "Loading...";
 	gfx_text(&status_style, 320, 200, ALIGN_CENTER, headline);
-	gfx_text(&row_style, 320, 250, ALIGN_CENTER, snap->message);
+	char lines[3][GFX_LINE_MAX];
+	size_t count = gfx_wrap(row_style.font, snap->message, MAIN_RIGHT - MAIN_LEFT - 40, lines, 3);
+	for (size_t i = 0; i < count; i++)
+		gfx_text(&row_style, 320, 250 + i * ROW_PITCH, ALIGN_CENTER, lines[i]);
 }

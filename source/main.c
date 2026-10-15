@@ -35,7 +35,7 @@ int main(int argc, char **argv)
 
 	Config config;
 	config_load(argc > 0 ? argv[0] : NULL, &config);
-	weather_start(config.has_location ? &config.location : NULL);
+	weather_start(config.has_location ? &config.location : NULL, config.dir);
 	char music_dir[sizeof config.dir + 8];
 	snprintf(music_dir, sizeof music_dir, "%s/music", config.dir);
 	music_start(music_dir);

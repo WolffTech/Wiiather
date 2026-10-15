@@ -36,6 +36,30 @@ lat=38.8951
 lon=-77.0364
 ```
 
+## Certificate updates
+
+Wiiather checks each server's HTTPS certificate against a bundle of trusted
+certificate authorities (CAs) built into the app. Authorities change over
+time, so once a day Wiiather also checks this repository's
+[`ca-bundle`](https://github.com/WolffTech/Wiiather/tree/ca-bundle) branch on
+raw.githubusercontent.com for a newer bundle. It installs one only if the
+project's signature verifies and the bundle is newer than the one it has,
+and saves it to `apps/wiiather/cacert.pem` for the next launch.
+
+If a Wii sits unused long enough that the weather servers move to an
+authority its bundle doesn't know, Wiiather can no longer verify them. It
+then fetches the signed bundle without checking GitHub's certificate, since
+the signature alone proves where the bundle came from, and resumes once a
+newer bundle installs. Until then it shows "Wiiather may need updating."
+
+> [!IMPORTANT]
+> Certificate updates depend on this project continuing to publish signed
+> bundles from a public GitHub repository. If publishing stops, the repository
+> goes private or the signing key is lost, Wiiather will eventually be unable
+> to verify the weather servers, and only a new release will fix it.
+> Certificate checks also fail if the Wii's clock is wrong, so keep its date
+> and time set correctly.
+
 ## Build
 
 Requirements:

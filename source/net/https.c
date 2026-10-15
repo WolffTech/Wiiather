@@ -29,6 +29,7 @@ static mbedtls_entropy_context entropy;
 static mbedtls_ctr_drbg_context drbg;
 static mbedtls_x509_crt ca_chain;
 static bool initialized;
+static bool trust_failed;
 static time_t last_date, last_date_rtc;
 
 static void set_err(char *err, size_t err_len, const char *fmt, ...)
@@ -67,25 +68,43 @@ bool https_init(char *err, size_t err_len)
 		return false;
 	}
 
+	mbedtls_x509_crt_init(&ca_chain);
+	if (!https_set_ca(cacert_pem, cacert_pem_size, err, err_len))
+		return false;
+	initialized = true;
+	return true;
+}
+
+bool https_set_ca(const void *pem, size_t len, char *err, size_t err_len)
+{
 	// mbedTLS needs the PEM NUL-terminated, and bin2o data is not.
-	char *pem = malloc(cacert_pem_size + 1);
-	if (!pem) {
+	char *copy = malloc(len + 1);
+	if (!copy) {
 		set_err(err, err_len, "out of memory loading CA bundle");
 		return false;
 	}
-	memcpy(pem, cacert_pem, cacert_pem_size);
-	pem[cacert_pem_size] = '\0';
-	mbedtls_x509_crt_init(&ca_chain);
-	ret = mbedtls_x509_crt_parse(&ca_chain, (const unsigned char *)pem, cacert_pem_size + 1);
-	free(pem);
+	memcpy(copy, pem, len);
+	copy[len] = '\0';
+	mbedtls_x509_crt chain;
+	mbedtls_x509_crt_init(&chain);
+	int ret = mbedtls_x509_crt_parse(&chain, (const unsigned char *)copy, len + 1);
+	free(copy);
 	// A positive return means some certificates were skipped, which is fine.
-	if (ret < 0) {
-		set_tls_err(err, err_len, "CA bundle", ret);
+	if (ret < 0 || chain.version == 0) {
+		mbedtls_x509_crt_free(&chain);
+		set_tls_err(err, err_len, "CA bundle", ret < 0 ? ret : MBEDTLS_ERR_X509_INVALID_FORMAT);
 		return false;
 	}
-
-	initialized = true;
+	mbedtls_x509_crt_free(&ca_chain);
+	ca_chain = chain;
 	return true;
+}
+
+bool https_take_trust_failure(void)
+{
+	bool failed = trust_failed;
+	trust_failed = false;
+	return failed;
 }
 
 typedef struct {
@@ -196,7 +215,7 @@ static bool buffer_reserve(Buffer *b, size_t extra)
 	return true;
 }
 
-static bool tls_exchange(const Url *url, const char *accept, Buffer *raw, char *err, size_t err_len)
+static bool tls_exchange(const Url *url, const char *accept, bool verify, Buffer *raw, char *err, size_t err_len)
 {
 	s32 sock = tcp_connect(url, err, err_len);
 	if (sock < 0)
@@ -214,7 +233,7 @@ static bool tls_exchange(const Url *url, const char *accept, Buffer *raw, char *
 		set_tls_err(err, err_len, "TLS config", ret);
 		goto done;
 	}
-	mbedtls_ssl_conf_authmode(&conf, MBEDTLS_SSL_VERIFY_REQUIRED);
+	mbedtls_ssl_conf_authmode(&conf, verify ? MBEDTLS_SSL_VERIFY_REQUIRED : MBEDTLS_SSL_VERIFY_NONE);
 	mbedtls_ssl_conf_ca_chain(&conf, &ca_chain, NULL);
 	mbedtls_ssl_conf_rng(&conf, mbedtls_ctr_drbg_random, &drbg);
 	mbedtls_ssl_conf_read_timeout(&conf, IO_TIMEOUT_MS);
@@ -228,11 +247,15 @@ static bool tls_exchange(const Url *url, const char *accept, Buffer *raw, char *
 	while ((ret = mbedtls_ssl_handshake(&ssl)) != 0) {
 		if (ret == MBEDTLS_ERR_SSL_WANT_READ || ret == MBEDTLS_ERR_SSL_WANT_WRITE)
 			continue;
-		uint32_t flags = mbedtls_ssl_get_verify_result(&ssl);
-		if (flags & (MBEDTLS_X509_BADCERT_EXPIRED | MBEDTLS_X509_BADCERT_FUTURE))
+		uint32_t flags = verify ? mbedtls_ssl_get_verify_result(&ssl) : 0;
+		if (flags & (MBEDTLS_X509_BADCERT_EXPIRED | MBEDTLS_X509_BADCERT_FUTURE)) {
 			set_err(err, err_len, "%s certificate date invalid. Check the Wii clock.", url->host);
-		else
+		} else if (flags & MBEDTLS_X509_BADCERT_NOT_TRUSTED) {
+			trust_failed = true;
+			set_err(err, err_len, "Can't verify %s. Wiiather may need updating.", url->host);
+		} else {
 			set_tls_err(err, err_len, "TLS handshake", ret);
+		}
 		goto done;
 	}
 
@@ -387,7 +410,7 @@ static bool parse_response(Buffer *raw, HttpResponse *out, char *location, size_
 	return true;
 }
 
-bool https_get(const char *url_str, const char *accept, HttpResponse *out, char *err, size_t err_len)
+static bool get(const char *url_str, const char *accept, bool verify, HttpResponse *out, char *err, size_t err_len)
 {
 	*out = (HttpResponse){ 0 };
 	if (!initialized) {
@@ -405,7 +428,7 @@ bool https_get(const char *url_str, const char *accept, HttpResponse *out, char 
 		}
 		Buffer raw = { 0 };
 		char location[512];
-		bool ok = tls_exchange(&url, accept, &raw, err, err_len) &&
+		bool ok = tls_exchange(&url, accept, verify, &raw, err, err_len) &&
 			  parse_response(&raw, out, location, sizeof location, err, err_len);
 		free(raw.data);
 		if (!ok)
@@ -422,6 +445,16 @@ bool https_get(const char *url_str, const char *accept, HttpResponse *out, char 
 	}
 	set_err(err, err_len, "too many redirects");
 	return false;
+}
+
+bool https_get(const char *url, const char *accept, HttpResponse *out, char *err, size_t err_len)
+{
+	return get(url, accept, true, out, err, err_len);
+}
+
+bool https_get_unverified(const char *url, const char *accept, HttpResponse *out, char *err, size_t err_len)
+{
+	return get(url, accept, false, out, err, err_len);
 }
 
 void http_response_free(HttpResponse *res)
