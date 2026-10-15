@@ -1,0 +1,44 @@
+{
+  "fill": {
+    "solid": "srgb:0.14118,0.16863,0.35686,1.00000"
+  },
+  "groups": [
+    {
+      "layers": [
+        {
+          "glass": false,
+          "image-name": "wordmark.svg",
+          "name": "wordmark"
+        },
+        {
+          "glass": false,
+          "image-name": "face.svg",
+          "name": "face"
+        },
+        {
+          "glass": false,
+          "image-name": "rim.svg",
+          "name": "rim"
+        },
+        {
+          "name": "Forecast background",
+          "image-name": "forecast.svg",
+          "glass": false
+        }
+      ],
+      "name": "Wiiather forecast badge",
+      "shadow": {
+        "kind": "neutral",
+        "opacity": 0
+      },
+      "specular": false,
+      "translucency": {
+        "enabled": false,
+        "value": 0
+      }
+    }
+  ],
+  "supported-platforms": {
+    "squares": "shared"
+  }
+}
