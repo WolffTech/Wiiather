@@ -1,0 +1,80 @@
+name: Release
+
+# Publish a release in GitHub with a new vX.Y.Z tag; this attaches the build.
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container: devkitpro/devkitppc:20260503@sha256:44cb1a920e1ec3ec7c06767493c3b85f8d643d6137cc4661f0201895ac6e4967
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Read the version from the tag
+        id: version
+        shell: bash
+        env:
+          TAG: ${{ github.event.release.tag_name }}
+        run: |
+          if [[ ! "$TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.]+)?$ ]]; then
+            echo "::error::Release tag $TAG isn't vX.Y.Z"
+            exit 1
+          fi
+          echo "version=${TAG#v}" >> "$GITHUB_OUTPUT"
+
+      - name: Install host tools
+        run: |
+          apt-get update
+          apt-get install -y --no-install-recommends gcc libc6-dev python3 curl bzip2 git zip
+
+      - name: Build GRRLIB and mbedTLS
+        run: scripts/build-deps.sh
+
+      - name: Test
+        run: make test
+
+      - name: Build
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: make clean dist VERSION="$VERSION"
+
+      - name: Package
+        shell: bash
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          mkdir release
+          (cd dist && zip -qr "../release/Wiiather-$VERSION.zip" apps)
+          # libmad is GPL and linked from libogc, so ship the matching source.
+          header="$DEVKITPRO/libogc/include/ogc/libversion.h"
+          libogc="$(awk '/_V_MAJOR_/{a=$3} /_V_MINOR_/{b=$3} /_V_PATCH_/{c=$3} END{print a"."b"."c}' "$header")"
+          curl -fsSL -o "release/libogc-$libogc-source.tar.gz" \
+            "https://github.com/devkitPro/libogc/archive/refs/tags/v$libogc.tar.gz"
+          (cd release && sha256sum -- * > SHA256SUMS)
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: release
+          path: release/
+
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          name: release
+          path: release
+
+      - name: Attach to the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.event.release.tag_name }}
+        run: gh release upload "$TAG" release/* --clobber --repo "$GITHUB_REPOSITORY"

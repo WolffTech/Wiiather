@@ -79,6 +79,13 @@ make test   # host-side unit tests (needs a native C compiler)
 `make run` sends the build to a Wii running the Homebrew Channel with
 `wiiload`. Dolphin can also run `wiiather.dol` directly.
 
+### Releases
+
+Publish a GitHub release with a new `vX.Y.Z` tag. The release workflow builds
+it with `make clean dist VERSION=X.Y.Z` and attaches the Homebrew Channel zip,
+the libogc source (for libmad's GPL) and `SHA256SUMS`. Local builds report
+their version as `dev`.
+
 ### Regenerating assets
 
 Fonts, icons and backgrounds come from a ws4kp checkout and are already

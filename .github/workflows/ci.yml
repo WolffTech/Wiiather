@@ -1,0 +1,43 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    # Pinned by digest: devkitPro's package repo only keeps the latest versions.
+    container: devkitpro/devkitppc:20260503@sha256:44cb1a920e1ec3ec7c06767493c3b85f8d643d6137cc4661f0201895ac6e4967
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Install host tools
+        run: |
+          apt-get update
+          apt-get install -y --no-install-recommends gcc libc6-dev python3 curl bzip2 git zip
+
+      - name: Build GRRLIB and mbedTLS
+        run: scripts/build-deps.sh
+
+      - name: Build
+        shell: bash
+        run: |
+          set -o pipefail
+          make dist 2>&1 | tee build.log
+          if grep -q "warning:" build.log; then
+            echo "::error::The build has compiler warnings"
+            exit 1
+          fi
+
+      - name: Test
+        run: make test
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: wiiather-${{ github.sha }}
+          path: dist/

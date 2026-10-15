@@ -1,0 +1,24 @@
+name: CA bundle
+
+# Publishes newer signed CA bundles to the ca-bundle branch, which installed
+# copies of Wiiather check daily.
+on:
+  schedule:
+    - cron: "23 7 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency: ca-bundle
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Publish if curl's bundle is newer
+        env:
+          CA_SIGNING_KEY: ${{ secrets.CA_SIGNING_KEY }}
+        run: scripts/publish-ca-bundle.sh

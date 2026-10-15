@@ -20,7 +20,7 @@
 #include "cacert_pem.h"
 #include "util/utc.h"
 
-#define USER_AGENT "Wiiather/0.1 (Wii homebrew; WeatherStar 4000 simulator)"
+#define USER_AGENT "Wiiather/" WIIATHER_VERSION " (Wii homebrew; WeatherStar 4000 simulator)"
 #define IO_TIMEOUT_MS 15000
 #define MAX_RESPONSE (4 * 1024 * 1024)
 #define MAX_REDIRECTS 3

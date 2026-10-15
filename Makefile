@@ -21,11 +21,15 @@ SOURCES		:=	source source/audio source/gen source/util source/net source/weather
 DATA		:=	data
 INCLUDES	:=	source source/gen
 DIST		:=	dist/apps/wiiather
+# Release builds pass the tag's version from a clean tree, e.g.
+# make clean dist VERSION=1.2.0. Objects are not rebuilt when it changes.
+VERSION		?=	dev
 
 #---------------------------------------------------------------------------------
 # options for code generation
 #---------------------------------------------------------------------------------
-CFLAGS		=	-g -O2 -std=gnu11 -Wall -Wextra -Wno-unused-parameter $(MACHDEP) $(INCLUDE)
+CFLAGS		=	-g -O2 -std=gnu11 -Wall -Wextra -Wno-unused-parameter $(MACHDEP) $(INCLUDE) \
+			-DWIIATHER_VERSION='"$(VERSION)"'
 CXXFLAGS	=	$(CFLAGS)
 LDFLAGS		=	-g $(MACHDEP) -Wl,-Map,$(notdir $@).map
 
@@ -107,7 +111,10 @@ run: $(BUILD)
 dist: $(BUILD)
 	@mkdir -p $(DIST)
 	@cp $(OUTPUT).dol $(DIST)/boot.dol
-	@cp meta/meta.xml meta/icon.png LICENSE THIRD_PARTY_NOTICES.md $(DIST)/
+	@cp meta/icon.png LICENSE THIRD_PARTY_NOTICES.md $(DIST)/
+	@sed -e 's|<version>.*</version>|<version>$(VERSION)</version>|' \
+		-e "s|<release_date>.*</release_date>|<release_date>$$(date -u +%Y%m%d%H%M%S)</release_date>|" \
+		meta/meta.xml > $(DIST)/meta.xml
 	@echo dist ... $(DIST)
 
 #---------------------------------------------------------------------------------
