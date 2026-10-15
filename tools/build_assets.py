@@ -44,6 +44,10 @@ IMAGES = [
 ]
 
 ICON_DIR = "icons/current-conditions"
+# ws4kp's small icons (icons-small.mjs, icons-hourly.mjs). Their names overlap
+# the large ones, so their enums are prefixed.
+SMALL_ICON_DIR = "icons/regional-maps"
+SMALL_ICON_PREFIX = "SMALL_"
 
 # Latin-1 printable range; strings on the Wii side are Latin-1 bytes.
 CHARS = [c for c in range(32, 256) if c < 127 or c >= 160]
@@ -133,7 +137,7 @@ def build_font(enum: str, path: Path, size: int):
             "glyphs": glyphs}
 
 
-def build_icon(path: Path):
+def build_icon(path: Path, prefix: str = ""):
     src = Image.open(path)
     frames, delays = [], []
     for frame in ImageSequence.Iterator(src):
@@ -146,7 +150,7 @@ def build_icon(path: Path):
     sheet = Image.new("RGBA", (cols * cw, rows * ch), (0, 0, 0, 0))
     for i, frame in enumerate(frames):
         sheet.paste(frame, ((i % cols) * cw, (i // cols) * ch))
-    enum = symbol(path.stem).upper()
+    enum = prefix + symbol(path.stem).upper()
     sym = save_padded(sheet, f"icon_{enum.lower()}")
     # All ws4kp animations use one constant delay.
     return {"enum": enum, "sym": sym, "w": w, "h": h, "cw": cw, "ch": ch,
@@ -292,6 +296,7 @@ def main():
                          capture_output=True, text=True).stdout.strip() or "unknown"
     fonts = [build_font(e, server / "fonts" / f, s) for e, f, s in FONTS]
     icons = [build_icon(p) for p in sorted((server / "images" / ICON_DIR).glob("*.gif"))]
+    icons += [build_icon(p, SMALL_ICON_PREFIX) for p in sorted((server / "images" / SMALL_ICON_DIR).glob("*.gif"))]
     images = [build_image(e, server / "images" / p) for e, p in IMAGES]
     write_c(fonts, icons, images, rev)
     station_count = write_stations(ws4kp)

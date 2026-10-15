@@ -30,6 +30,8 @@ typedef struct {
 	Observation observation;
 	bool has_forecast; // kept from an earlier refresh if a later one fails
 	Forecast forecast;
+	bool has_hourly; // kept from an earlier refresh if a later one fails
+	HourlyForecast hourly;
 	bool has_latest_observations; // kept from an earlier refresh if a later one fails
 	LatestObservations latest_observations;
 	Alerts alerts; // kept from earlier fetches if later ones fail, minus expired ones

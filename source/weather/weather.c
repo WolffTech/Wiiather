@@ -132,6 +132,15 @@ static bool refresh(const Location *loc, u32 version, NwsPoint *point, bool *hav
 		LWP_MutexUnlock(lock);
 	}
 
+	// So is the hourly forecast.
+	static HourlyForecast hourly;
+	if (nws_get_hourly(point, &hourly, err, sizeof err) && lock_current(version)) {
+		shared.has_hourly = true;
+		shared.hourly = hourly;
+		shared.generation++;
+		LWP_MutexUnlock(lock);
+	}
+
 	// Latest Observations are optional too.
 	static LatestObservations latest;
 	if (nws_get_latest_observations(loc->lat, loc->lon, &latest) && lock_current(version)) {

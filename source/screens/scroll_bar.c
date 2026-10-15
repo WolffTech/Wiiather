@@ -59,13 +59,6 @@ static void update(ScrollBar *bar, const DisplayData *d, bool visible, u32 now_m
 	}
 }
 
-// Scissor in layout coordinates; the framebuffer may be taller than 480.
-static void clip(f32 x, f32 y, f32 w, f32 h)
-{
-	f32 sx = rmode->fbWidth / (f32)SCREEN_WIDTH, sy = rmode->efbHeight / (f32)SCREEN_HEIGHT;
-	GRRLIB_ClipDrawing(x * sx, y * sy, w * sx, h * sy);
-}
-
 // Draws only the part of the crawl near the bar to keep the vertex count low.
 static void draw_crawl(const char *text, f32 x)
 {
@@ -86,11 +79,11 @@ static void draw_crawl(const char *text, f32 x)
 static void draw_hazard(const HazardsView *h, u32 elapsed_ms)
 {
 	GRRLIB_Rectangle(0, BAR_TOP, SCREEN_WIDTH, SCREEN_HEIGHT - BAR_TOP, RGBA_HAZARD_RED, true);
-	clip(TEXT_LEFT, BAR_TOP, TEXT_WIDTH, CRAWL_TOP - BAR_TOP);
+	gfx_clip(TEXT_LEFT, BAR_TOP, TEXT_WIDTH, CRAWL_TOP - BAR_TOP);
 	gfx_text(&header_style, TEXT_LEFT, HEADER_TOP, ALIGN_LEFT, h->crawl_event);
-	clip(TEXT_LEFT, CRAWL_TOP, TEXT_WIDTH, CRAWL_HEIGHT);
+	gfx_clip(TEXT_LEFT, CRAWL_TOP, TEXT_WIDTH, CRAWL_HEIGHT);
 	draw_crawl(h->crawl, TEXT_LEFT - alert_scroll_offset(h->crawl_width, TEXT_WIDTH, elapsed_ms));
-	GRRLIB_ClipReset();
+	gfx_clip_reset();
 }
 
 void scroll_bar_draw(ScrollBar *bar, const DisplayData *d, bool visible, u32 now_ms)
