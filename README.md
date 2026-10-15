@@ -86,24 +86,6 @@ it with `make clean dist VERSION=X.Y.Z` and attaches the Homebrew Channel zip,
 the libogc source (for libmad's GPL) and `SHA256SUMS`. Local builds report
 their version as `dev`.
 
-### Regenerating assets
-
-Fonts, icons and backgrounds come from a ws4kp checkout and are already
-converted in `data/` and `source/gen/`. To redo the conversion:
-
-```zsh
-uv run --with pillow --with freetype-py tools/build_assets.py /path/to/ws4kp
-uv run --with pillow tools/build_hbc_icon.py /path/to/ws4kp
-```
-
-The ZIP code table comes from the Census Bureau's
-[ZCTA Gazetteer file](https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html).
-To regenerate it from a newer year's extracted `.txt`:
-
-```zsh
-python3 tools/build_zips.py /path/to/2025_Gaz_zcta_national.txt
-```
-
 ## Disclaimer
 
 Do not rely on Wiiather in life-threatening weather situations. Its data
