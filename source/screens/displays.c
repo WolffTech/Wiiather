@@ -313,8 +313,12 @@ void displays_draw(const Rotation *r, const DisplayData *data, u32 rotation_ms, 
 {
 	const Display *d = &displays[r->display];
 	screen_elapsed_ms = rotation_ms - r->started_ms;
-	if (r->screen < d->screen_count(data))
+	if (r->screen < d->screen_count(data)) {
 		d->draw(data, r->screen, now_ms);
+		// Hazards fill the screen without a header.
+		if (d->draw != hazards_display_draw)
+			header_logo_draw();
+	}
 }
 
 bool displays_scroll_visible(const Rotation *r)

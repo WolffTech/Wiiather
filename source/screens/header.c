@@ -33,9 +33,13 @@ static void upcase(char *s)
 		*s = (char)toupper((unsigned char)*s);
 }
 
-void header_title_draw(const char *title_top, const char *title_bottom)
+void header_logo_draw(void)
 {
 	gfx_image(IMG_LOGO_CORNER, 50, 30);
+}
+
+void header_title_draw(const char *title_top, const char *title_bottom)
+{
 	if (title_bottom) {
 		gfx_text(&title_style, 170, 27, ALIGN_LEFT, title_top);
 		gfx_text(&title_style, 170, 56, ALIGN_LEFT, title_bottom);

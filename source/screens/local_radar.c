@@ -71,7 +71,6 @@ bool radar_view_ready(const RadarView *view)
 
 static void header(time_t local)
 {
-	gfx_image(IMG_LOGO_CORNER, 50, 30);
 	gfx_text(&title_style, 155, 26, ALIGN_LEFT, "Local");
 	gfx_text(&title_style, 155, 61, ALIGN_LEFT, "Radar");
 

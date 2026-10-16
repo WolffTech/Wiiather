@@ -101,4 +101,5 @@ void location_picker_draw(const LocationPicker *p, const ZipGuess *guess)
 		gfx_text(&note_style, 320, 325, ALIGN_CENTER, note);
 
 	scroll_draw(p->cancelable ? "D-Pad: Edit  A: Save  B: Back" : "D-Pad: Edit  A: Save");
+	header_logo_draw();
 }
