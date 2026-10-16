@@ -29,8 +29,8 @@ in the style of The Weather Channel's 1990s local forecast.
 - A scrolling bottom bar with conditions and active NWS hazard alerts
 - ZIP code lookup, with a suggestion based on the Wii's public IP address
 - Optional background music from your own MP3s
-- A settings menu for the location and which displays rotate, with an About
-  page and a reset option
+- A settings menu for the location, which displays rotate and the music, with
+  an About page and a reset option
 - Signed certificate authority updates, so HTTPS keeps working after release
 
 US locations only, since all data comes from the NWS.
@@ -51,7 +51,8 @@ internet connection set up in the Wii's system settings.
 
 To add background music, copy `.mp3` files to `apps/wiiather/music/` on the
 SD card. They play in random order, and the Wii Remote's B button turns music
-on and off. ws4kp's royalty-free tracks in
+on and off. The settings menu's Music page sets the order and volume and
+picks which tracks play. ws4kp's royalty-free tracks in
 [`server/music/default`](https://github.com/netbymatt/ws4kp/tree/main/server/music/default)
 work well.
 
@@ -78,6 +79,10 @@ closes.
 - **Location** opens the ZIP code entry.
 - **Displays** turns displays on and off. Hazards always shows when there are
   active alerts, and at least one other display has to stay on.
+- **Music** turns music on and off, switches between shuffle and file name
+  order, and sets the volume. Its **Tracks** list turns tracks on and off
+  with A, and 1 plays the selected track now. Tracks are turned off by file
+  name, so new files play by default.
 - **About** shows the version, the location's coordinates, the date of the
   certificate bundle in use and when the weather last updated. Its **Reset
   Settings** option deletes `settings.ini` and asks for a location again.

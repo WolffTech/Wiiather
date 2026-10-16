@@ -21,10 +21,21 @@ typedef enum {
 	DISPLAY_COUNT
 } DisplayId;
 
+typedef enum { MUSIC_SHUFFLE, MUSIC_IN_ORDER } MusicOrder;
+
+#define MUSIC_VOLUME_STEP 5 // percent
+#define MAX_SKIPPED_TRACKS 64
+
 typedef struct {
 	bool has_location; // false until the user picks one
 	Location location;
 	uint32_t hidden_displays; // a bit per DisplayId, never Hazards or every other display
+	bool music;
+	MusicOrder music_order;
+	uint8_t music_volume; // percent, a multiple of MUSIC_VOLUME_STEP
+	// File names left out of playback, kept by name so new files play.
+	char skipped_tracks[MAX_SKIPPED_TRACKS][128];
+	size_t skipped_count;
 	char dir[256]; // the app's folder, which holds settings.ini and music/
 } Config;
 
@@ -38,6 +49,11 @@ bool config_display_shown(const Config *config, DisplayId id);
 // Shows or hides a display. Returns false, changing nothing, for Hazards or
 // for hiding the last display shown.
 bool config_set_display_shown(Config *config, DisplayId id, bool shown);
+
+bool config_track_enabled(const Config *config, const char *file);
+
+// Returns false, changing nothing, when the skip list is full.
+bool config_set_track_enabled(Config *config, const char *file, bool enabled);
 
 // Writes the settings to settings.ini. Returns false if the SD card can't be
 // written.

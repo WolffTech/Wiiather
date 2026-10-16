@@ -39,7 +39,7 @@ int main(int argc, char **argv)
 	weather_start(config.has_location ? &config.location : NULL, config.dir);
 	char music_dir[sizeof config.dir + 8];
 	snprintf(music_dir, sizeof music_dir, "%s/music", config.dir);
-	music_start(music_dir);
+	music_start(music_dir, &config);
 
 	u64 start = gettime();
 	static WeatherSnapshot snap;
@@ -109,6 +109,7 @@ int main(int argc, char **argv)
 					picker = location_picker_make(NULL);
 					picking = true;
 					weather_request_zip_guess();
+					music_configure(&config);
 				} else if (menu_changes) {
 					config_save(&config);
 				}
@@ -127,8 +128,11 @@ int main(int argc, char **argv)
 			continue;
 		}
 
-		if (pressed & WPAD_BUTTON_B)
-			music_toggle();
+		if (pressed & WPAD_BUTTON_B) {
+			config.music = !config.music;
+			music_configure(&config);
+			config_save(&config);
+		}
 
 		u32 clock_ms = now_ms - paused_ms;
 		if (data.has_current) {

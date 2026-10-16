@@ -100,6 +100,35 @@ static void test_displays(void)
 	CHECK(c.hidden_displays == 0);
 }
 
+static void test_music(void)
+{
+	Config c;
+	write_settings("zip=73069\n");
+	config_load(boot, &c);
+	CHECK(c.music && c.music_order == MUSIC_SHUFFLE && c.music_volume == 75);
+
+	write_settings("music=off\nmusic_order=in_order\nmusic_volume=42\nskip_track=Night Drive.mp3\n");
+	config_load(boot, &c);
+	CHECK(!c.music && c.music_order == MUSIC_IN_ORDER && c.music_volume == 40);
+	CHECK(!config_track_enabled(&c, "Night Drive.mp3"));
+	CHECK(config_track_enabled(&c, "Crisp Day.mp3"));
+
+	CHECK(config_set_track_enabled(&c, "Crisp Day.mp3", false));
+	CHECK(config_set_track_enabled(&c, "Night Drive.mp3", true));
+	CHECK(config_set_track_enabled(&c, "Crisp Day.mp3", false));
+	CHECK(c.skipped_count == 1);
+	CHECK(config_save(&c));
+	Config loaded;
+	config_load(boot, &loaded);
+	CHECK(!loaded.music && loaded.music_order == MUSIC_IN_ORDER && loaded.music_volume == 40);
+	CHECK(loaded.skipped_count == 1 && !config_track_enabled(&loaded, "Crisp Day.mp3"));
+
+	// Out-of-range volumes keep the default.
+	write_settings("music_volume=250\n");
+	config_load(boot, &c);
+	CHECK(c.music_volume == 75);
+}
+
 static void test_reset(void)
 {
 	Config c;
@@ -108,6 +137,7 @@ static void test_reset(void)
 	config_reset(&c);
 	CHECK(!c.has_location);
 	CHECK(strcmp(c.dir, dir) == 0);
+	CHECK(c.music && c.music_volume == 75);
 
 	Config loaded;
 	config_load(boot, &loaded);
@@ -124,6 +154,7 @@ int main(void)
 	test_save();
 	test_reset();
 	test_displays();
+	test_music();
 
 	char path[128];
 	snprintf(path, sizeof path, "%s/settings.ini", dir);
