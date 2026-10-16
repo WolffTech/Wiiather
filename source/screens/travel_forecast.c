@@ -18,10 +18,6 @@
 
 void travel_forecast_prepare(const TravelForecast *travel, TravelForecastView *out)
 {
-	static const char *const weekdays[][2] = {
-		{ "Sun", "Sunday" }, { "Mon", "Monday" }, { "Tue", "Tuesday" }, { "Wed", "Wednesday" },
-		{ "Thu", "Thursday" }, { "Fri", "Friday" }, { "Sat", "Saturday" },
-	};
 	// ws4kp drops cities without data, so the list closes up around them.
 	out->count = 0;
 	const TravelDay *first = NULL;
@@ -42,11 +38,7 @@ void travel_forecast_prepare(const TravelForecast *travel, TravelForecastView *o
 	// ws4kp names today, or tomorrow if the first city's forecast starts at
 	// night. The day's own date is the same except after midnight, when ws4kp
 	// would name the day after.
-	const char *weekday = "";
-	for (size_t i = 0; first && i < sizeof weekdays / sizeof weekdays[0]; i++)
-		if (strcmp(first->weekday, weekdays[i][0]) == 0)
-			weekday = weekdays[i][1];
-	snprintf(out->title_bottom, sizeof out->title_bottom, "For %s", weekday);
+	snprintf(out->title_bottom, sizeof out->title_bottom, "For %s", first ? forecast_weekday_name(first->weekday) : "");
 }
 
 u32 travel_forecast_ms(const TravelForecastView *view)

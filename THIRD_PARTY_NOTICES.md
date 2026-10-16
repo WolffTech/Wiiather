@@ -4,7 +4,7 @@ Wiiather includes or links the following work.
 
 | Component | Use in Wiiather | License |
 | --- | --- | --- |
-| [ws4kp](https://github.com/netbymatt/ws4kp) by Matt Walsh, based on Mike Battaglia's original | Display logic and layout ported to C; backgrounds and logos | MIT (below) |
+| [ws4kp](https://github.com/netbymatt/ws4kp) by Matt Walsh, based on Mike Battaglia's original | Display logic and layout ported to C; backgrounds, logos and regional maps | MIT (below) |
 | [SunCalc](https://github.com/mourner/suncalc) by Vladimir Agafonkin | Sun and moon calculations ported to C | BSD 2-Clause (below) |
 | WeatherStar 4000 fonts by Nick Smith ([TWCClassics](https://twcclassics.com/downloads.html)) | Star4000 fonts, distributed with ws4kp | Credited as in ws4kp |
 | Weather icons by Charles Abel, Nick Smith and Malek Masoud | Condition icons, distributed with ws4kp | Credited as in ws4kp |

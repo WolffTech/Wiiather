@@ -50,6 +50,8 @@ static void test_periods(void)
 	CHECK_STR(weekday, "Wed");
 	forecast_weekday("1969-12-31T23:00:00Z", weekday);
 	CHECK_STR(weekday, "Wed");
+	CHECK_STR(forecast_weekday_name(weekday), "Wednesday");
+	CHECK_STR(forecast_weekday_name(""), "");
 
 	Forecast f = { .count = 5 };
 	f.periods[0] = period("This Afternoon", "Wed", true, 84, 100);

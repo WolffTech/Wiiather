@@ -33,6 +33,9 @@ void forecast_drop_expired(Forecast *f, time_t now);
 // "Thu" for an ISO 8601 timestamp's own calendar date, or "" if unparseable.
 void forecast_weekday(const char *iso_time, char out[4]);
 
+// "Thursday" for "Thu", or "" if unknown.
+const char *forecast_weekday_name(const char *weekday);
+
 // Local Forecast shows the first six periods as "Name...Text".
 #define LOCAL_FORECAST_PERIODS 6
 void forecast_local_text(const ForecastPeriod *p, char *out, size_t out_len);

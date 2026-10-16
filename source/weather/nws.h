@@ -8,6 +8,7 @@
 #include "hourly.h"
 #include "latest_obs.h"
 #include "obs.h"
+#include "regional.h"
 #include "travel_cities_gen.h"
 
 typedef struct {
@@ -30,6 +31,16 @@ bool nws_get_forecast(const NwsPoint *point, Forecast *out, char *err, size_t er
 
 // One Travel Forecast city's day, from its 12-hour forecast.
 bool nws_get_travel_day(const TravelCity *city, TravelDay *out);
+
+// A Regional Forecast site and the lookups its fetches need, cached because
+// gridpoints and their stations don't move.
+typedef struct {
+	RegionalSite site; // its gridpoint is filled in once looked up
+	char station_id[8]; // "" until looked up
+} RegionalSource;
+
+// One Regional Forecast site's latest observation and next two forecast periods.
+bool nws_get_regional(RegionalSource *source, RegionalData *out);
 
 // Gridpoint data expanded to hours from the server's current hour.
 bool nws_get_hourly(const NwsPoint *point, HourlyForecast *out, char *err, size_t err_len);

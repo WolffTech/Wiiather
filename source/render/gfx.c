@@ -195,3 +195,65 @@ void gfx_icon(IconId id, f32 x, f32 y, u32 time_ms)
 	const IconAsset *icon = &icon_assets[id];
 	gfx_icon_scaled(id, x, y, icon->w, icon->h, time_ms);
 }
+
+// Decoded map tiles; enough for every tile a 640x480 view can touch, so a
+// steady view never reloads one.
+#define MAP_CACHE_SLOTS 12
+
+typedef struct {
+	GRRLIB_texImg *tex; // NULL when empty
+	MapId map;
+	int tile;
+	u32 last_used; // frame number
+} MapTile;
+
+static MapTile map_cache[MAP_CACHE_SLOTS];
+static u32 map_frame;
+
+static GRRLIB_texImg *map_tile(MapId map, int tile)
+{
+	MapTile *slot = &map_cache[0];
+	for (int i = 0; i < MAP_CACHE_SLOTS; i++) {
+		MapTile *t = &map_cache[i];
+		if (t->tex && t->map == map && t->tile == tile) {
+			t->last_used = map_frame;
+			return t->tex;
+		}
+		if (!t->tex || (slot->tex && t->last_used < slot->last_used))
+			slot = t;
+	}
+	// The evicted tile was last drawn in an earlier frame, which the GPU has
+	// finished with.
+	if (slot->tex)
+		GRRLIB_FreeTexture(slot->tex);
+	*slot = (MapTile){ GRRLIB_LoadTexturePNG(map_assets[map].tiles[tile]), map, tile, map_frame };
+	if (slot->tex)
+		GRRLIB_SetHandle(slot->tex, slot->tex->w / 2, slot->tex->h / 2); // see gfx_init
+	return slot->tex;
+}
+
+void gfx_map(MapId map, f32 src_x, f32 src_y, f32 scale, f32 x, f32 y, f32 w, f32 h)
+{
+	const MapAsset *m = &map_assets[map];
+	map_frame++;
+	int first_col = floorf(src_x / MAP_TILE_STRIDE), last_col = floorf((src_x + w / scale) / MAP_TILE_STRIDE);
+	int first_row = floorf(src_y / MAP_TILE_STRIDE), last_row = floorf((src_y + h / scale) / MAP_TILE_STRIDE);
+	GRRLIB_SetAntiAliasing(true);
+	for (int row = first_row < 0 ? 0 : first_row; row <= last_row && row < m->rows; row++) {
+		for (int col = first_col < 0 ? 0 : first_col; col <= last_col && col < m->cols; col++) {
+			GRRLIB_texImg *tex = map_tile(map, row * m->cols + col);
+			if (!tex)
+				continue;
+			// The tile's inner pixels, skipping its apron and any padding past the map.
+			int part_w = m->w - col * MAP_TILE_STRIDE, part_h = m->h - row * MAP_TILE_STRIDE;
+			part_w = part_w < MAP_TILE_STRIDE ? part_w : MAP_TILE_STRIDE;
+			part_h = part_h < MAP_TILE_STRIDE ? part_h : MAP_TILE_STRIDE;
+			f32 left = x + (col * MAP_TILE_STRIDE - src_x) * scale;
+			f32 top = y + (row * MAP_TILE_STRIDE - src_y) * scale;
+			// GRRLIB scales about the middle of the part.
+			GRRLIB_DrawPart(left + part_w * (scale - 1) / 2, top + part_h * (scale - 1) / 2, 1, 1, part_w, part_h, tex,
+				0, scale, scale, RGBA_WHITE);
+		}
+	}
+	GRRLIB_SetAntiAliasing(false);
+}

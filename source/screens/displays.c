@@ -5,6 +5,7 @@
 #define LATEST_OBSERVATIONS_MS 9000
 #define ALMANAC_MS 9000
 #define HOURLY_GRAPH_MS 9000
+#define REGIONAL_SCREEN_MS 9000
 
 typedef struct {
 	size_t (*screen_count)(const DisplayData *d);
@@ -115,6 +116,23 @@ static void travel_draw(const DisplayData *d, size_t screen, u32 time_ms)
 	travel_forecast_draw(&d->travel, time_ms - screen_started_ms, time_ms);
 }
 
+static size_t regional_count(const DisplayData *d)
+{
+	return d->regional.count ? REGIONAL_SCREENS : 0;
+}
+
+static u32 regional_ms(const DisplayData *d, size_t screen)
+{
+	return REGIONAL_SCREEN_MS;
+}
+
+static void regional_draw(const DisplayData *d, size_t screen, u32 time_ms)
+{
+	gfx_image(IMG_BACKGROUND_1, 0, 0);
+	header_draw(regional_forecast_title_top(screen), d->regional.title_bottom[screen], false);
+	regional_forecast_draw(&d->regional, screen, time_ms);
+}
+
 static size_t local_count(const DisplayData *d)
 {
 	return d->local.page_count;
@@ -174,6 +192,7 @@ static const Display displays[] = {
 	{ hourly_count, hourly_ms, hourly_draw },
 	{ hourly_graph_count, hourly_graph_ms, hourly_graph_draw },
 	{ travel_count, travel_ms, travel_draw },
+	{ regional_count, regional_ms, regional_draw },
 	{ local_count, local_ms, local_draw },
 	{ extended_count, extended_ms, extended_draw },
 	{ almanac_count, almanac_ms, almanac_draw },
@@ -196,6 +215,7 @@ void displays_prepare(const WeatherSnapshot *snap, DisplayData *out)
 	hourly_view_prepare(snap, &out->hourly);
 	hourly_graph_view_prepare(snap, &out->hourly_graph);
 	travel_forecast_prepare(&snap->travel, &out->travel);
+	regional_forecast_prepare(&snap->regional, &out->regional);
 	if (snap->has_latest_observations)
 		latest_observations_prepare(&snap->latest_observations, &out->latest_observations);
 	else

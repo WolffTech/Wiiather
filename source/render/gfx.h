@@ -56,3 +56,8 @@ void gfx_icon(IconId id, f32 x, f32 y, u32 time_ms);
 
 // Same, resized to w x h with bilinear filtering.
 void gfx_icon_scaled(IconId id, f32 x, f32 y, f32 w, f32 h, u32 time_ms);
+
+// Draws the map scaled by `scale`, with map pixel (src_x, src_y) at (x, y),
+// filling w x h with bilinear filtering. Tiles are decoded on first use, so
+// the first frame of a new view can take a moment.
+void gfx_map(MapId map, f32 src_x, f32 src_y, f32 scale, f32 x, f32 y, f32 w, f32 h);

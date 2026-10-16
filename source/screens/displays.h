@@ -13,6 +13,7 @@ typedef struct {
 	HourlyView hourly;
 	HourlyGraphView hourly_graph;
 	TravelForecastView travel;
+	RegionalForecastView regional;
 	LocalForecastPages local;
 	ExtendedForecastView extended;
 	LatestObservationsView latest_observations;

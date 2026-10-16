@@ -83,6 +83,27 @@ void travel_forecast_prepare(const TravelForecast *travel, TravelForecastView *o
 u32 travel_forecast_ms(const TravelForecastView *view);
 void travel_forecast_draw(const TravelForecastView *view, u32 elapsed_ms, u32 time_ms);
 
+// Regional Forecast: the map around the location with each site's
+// observation, then its next two forecast periods, one screen each.
+typedef struct {
+	char name[13];
+	f32 x, y; // anchor in the main area
+	IconId icons[REGIONAL_SCREENS];
+	char temperatures[REGIONAL_SCREENS][8];
+} RegionalLabel;
+
+typedef struct {
+	size_t count; // 0 without data
+	MapId map;
+	f32 origin_x, origin_y; // map pixel at the main area's top-left
+	RegionalLabel labels[REGIONAL_MAX_SITES];
+	char title_bottom[REGIONAL_SCREENS][24]; // "Observations", "Thursday Night"
+} RegionalForecastView;
+
+void regional_forecast_prepare(const RegionalForecast *regional, RegionalForecastView *out);
+const char *regional_forecast_title_top(size_t screen);
+void regional_forecast_draw(const RegionalForecastView *view, size_t screen, u32 time_ms);
+
 // Local Forecast: each period's text wrapped and split into 7-line pages.
 #define LOCAL_FORECAST_PAGE_LINES 7
 #define LOCAL_FORECAST_MAX_PAGES 18
