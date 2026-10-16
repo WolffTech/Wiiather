@@ -75,6 +75,7 @@
 #include "img_moon_full_degraded_png.h"
 #include "img_moon_last_png.h"
 #include "img_background_1_chart_png.h"
+#include "img_background_6_png.h"
 #include "map_conus_0_0_png.h"
 #include "map_conus_0_1_png.h"
 #include "map_conus_0_2_png.h"
@@ -1997,6 +1998,7 @@ const ImageAsset image_assets[IMG_COUNT] = {
 	[IMG_MOON_FULL_DEGRADED] = { img_moon_full_degraded_png, 100, 94 },
 	[IMG_MOON_LAST] = { img_moon_last_png, 100, 94 },
 	[IMG_BACKGROUND_1_CHART] = { img_background_1_chart_png, 640, 480 },
+	[IMG_BACKGROUND_6] = { img_background_6_png, 640, 480 },
 };
 
 static const u8 *const map_conus_tiles[] = {

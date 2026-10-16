@@ -149,6 +149,15 @@ static bool refresh(const Location *loc, u32 version, NwsPoint *point, bool *hav
 		shared.generation++;
 		LWP_MutexUnlock(lock);
 	}
+
+	// And the SPC Outlook.
+	SpcOutlook spc;
+	if (nws_get_spc_outlook(loc->lat, loc->lon, &spc) && lock_current(version)) {
+		shared.has_spc_outlook = true;
+		shared.spc_outlook = spc;
+		shared.generation++;
+		LWP_MutexUnlock(lock);
+	}
 	return true;
 }
 
