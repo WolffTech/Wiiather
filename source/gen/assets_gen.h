@@ -33,9 +33,14 @@ typedef struct {
 #define MAP_TILE_STRIDE (MAP_TILE_SIZE - 2) // map pixels per tile, without the 1px apron on each side
 
 typedef struct {
+	const u8 *png;
+	u32 size;
+} MapTileAsset;
+
+typedef struct {
 	u16 w, h;
 	u8 cols, rows;
-	const u8 *const *tiles; // row-major; tile (c, r) starts at map pixel (c, r) * stride - 1
+	const MapTileAsset *tiles; // row-major; tile (c, r) starts at map pixel (c, r) * stride - 1
 } MapAsset;
 
 typedef enum {
@@ -48,6 +53,8 @@ typedef enum {
 	FONT_STAR4000_SMALL_28,
 	FONT_STAR4000_20,
 	FONT_STAR4000_LARGE_28,
+	FONT_STAR4000_24,
+	FONT_ARIAL_BOLD_38,
 	FONT_COUNT
 } FontId;
 
@@ -123,6 +130,7 @@ typedef enum {
 	IMG_MOON_LAST,
 	IMG_BACKGROUND_1_CHART,
 	IMG_BACKGROUND_6,
+	IMG_BACKGROUND_4,
 	IMG_COUNT
 } ImageId;
 
@@ -130,6 +138,8 @@ typedef enum {
 	MAP_CONUS,
 	MAP_ALASKA,
 	MAP_HAWAII,
+	MAP_RADAR,
+	MAP_RADAR_OVERLAY,
 	MAP_COUNT
 } MapId;
 

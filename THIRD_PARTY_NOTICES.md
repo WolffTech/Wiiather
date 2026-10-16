@@ -4,10 +4,11 @@ Wiiather includes or links the following work.
 
 | Component | Use in Wiiather | License |
 | --- | --- | --- |
-| [ws4kp](https://github.com/netbymatt/ws4kp) by Matt Walsh, based on Mike Battaglia's original | Display logic and layout ported to C; backgrounds, logos and regional maps | MIT (below) |
+| [ws4kp](https://github.com/netbymatt/ws4kp) by Matt Walsh, based on Mike Battaglia's original | Display logic and layout ported to C; backgrounds, logos, and regional and radar maps | MIT (below) |
 | [SunCalc](https://github.com/mourner/suncalc) by Vladimir Agafonkin | Sun and moon calculations ported to C | BSD 2-Clause (below) |
 | WeatherStar 4000 fonts by Nick Smith ([TWCClassics](https://twcclassics.com/downloads.html)) | Star4000 fonts, distributed with ws4kp | Credited as in ws4kp |
 | Weather icons by Charles Abel, Nick Smith and Malek Masoud | Condition icons, distributed with ws4kp | Credited as in ws4kp |
+| [Liberation Sans](https://github.com/liberationfonts/liberation-fonts) by Red Hat | Rendered in place of Arial for the Local Radar's title | SIL Open Font License 1.1 |
 | [Census ZCTA Gazetteer](https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html), U.S. Census Bureau | ZIP code coordinates in `source/gen/zips_gen.c` | Public domain (U.S. government work) |
 | [Mozilla CA certificate bundle](https://curl.se/docs/caextract.html) | `data/cacert.pem` and updates downloaded from the `ca-bundle` branch, unmodified, for TLS verification | MPL 2.0 |
 | [Mbed TLS](https://github.com/Mbed-TLS/mbedtls) | HTTPS | Apache 2.0 |
