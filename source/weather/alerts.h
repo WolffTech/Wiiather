@@ -76,7 +76,7 @@ bool alerts_viewed_has(const AlertsViewed *v, const char *id);
 void alerts_viewed_add(AlertsViewed *v, const char *id);
 
 // Hazards pauses 3 s before scrolling and 2 s after.
-#define HAZARDS_SCROLL_TIMING ((ScrollTiming){ 75, 50 })
+#define HAZARDS_SCROLL_TIMING ((ScrollTiming){ 75, 50, 125 })
 
 // ws4kp's bottom-bar crawl: 1 s pause, 100 px/s (at least 2 s), 1 s pause,
 // rounded up to the bar's 500 ms ticks.

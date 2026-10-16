@@ -8,6 +8,7 @@
 #include "hourly.h"
 #include "latest_obs.h"
 #include "obs.h"
+#include "travel_cities_gen.h"
 
 typedef struct {
 	char city[48];
@@ -27,6 +28,9 @@ bool nws_get_current_observation(const NwsPoint *point, Observation *out, char *
 // The 12-hour forecast with expired periods removed.
 bool nws_get_forecast(const NwsPoint *point, Forecast *out, char *err, size_t err_len);
 
+// One Travel Forecast city's day, from its 12-hour forecast.
+bool nws_get_travel_day(const TravelCity *city, TravelDay *out);
+
 // Gridpoint data expanded to hours from the server's current hour.
 bool nws_get_hourly(const NwsPoint *point, HourlyForecast *out, char *err, size_t err_len);
 
@@ -34,6 +38,7 @@ bool nws_get_hourly(const NwsPoint *point, HourlyForecast *out, char *err, size_
 bool nws_get_latest_observations(double lat, double lon, LatestObservations *out);
 
 IconId nws_large_icon(const char *icon_url);
+IconId nws_small_icon(const char *icon_url);
 
 // Active alerts for the location, selected and ordered like ws4kp's Hazards,
 // with expired ones dropped. `now` receives the server's clock (UTC, 0 if unknown).

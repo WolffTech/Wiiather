@@ -20,6 +20,12 @@ typedef struct {
 	u32 zip; // valid when status is GUESS_FOUND
 } ZipGuess;
 
+// Travel Forecast cities, each kept from an earlier fetch if a later one fails.
+typedef struct {
+	bool has_day[TRAVEL_CITY_COUNT];
+	TravelDay days[TRAVEL_CITY_COUNT];
+} TravelForecast;
+
 typedef struct {
 	WeatherStatus status;
 	char message[128];
@@ -34,6 +40,7 @@ typedef struct {
 	HourlyForecast hourly;
 	bool has_latest_observations; // kept from an earlier refresh if a later one fails
 	LatestObservations latest_observations;
+	TravelForecast travel; // doesn't depend on the location, so kept when it changes
 	Alerts alerts; // kept from earlier fetches if later ones fail, minus expired ones
 	u32 alert_fetches; // attempts so far; ws4kp re-shows viewed alerts every tenth
 	ZipGuess zip_guess;

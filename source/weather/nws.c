@@ -231,10 +231,9 @@ static int number_or_value(json_t *v)
 	return (int)json_number_value(v);
 }
 
-bool nws_get_forecast(const NwsPoint *point, Forecast *out, char *err, size_t err_len)
+// `url` includes the units parameter.
+static bool get_forecast(const char *url, Forecast *out, char *err, size_t err_len)
 {
-	char url[200];
-	snprintf(url, sizeof url, "%s?units=us", point->forecast_url);
 	time_t now;
 	json_t *root = get_json(url, GEOJSON, &now, err, err_len);
 	if (!root)
@@ -270,6 +269,21 @@ bool nws_get_forecast(const NwsPoint *point, Forecast *out, char *err, size_t er
 		return false;
 	}
 	return true;
+}
+
+bool nws_get_forecast(const NwsPoint *point, Forecast *out, char *err, size_t err_len)
+{
+	char url[200];
+	snprintf(url, sizeof url, "%s?units=us", point->forecast_url);
+	return get_forecast(url, out, err, err_len);
+}
+
+bool nws_get_travel_day(const TravelCity *city, TravelDay *out)
+{
+	static Forecast forecast;
+	char url[128], err[128];
+	snprintf(url, sizeof url, API "/gridpoints/%s/%u,%u/forecast?units=us", city->wfo, city->x, city->y);
+	return get_forecast(url, &forecast, err, sizeof err) && forecast_travel_day(&forecast, out);
 }
 
 // Expands one gridpoint series into `measures`, or into `weather` flags for
@@ -377,20 +391,26 @@ bool nws_get_latest_observations(double lat, double lon, LatestObservations *out
 	return out->count > 0;
 }
 
-// Port of ws4kp icons-parse.mjs + icons-large.mjs.
-IconId nws_large_icon(const char *icon_url)
+typedef struct {
+	char name[32];
+	int prob;
+	bool night;
+} IconCondition;
+
+// Port of ws4kp icons-parse.mjs.
+static bool parse_icon_url(const char *icon_url, IconCondition *out)
 {
 	// Icon URLs look like .../icons/land/{day|night}/{cond}[,prob][/{cond}[,prob]][?size=...]
 	const char *p = strstr(icon_url, "/icons/");
 	if (!p)
-		return ICON_NO_DATA;
+		return false;
 	p = strchr(p + 7, '/'); // skip the icon set
 	if (!p)
-		return ICON_NO_DATA;
-	bool night = strncmp(p + 1, "night/", 6) == 0;
-	if (!night && strncmp(p + 1, "day/", 4) != 0)
-		return ICON_NO_DATA;
-	const char *cond = p + 1 + (night ? 6 : 4);
+		return false;
+	out->night = strncmp(p + 1, "night/", 6) == 0;
+	if (!out->night && strncmp(p + 1, "day/", 4) != 0)
+		return false;
+	const char *cond = p + 1 + (out->night ? 6 : 4);
 	size_t cond_len = strcspn(cond, "?");
 
 	char first[32] = "", second[32] = "";
@@ -412,12 +432,21 @@ IconId nws_large_icon(const char *icon_url)
 	}
 
 	// With two different conditions, ws4kp uses the second one.
-	const char *name = first;
-	int prob = first_prob;
-	if (slash && strcmp(first, second) != 0) {
-		name = second;
-		prob = second_prob;
-	}
+	bool use_second = slash && strcmp(first, second) != 0;
+	snprintf(out->name, sizeof out->name, "%s", use_second ? second : first);
+	out->prob = use_second ? second_prob : first_prob;
+	return true;
+}
+
+// Port of ws4kp icons-large.mjs.
+IconId nws_large_icon(const char *icon_url)
+{
+	IconCondition c;
+	if (!parse_icon_url(icon_url, &c))
+		return ICON_NO_DATA;
+	const char *name = c.name;
+	bool night = c.night;
+	int prob = c.prob;
 
 #define IS(s) (strcmp(name, s) == 0)
 	if (IS("skc") || IS("hot") || IS("haze") || IS("cold"))
@@ -458,6 +487,73 @@ IconId nws_large_icon(const char *icon_url)
 		return ICON_BLOWING_SNOW;
 #undef IS
 	return ICON_NO_DATA;
+}
+
+// Port of ws4kp icons-small.mjs.
+IconId nws_small_icon(const char *icon_url)
+{
+	IconCondition c;
+	if (!parse_icon_url(icon_url, &c))
+		return ICON_SMALL_SUNNY;
+	const char *name = c.name;
+	bool night = c.night;
+
+#define IS(s) (strcmp(name, s) == 0)
+	if (IS("skc"))
+		return night ? ICON_SMALL_CLEAR_1992 : ICON_SMALL_SUNNY;
+	if (IS("few"))
+		return night ? ICON_SMALL_PARTLY_CLEAR_1994 : ICON_SMALL_PARTLY_CLOUDY;
+	if (IS("sct"))
+		return night ? ICON_SMALL_PARTLY_CLOUDY_NIGHT : ICON_SMALL_PARTLY_CLOUDY;
+	if (IS("bkn"))
+		return night ? ICON_SMALL_PARTLY_CLEAR_1994 : ICON_SMALL_MOSTLY_CLOUDY_1994;
+	if (IS("ovc"))
+		return ICON_SMALL_CLOUDY;
+	if (IS("fog"))
+		return ICON_SMALL_FOG;
+	if (IS("rain"))
+		return ICON_SMALL_RAIN_1992;
+	if (IS("rain_showers") || IS("rain_showers_hi"))
+		return night ? ICON_SMALL_SCATTERED_SHOWERS_NIGHT_1994 : ICON_SMALL_SCATTERED_SHOWERS_1994;
+	if (IS("snow"))
+		return c.prob > 50 ? ICON_SMALL_HEAVY_SNOW_1994 : ICON_SMALL_LIGHT_SNOW;
+	if (IS("rain_snow"))
+		return ICON_SMALL_RAIN_SNOW_1992;
+	// ws4kp has no night case for rain_sleet, so it falls back to Clear.
+	if (IS("rain_sleet") && !night)
+		return ICON_SMALL_RAIN_SLEET;
+	if (IS("snow_sleet"))
+		return ICON_SMALL_SNOW_SLEET;
+	if (IS("sleet"))
+		return ICON_SMALL_SLEET;
+	if (IS("fzra") || IS("rain_fzra"))
+		return ICON_SMALL_FREEZING_RAIN_1992;
+	if (IS("snow_fzra"))
+		return ICON_SMALL_FREEZING_RAIN_SNOW_1994;
+	if (IS("tsra") || IS("tsra_sct"))
+		return night ? ICON_SMALL_SCATTERED_TSTORMS_NIGHT_1994 : ICON_SMALL_SCATTERED_TSTORMS_1994;
+	if (IS("tsra_hi") || IS("tornado") || IS("hurricane") || IS("tropical_storm"))
+		return ICON_SMALL_THUNDERSTORM;
+	if (IS("wind_skc"))
+		return night ? ICON_SMALL_CLEAR_WIND_1994 : ICON_SMALL_SUNNY_WIND_1994;
+	if (IS("wind_few") || IS("wind_"))
+		return ICON_SMALL_WIND;
+	if (IS("wind_sct"))
+		return night ? ICON_SMALL_CLEAR_WIND_1994 : ICON_SMALL_WIND;
+	if (IS("wind_bkn") || IS("wind_ovc"))
+		return ICON_SMALL_CLOUDY_WIND;
+	if (IS("dust") || IS("smoke"))
+		return ICON_SMALL_SMOKE;
+	if (IS("haze"))
+		return ICON_SMALL_HAZE;
+	if (IS("hot") && !night)
+		return ICON_SMALL_HOT;
+	if (IS("cold"))
+		return ICON_SMALL_COLD;
+	if (IS("blizzard"))
+		return ICON_SMALL_BLOWING_SNOW;
+#undef IS
+	return night ? ICON_SMALL_CLEAR_1992 : ICON_SMALL_SUNNY;
 }
 
 bool nws_get_alerts(double lat, double lon, Alerts *out, time_t *now, char *err, size_t err_len)

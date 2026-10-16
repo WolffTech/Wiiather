@@ -98,6 +98,23 @@ static void hourly_graph_draw(const DisplayData *d, size_t screen, u32 time_ms)
 	hourly_graph_view_draw(&d->hourly_graph);
 }
 
+static size_t travel_count(const DisplayData *d)
+{
+	return d->travel.count > 0;
+}
+
+static u32 travel_ms(const DisplayData *d, size_t screen)
+{
+	return travel_forecast_ms(&d->travel);
+}
+
+static void travel_draw(const DisplayData *d, size_t screen, u32 time_ms)
+{
+	gfx_image(IMG_BACKGROUND_1, 0, 0);
+	header_draw("Travel Forecast", d->travel.title_bottom, false);
+	travel_forecast_draw(&d->travel, time_ms - screen_started_ms, time_ms);
+}
+
 static size_t local_count(const DisplayData *d)
 {
 	return d->local.page_count;
@@ -156,6 +173,7 @@ static const Display displays[] = {
 	{ latest_observations_count, latest_observations_ms, latest_observations_screen },
 	{ hourly_count, hourly_ms, hourly_draw },
 	{ hourly_graph_count, hourly_graph_ms, hourly_graph_draw },
+	{ travel_count, travel_ms, travel_draw },
 	{ local_count, local_ms, local_draw },
 	{ extended_count, extended_ms, extended_draw },
 	{ almanac_count, almanac_ms, almanac_draw },
@@ -177,6 +195,7 @@ void displays_prepare(const WeatherSnapshot *snap, DisplayData *out)
 	}
 	hourly_view_prepare(snap, &out->hourly);
 	hourly_graph_view_prepare(snap, &out->hourly_graph);
+	travel_forecast_prepare(&snap->travel, &out->travel);
 	if (snap->has_latest_observations)
 		latest_observations_prepare(&snap->latest_observations, &out->latest_observations);
 	else
