@@ -21,21 +21,21 @@ static const TextStyle header_style = { FONT_STAR4000_SMALL_26, RGBA_WHITE, true
 static const TextStyle crawl_style = { FONT_STAR4000_32, RGBA_WHITE, true, false, 0 };
 
 // Item 0 is the hazard crawl; 0 ms means the item has nothing to show.
-static u32 item_ms(size_t item, const DisplayData *d)
+static u32 item_ms(size_t item, const DisplayData *d, bool conditions)
 {
 	if (item == 0)
 		return d->hazards.crawl[0] ? alert_scroll_ms(d->hazards.crawl_width, TEXT_WIDTH) : 0;
-	return item <= (size_t)d->current.scroll_count ? LINE_MS : 0;
+	return conditions && item <= (size_t)d->current.scroll_count ? LINE_MS : 0;
 }
 
-static void update(ScrollBar *bar, const DisplayData *d, bool visible, u32 now_ms)
+static void update(ScrollBar *bar, const DisplayData *d, bool visible, bool conditions, u32 now_ms)
 {
 	if (!visible) {
 		if (bar->shown) {
 			bar->shown = false;
 			bar->paused_elapsed_ms = now_ms - bar->started_ms;
 			// ws4kp abandons a crawl that was cut off rather than replay it.
-			if (item_ms(bar->item, d) > LINE_MS) {
+			if (item_ms(bar->item, d, conditions) > LINE_MS) {
 				bar->item++;
 				bar->paused_elapsed_ms = 0;
 			}
@@ -46,7 +46,7 @@ static void update(ScrollBar *bar, const DisplayData *d, bool visible, u32 now_m
 		bar->shown = true;
 		bar->started_ms = now_ms - bar->paused_elapsed_ms;
 	}
-	u32 ms = item_ms(bar->item, d);
+	u32 ms = item_ms(bar->item, d, conditions);
 	if (ms && now_ms - bar->started_ms < ms)
 		return;
 	// Next item with something to show, like ws4kp's forced increments.
@@ -54,7 +54,7 @@ static void update(ScrollBar *bar, const DisplayData *d, bool visible, u32 now_m
 	bar->started_ms = now_ms;
 	for (size_t i = 0; i < items; i++) {
 		bar->item = (bar->item + 1) % items;
-		if (item_ms(bar->item, d))
+		if (item_ms(bar->item, d, conditions))
 			break;
 	}
 }
@@ -86,10 +86,11 @@ static void draw_hazard(const HazardsView *h, u32 elapsed_ms)
 	gfx_clip_reset();
 }
 
-void scroll_bar_draw(ScrollBar *bar, const DisplayData *d, bool visible, u32 now_ms)
+void scroll_bar_draw(ScrollBar *bar, const DisplayData *d, bool visible, bool conditions, u32 now_ms)
 {
-	update(bar, d, visible, now_ms);
-	if (!bar->shown)
+	update(bar, d, visible, conditions, now_ms);
+	// Every item can be empty, such as with the conditions off and no alert.
+	if (!bar->shown || !item_ms(bar->item, d, conditions))
 		return;
 	if (bar->item == 0)
 		draw_hazard(&d->hazards, now_ms - bar->started_ms);

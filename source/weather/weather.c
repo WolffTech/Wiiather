@@ -385,8 +385,6 @@ void weather_start(const Location *location, const char *dir)
 	if (location) {
 		shared.location = *location;
 		location_version = 1;
-	} else {
-		shared.zip_guess.status = GUESS_PENDING;
 	}
 	LWP_CreateThread(&thread, worker, NULL, NULL, STACK_SIZE, 48);
 }

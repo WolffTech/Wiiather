@@ -29,8 +29,8 @@ in the style of The Weather Channel's 1990s local forecast.
 - A scrolling bottom bar with conditions and active NWS hazard alerts
 - ZIP code lookup, with a suggestion based on the Wii's public IP address
 - Optional background music from your own MP3s
-- A settings menu for the location, which displays rotate and the music, with
-  an About page and a reset option
+- A settings menu for the location, which displays rotate, the music, the
+  rotation speed, the clock and more, with an About page and a reset option
 - Signed certificate authority updates, so HTTPS keeps working after release
 
 US locations only, since all data comes from the NWS.
@@ -60,7 +60,8 @@ work well.
 
 On first launch, Wiiather asks for a ZIP code. It suggests one based on the
 Wii's public IP address, looked up with [ipinfo.io](https://ipinfo.io), which
-sees that address. Change digits with the D-pad's up and down, move between
+sees that address. The settings menu's General page can turn this off.
+Change digits with the D-pad's up and down, move between
 them with left and right, and press A to save. If you've changed the digits,
 press 1 to go back to the suggested ZIP code.
 
@@ -83,6 +84,10 @@ closes.
   order, and sets the volume. Its **Tracks** list turns tracks on and off
   with A, and 1 plays the selected track now. Tracks are turned off by file
   name, so new files play by default.
+- **General** sets ws4kp's rotation speed, from Very Fast (half the time on
+  each screen) to Very Slow, a 12- or 24-hour clock, whether the bottom bar
+  shows current conditions (alerts still show when it's off) and whether
+  Wiiather suggests a ZIP code from the IP address.
 - **About** shows the version, the location's coordinates, the date of the
   certificate bundle in use and when the weather last updated. Its **Reset
   Settings** option deletes `settings.ini` and asks for a location again.

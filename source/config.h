@@ -23,6 +23,9 @@ typedef enum {
 
 typedef enum { MUSIC_SHUFFLE, MUSIC_IN_ORDER } MusicOrder;
 
+// ws4kp's speed setting, which scales how long each screen shows.
+typedef enum { SPEED_VERY_FAST, SPEED_FAST, SPEED_NORMAL, SPEED_SLOW, SPEED_VERY_SLOW, SPEED_COUNT } Speed;
+
 #define MUSIC_VOLUME_STEP 5 // percent
 #define MAX_SKIPPED_TRACKS 64
 
@@ -36,6 +39,10 @@ typedef struct {
 	// File names left out of playback, kept by name so new files play.
 	char skipped_tracks[MAX_SKIPPED_TRACKS][128];
 	size_t skipped_count;
+	Speed speed;
+	bool clock_24h;
+	bool bottom_bar; // the conditions lines; hazard crawls show regardless
+	bool locate_by_ip; // suggest a ZIP code from the public IP address
 	char dir[256]; // the app's folder, which holds settings.ini and music/
 } Config;
 
@@ -43,6 +50,10 @@ typedef struct {
 // loader passes no path. `lat` and `lon` take precedence over `zip`, so
 // locations without a ZIP can be set by hand.
 void config_load(const char *argv0, Config *out);
+
+// The screen time multiplier as a percentage: 50 for Very Fast to 150 for
+// Very Slow.
+unsigned config_speed_percent(Speed speed);
 
 bool config_display_shown(const Config *config, DisplayId id);
 

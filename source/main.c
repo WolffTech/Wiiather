@@ -10,6 +10,7 @@
 #include "render/gfx.h"
 #include "screens/displays.h"
 #include "screens/location_picker.h"
+#include "screens/screens.h"
 #include "screens/settings_menu.h"
 #include "weather/weather.h"
 
@@ -40,6 +41,9 @@ int main(int argc, char **argv)
 	char music_dir[sizeof config.dir + 8];
 	snprintf(music_dir, sizeof music_dir, "%s/music", config.dir);
 	music_start(music_dir, &config);
+	header_set_clock_24h(config.clock_24h);
+	if (!config.has_location && config.locate_by_ip)
+		weather_request_zip_guess();
 
 	u64 start = gettime();
 	static WeatherSnapshot snap;
@@ -52,8 +56,10 @@ int main(int argc, char **argv)
 	bool in_menu = false;
 	SettingsMenu menu;
 	unsigned menu_changes = 0;
-	// The rotation runs on a clock that stops while the menu is open.
-	u32 paused_ms = 0, menu_opened_ms = 0;
+	// The rotation runs on its own clock, which runs at the Speed setting's
+	// rate and stops while the menu is open. `scaled_ms` carries the remainder.
+	u32 rotation_ms = 0, last_ms = 0;
+	u64 scaled_ms = 0;
 	while (!quit) {
 		WPAD_ScanPads();
 		u32 pressed = WPAD_ButtonsDown(0);
@@ -62,6 +68,13 @@ int main(int argc, char **argv)
 		music_update();
 
 		u32 now_ms = ticks_to_millisecs(gettime() - start);
+		if (!in_menu) {
+			scaled_ms += (u64)(now_ms - last_ms) * 100;
+			unsigned percent = config_speed_percent(config.speed);
+			rotation_ms += (u32)(scaled_ms / percent);
+			scaled_ms %= percent;
+		}
+		last_ms = now_ms;
 		weather_snapshot(&snap);
 		if (snap.generation != shown_generation) {
 			displays_prepare(&snap, &data);
@@ -71,7 +84,7 @@ int main(int argc, char **argv)
 
 		if (picking) {
 			Location chosen;
-			PickerResult result = location_picker_update(&picker, pressed, &snap.zip_guess, &chosen);
+			PickerResult result = location_picker_update(&picker, pressed, settings_zip_guess(&config, &snap), &chosen);
 			if (result == PICKER_CHOSEN) {
 				config.location = chosen;
 				config.has_location = true;
@@ -85,7 +98,7 @@ int main(int argc, char **argv)
 			picking = result == PICKER_OPEN;
 			// Also hold the picker on screen for the frame a ZIP is chosen,
 			// while `data` still holds the old location.
-			location_picker_draw(&picker, &snap.zip_guess);
+			location_picker_draw(&picker, settings_zip_guess(&config, &snap));
 			gfx_present();
 			continue;
 		}
@@ -100,7 +113,7 @@ int main(int argc, char **argv)
 			}
 			if (result.closed) {
 				in_menu = false;
-				paused_ms += now_ms - menu_opened_ms;
+				header_set_clock_24h(config.clock_24h);
 				// Don't let the B that closed the menu toggle the music.
 				pressed = 0;
 				if (menu_changes & SETTINGS_RESET) {
@@ -108,7 +121,8 @@ int main(int argc, char **argv)
 					// chosen saves a new one.
 					picker = location_picker_make(NULL);
 					picking = true;
-					weather_request_zip_guess();
+					if (config.locate_by_ip)
+						weather_request_zip_guess();
 					music_configure(&config);
 				} else if (menu_changes) {
 					config_save(&config);
@@ -122,7 +136,6 @@ int main(int argc, char **argv)
 			menu = settings_menu_make();
 			menu_changes = 0;
 			in_menu = true;
-			menu_opened_ms = now_ms;
 			settings_menu_draw(&menu, &config, &snap);
 			gfx_present();
 			continue;
@@ -134,11 +147,10 @@ int main(int argc, char **argv)
 			config_save(&config);
 		}
 
-		u32 clock_ms = now_ms - paused_ms;
 		if (data.has_current) {
-			rotation_update(&rotation, &data, &config, clock_ms);
-			displays_draw(&rotation, &data, clock_ms);
-			scroll_bar_draw(&scroll_bar, &data, displays_scroll_visible(&rotation), clock_ms);
+			rotation_update(&rotation, &data, &config, rotation_ms);
+			displays_draw(&rotation, &data, rotation_ms, now_ms);
+			scroll_bar_draw(&scroll_bar, &data, displays_scroll_visible(&rotation), config.bottom_bar, rotation_ms);
 		} else {
 			gfx_image(IMG_BACKGROUND_1, 0, 0);
 			header_draw("Current", "Conditions", true);

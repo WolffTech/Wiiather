@@ -26,6 +26,14 @@ static const char *const display_keys[DISPLAY_COUNT] = {
 
 #define DEFAULT_VOLUME 75 // ws4kp's default
 
+static const char *const speed_keys[SPEED_COUNT] = {
+	[SPEED_VERY_FAST] = "very_fast",
+	[SPEED_FAST] = "fast",
+	[SPEED_NORMAL] = "normal",
+	[SPEED_SLOW] = "slow",
+	[SPEED_VERY_SLOW] = "very_slow",
+};
+
 // The raw values in settings.ini, before they are checked.
 typedef struct {
 	bool has_zip, has_lat, has_lon;
@@ -36,7 +44,14 @@ typedef struct {
 // The defaults, with no location.
 static Config defaults(const char *dir)
 {
-	Config c = { .music = true, .music_order = MUSIC_SHUFFLE, .music_volume = DEFAULT_VOLUME };
+	Config c = {
+		.music = true,
+		.music_order = MUSIC_SHUFFLE,
+		.music_volume = DEFAULT_VOLUME,
+		.speed = SPEED_NORMAL,
+		.bottom_bar = true,
+		.locate_by_ip = true,
+	};
 	snprintf(c.dir, sizeof c.dir, "%s", dir);
 	return c;
 }
@@ -73,6 +88,16 @@ static void parse_line(char *line, IniValues *s, Config *out)
 			out->music_volume = (uint8_t)(volume / MUSIC_VOLUME_STEP * MUSIC_VOLUME_STEP);
 	} else if (strcmp(key, "skip_track") == 0) {
 		config_set_track_enabled(out, value, false);
+	} else if (strcmp(key, "speed") == 0) {
+		for (int i = 0; i < SPEED_COUNT; i++)
+			if (strcmp(value, speed_keys[i]) == 0)
+				out->speed = i;
+	} else if (strcmp(key, "clock") == 0) {
+		out->clock_24h = strcmp(value, "24") == 0;
+	} else if (strcmp(key, "bottom_bar") == 0) {
+		out->bottom_bar = strcmp(value, "off") != 0;
+	} else if (strcmp(key, "locate_by_ip") == 0) {
+		out->locate_by_ip = strcmp(value, "off") != 0;
 	}
 }
 
@@ -113,6 +138,11 @@ void config_load(const char *argv0, Config *out)
 	} else if (s.has_zip) {
 		out->has_location = location_from_zip(s.zip, &out->location);
 	}
+}
+
+unsigned config_speed_percent(Speed speed)
+{
+	return 50 + 25 * speed;
 }
 
 bool config_display_shown(const Config *config, DisplayId id)
@@ -186,5 +216,7 @@ bool config_save(const Config *config)
 		config->music_order == MUSIC_IN_ORDER ? "in_order" : "shuffle", (unsigned)config->music_volume);
 	for (size_t i = 0; i < config->skipped_count; i++)
 		fprintf(f, "skip_track=%s\n", config->skipped_tracks[i]);
+	fprintf(f, "speed=%s\nclock=%s\nbottom_bar=%s\nlocate_by_ip=%s\n", speed_keys[config->speed],
+		config->clock_24h ? "24" : "12", config->bottom_bar ? "on" : "off", config->locate_by_ip ? "on" : "off");
 	return fclose(f) == 0;
 }

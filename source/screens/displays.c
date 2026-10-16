@@ -14,8 +14,9 @@ typedef struct {
 	void (*draw)(const DisplayData *d, size_t screen, u32 time_ms);
 } Display;
 
-// For displays that animate from their start rather than from boot.
-static u32 screen_started_ms;
+// Rotation time since the screen started, for displays that animate from their
+// start. It runs at the Speed setting's rate, unlike the icon animations.
+static u32 screen_elapsed_ms;
 
 static size_t hazards_count(const DisplayData *d)
 {
@@ -29,7 +30,7 @@ static u32 hazards_screen_ms(const DisplayData *d, size_t screen)
 
 static void hazards_display_draw(const DisplayData *d, size_t screen, u32 time_ms)
 {
-	hazards_draw(&d->hazards, time_ms - screen_started_ms);
+	hazards_draw(&d->hazards, screen_elapsed_ms);
 }
 
 static size_t current_count(const DisplayData *d)
@@ -80,7 +81,7 @@ static void hourly_draw(const DisplayData *d, size_t screen, u32 time_ms)
 {
 	gfx_image(IMG_BACKGROUND_1, 0, 0);
 	header_draw("Hourly Forecast", NULL, false);
-	hourly_view_draw(&d->hourly, time_ms - screen_started_ms, time_ms);
+	hourly_view_draw(&d->hourly, screen_elapsed_ms, time_ms);
 }
 
 static size_t hourly_graph_count(const DisplayData *d)
@@ -114,7 +115,7 @@ static void travel_draw(const DisplayData *d, size_t screen, u32 time_ms)
 {
 	gfx_image(IMG_BACKGROUND_1, 0, 0);
 	header_draw("Travel Forecast", d->travel.title_bottom, false);
-	travel_forecast_draw(&d->travel, time_ms - screen_started_ms, time_ms);
+	travel_forecast_draw(&d->travel, screen_elapsed_ms, time_ms);
 }
 
 static size_t regional_count(const DisplayData *d)
@@ -308,10 +309,10 @@ void rotation_update(Rotation *r, DisplayData *data, const Config *config, u32 n
 	}
 }
 
-void displays_draw(const Rotation *r, const DisplayData *data, u32 now_ms)
+void displays_draw(const Rotation *r, const DisplayData *data, u32 rotation_ms, u32 now_ms)
 {
 	const Display *d = &displays[r->display];
-	screen_started_ms = r->started_ms;
+	screen_elapsed_ms = rotation_ms - r->started_ms;
 	if (r->screen < d->screen_count(data))
 		d->draw(data, r->screen, now_ms);
 }

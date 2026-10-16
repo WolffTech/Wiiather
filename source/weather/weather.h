@@ -65,8 +65,8 @@ typedef struct {
 } WeatherSnapshot;
 
 // Starts the background thread that brings up the network and refreshes
-// weather for the location periodically. Without a location, it guesses a
-// ZIP code from the IP address instead and waits for weather_set_location.
+// weather for the location periodically. Without a location, it waits for
+// weather_set_location.
 // `dir` is the app's folder, which holds the downloaded CA bundle.
 void weather_start(const Location *location, const char *dir);
 

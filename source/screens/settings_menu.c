@@ -60,10 +60,20 @@ static const TextStyle playing_style = { FONT_STAR4000_LARGE_20, RGBA_YELLOW, tr
 static const TextStyle prompt_style = { FONT_STAR4000_32, RGBA_WHITE, true, false, 0 };
 static const TextStyle note_style = { FONT_STAR4000_LARGE_20, RGBA_WHITE, true, true, 24 };
 
-typedef enum { MAIN_LOCATION, MAIN_DISPLAYS, MAIN_MUSIC, MAIN_ABOUT, MAIN_ROWS } MainRow;
-static const char *const main_labels[MAIN_ROWS] = { "Location", "Displays", "Music", "About" };
+typedef enum { MAIN_LOCATION, MAIN_DISPLAYS, MAIN_MUSIC, MAIN_GENERAL, MAIN_ABOUT, MAIN_ROWS } MainRow;
+static const char *const main_labels[MAIN_ROWS] = { "Location", "Displays", "Music", "General", "About" };
 
 typedef enum { MUSIC_ON, MUSIC_ORDER, MUSIC_VOLUME, MUSIC_TRACKS, MUSIC_ROWS } MusicRow;
+
+typedef enum { GENERAL_SPEED, GENERAL_CLOCK, GENERAL_BOTTOM_BAR, GENERAL_LOCATE, GENERAL_ROWS } GeneralRow;
+
+static const char *const speed_names[SPEED_COUNT] = {
+	[SPEED_VERY_FAST] = "Very Fast",
+	[SPEED_FAST] = "Fast",
+	[SPEED_NORMAL] = "Normal",
+	[SPEED_SLOW] = "Slow",
+	[SPEED_VERY_SLOW] = "Very Slow",
+};
 
 static const char *const display_names[DISPLAY_COUNT] = {
 	[DISPLAY_HAZARDS] = "Hazards",
@@ -81,6 +91,12 @@ static const char *const display_names[DISPLAY_COUNT] = {
 };
 
 typedef enum { ABOUT_VERSION, ABOUT_LOCATION, ABOUT_CERTIFICATES, ABOUT_WEATHER, ABOUT_RESET, ABOUT_ROWS } AboutRow;
+
+const ZipGuess *settings_zip_guess(const Config *config, const WeatherSnapshot *snap)
+{
+	static const ZipGuess none = { .status = GUESS_NONE };
+	return config->locate_by_ip ? &snap->zip_guess : &none;
+}
 
 SettingsMenu settings_menu_make(void)
 {
@@ -109,13 +125,17 @@ static void update_main(SettingsMenu *m, u32 pressed, const Config *config, Sett
 	case MAIN_LOCATION:
 		m->picker = location_picker_make(&config->location);
 		m->page = PAGE_LOCATION;
-		weather_request_zip_guess();
+		if (config->locate_by_ip)
+			weather_request_zip_guess();
 		break;
 	case MAIN_DISPLAYS:
 		m->page = PAGE_DISPLAYS;
 		break;
 	case MAIN_MUSIC:
 		m->page = PAGE_MUSIC;
+		break;
+	case MAIN_GENERAL:
+		m->page = PAGE_GENERAL;
 		break;
 	case MAIN_ABOUT:
 		m->page = PAGE_ABOUT;
@@ -215,6 +235,45 @@ static void update_tracks(SettingsMenu *m, u32 pressed, Config *config, Settings
 		m->page = PAGE_MUSIC;
 }
 
+// Left and right change the selected value; A also flips the on/off ones.
+static void update_general(SettingsMenu *m, u32 pressed, Config *config, SettingsResult *result)
+{
+	move_cursor(&m->general_row, GENERAL_ROWS, pressed);
+	bool flip = pressed & (WPAD_BUTTON_LEFT | WPAD_BUTTON_RIGHT | WPAD_BUTTON_A);
+	bool *toggle = NULL;
+	switch ((GeneralRow)m->general_row) {
+	case GENERAL_SPEED: {
+		int speed = config->speed;
+		if ((pressed & WPAD_BUTTON_LEFT) && speed > 0)
+			speed--;
+		if ((pressed & WPAD_BUTTON_RIGHT) && speed < SPEED_COUNT - 1)
+			speed++;
+		if (speed != (int)config->speed) {
+			config->speed = (Speed)speed;
+			result->changed |= SETTINGS_GENERAL;
+		}
+		break;
+	}
+	case GENERAL_CLOCK:
+		toggle = &config->clock_24h;
+		break;
+	case GENERAL_BOTTOM_BAR:
+		toggle = &config->bottom_bar;
+		break;
+	case GENERAL_LOCATE:
+		toggle = &config->locate_by_ip;
+		break;
+	case GENERAL_ROWS:
+		break;
+	}
+	if (toggle && flip) {
+		*toggle = !*toggle;
+		result->changed |= SETTINGS_GENERAL;
+	}
+	if (pressed & WPAD_BUTTON_B)
+		m->page = PAGE_MAIN;
+}
+
 SettingsResult settings_menu_update(SettingsMenu *m, u32 pressed, Config *config, const WeatherSnapshot *snap)
 {
 	SettingsResult result = { 0 };
@@ -224,7 +283,7 @@ SettingsResult settings_menu_update(SettingsMenu *m, u32 pressed, Config *config
 		break;
 	case PAGE_LOCATION: {
 		Location chosen;
-		PickerResult picked = location_picker_update(&m->picker, pressed, &snap->zip_guess, &chosen);
+		PickerResult picked = location_picker_update(&m->picker, pressed, settings_zip_guess(config, snap), &chosen);
 		if (picked == PICKER_CHOSEN) {
 			config->location = chosen;
 			config->has_location = true;
@@ -242,6 +301,9 @@ SettingsResult settings_menu_update(SettingsMenu *m, u32 pressed, Config *config
 		break;
 	case PAGE_TRACKS:
 		update_tracks(m, pressed, config, &result);
+		break;
+	case PAGE_GENERAL:
+		update_general(m, pressed, config, &result);
 		break;
 	case PAGE_ABOUT:
 		if (pressed & WPAD_BUTTON_A)
@@ -363,6 +425,9 @@ static void main_draw(const SettingsMenu *m, const Config *config)
 			else
 				snprintf(value, sizeof value, "%s, %zu tracks", config->music ? "On" : "Off", enabled_tracks(config));
 			break;
+		case MAIN_GENERAL:
+			snprintf(value, sizeof value, ">");
+			break;
 		case MAIN_ABOUT:
 			snprintf(value, sizeof value, "%s", WIIATHER_VERSION);
 			break;
@@ -460,6 +525,32 @@ static void music_draw(const SettingsMenu *m, const Config *config)
 	gfx_text(&playing_style, 320, 336, ALIGN_CENTER, note);
 }
 
+static void general_draw(const SettingsMenu *m, const Config *config)
+{
+	frame_draw("General", NULL, "D-Pad: Change  B: Back");
+	for (size_t i = 0; i < GENERAL_ROWS; i++) {
+		RowLook look = i == m->general_row ? ROW_CHOICE : ROW_PLAIN;
+		switch ((GeneralRow)i) {
+		case GENERAL_SPEED:
+			row_draw(i, look, "Speed", speed_names[config->speed]);
+			break;
+		case GENERAL_CLOCK:
+			row_draw(i, look, "Clock", config->clock_24h ? "24-Hour" : "12-Hour");
+			break;
+		case GENERAL_BOTTOM_BAR:
+			row_draw(i, look, "Bottom Bar", config->bottom_bar ? "On" : "Off");
+			break;
+		case GENERAL_LOCATE:
+			row_draw(i, look, "Locate by IP", config->locate_by_ip ? "On" : "Off");
+			break;
+		case GENERAL_ROWS:
+			break;
+		}
+	}
+	gfx_text(&playing_style, 320, 336, ALIGN_CENTER,
+		m->general_row == GENERAL_BOTTOM_BAR ? "Weather alerts still show when off" : "");
+}
+
 static void tracks_draw(const SettingsMenu *m, const Config *config)
 {
 	frame_draw("Music", "Tracks", "A: Toggle  1: Play Now  B: Back");
@@ -522,8 +613,7 @@ static void about_draw(const Config *config, const WeatherSnapshot *snap)
 	if (snap->updated) {
 		struct tm tm;
 		localtime_r(&snap->updated, &tm);
-		int hour = tm.tm_hour % 12 ? tm.tm_hour % 12 : 12;
-		snprintf(value, sizeof value, "%d:%02d %s", hour, tm.tm_min, tm.tm_hour < 12 ? "AM" : "PM");
+		clock_format(&tm, config->clock_24h, false, value, sizeof value);
 	} else {
 		snprintf(value, sizeof value, "-");
 	}
@@ -547,7 +637,7 @@ void settings_menu_draw(const SettingsMenu *m, const Config *config, const Weath
 		main_draw(m, config);
 		break;
 	case PAGE_LOCATION:
-		location_picker_draw(&m->picker, &snap->zip_guess);
+		location_picker_draw(&m->picker, settings_zip_guess(config, snap));
 		break;
 	case PAGE_DISPLAYS:
 		displays_draw(m, config);
@@ -557,6 +647,9 @@ void settings_menu_draw(const SettingsMenu *m, const Config *config, const Weath
 		break;
 	case PAGE_TRACKS:
 		tracks_draw(m, config);
+		break;
+	case PAGE_GENERAL:
+		general_draw(m, config);
 		break;
 	case PAGE_ABOUT:
 		about_draw(config, snap);
