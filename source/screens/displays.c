@@ -6,6 +6,7 @@
 #define ALMANAC_MS 9000
 #define HOURLY_GRAPH_MS 9000
 #define REGIONAL_SCREEN_MS 9000
+#define SPC_OUTLOOK_MS 9000
 
 typedef struct {
 	size_t (*screen_count)(const DisplayData *d);
@@ -184,6 +185,23 @@ static void almanac_draw(const DisplayData *d, size_t screen, u32 time_ms)
 	almanac_view_draw(&d->almanac);
 }
 
+static size_t spc_outlook_count(const DisplayData *d)
+{
+	return d->spc_outlook.ready;
+}
+
+static u32 spc_outlook_ms(const DisplayData *d, size_t screen)
+{
+	return SPC_OUTLOOK_MS;
+}
+
+static void spc_outlook_draw(const DisplayData *d, size_t screen, u32 time_ms)
+{
+	gfx_image(IMG_BACKGROUND_6, 0, 0);
+	header_draw("Storm Prediction", "Center Outlook", false);
+	spc_outlook_view_draw(&d->spc_outlook);
+}
+
 // ws4kp's order, limited to the displays ported so far.
 static const Display displays[] = {
 	{ hazards_count, hazards_screen_ms, hazards_display_draw },
@@ -196,6 +214,7 @@ static const Display displays[] = {
 	{ local_count, local_ms, local_draw },
 	{ extended_count, extended_ms, extended_draw },
 	{ almanac_count, almanac_ms, almanac_draw },
+	{ spc_outlook_count, spc_outlook_ms, spc_outlook_draw },
 };
 #define DISPLAY_COUNT (sizeof displays / sizeof displays[0])
 
@@ -221,6 +240,7 @@ void displays_prepare(const WeatherSnapshot *snap, DisplayData *out)
 	else
 		out->latest_observations.count = 0;
 	almanac_view_prepare(snap, &out->almanac);
+	spc_outlook_view_prepare(snap, &out->spc_outlook);
 	hazards_prepare(snap, &out->hazards);
 }
 
@@ -228,6 +248,8 @@ void displays_tick(const WeatherSnapshot *snap, DisplayData *data)
 {
 	if (almanac_view_outdated(&data->almanac))
 		almanac_view_prepare(snap, &data->almanac);
+	if (spc_outlook_view_outdated(&data->spc_outlook))
+		spc_outlook_view_prepare(snap, &data->spc_outlook);
 	if (hourly_view_outdated(&data->hourly))
 		hourly_view_prepare(snap, &data->hourly);
 	if (hourly_graph_view_outdated(&data->hourly_graph))

@@ -18,6 +18,7 @@ typedef struct {
 	ExtendedForecastView extended;
 	LatestObservationsView latest_observations;
 	AlmanacView almanac;
+	SpcOutlookView spc_outlook;
 	HazardsView hazards;
 } DisplayData;
 

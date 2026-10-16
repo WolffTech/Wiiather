@@ -50,6 +50,8 @@ typedef struct {
 	HourlyForecast hourly;
 	bool has_latest_observations; // kept from an earlier refresh if a later one fails
 	LatestObservations latest_observations;
+	bool has_spc_outlook; // kept from an earlier refresh if a later one fails
+	SpcOutlook spc_outlook;
 	TravelForecast travel; // doesn't depend on the location, so kept when it changes
 	RegionalForecast regional;
 	Alerts alerts; // kept from earlier fetches if later ones fail, minus expired ones

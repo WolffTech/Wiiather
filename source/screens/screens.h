@@ -152,6 +152,19 @@ void almanac_view_prepare(const WeatherSnapshot *snap, AlmanacView *out);
 bool almanac_view_outdated(const AlmanacView *view);
 void almanac_view_draw(const AlmanacView *view);
 
+// SPC Outlook: a bar for each day's categorical risk at the location.
+typedef struct {
+	bool ready; // false without a risk on any day
+	long rtc_day; // the RTC date `weekdays` start from, in days since the epoch
+	char weekdays[SPC_DAYS][10]; // "Wednesday"
+	SpcRisk risk[SPC_DAYS];
+} SpcOutlookView;
+
+void spc_outlook_view_prepare(const WeatherSnapshot *snap, SpcOutlookView *out);
+// Whether the RTC's date has changed since the view was prepared.
+bool spc_outlook_view_outdated(const SpcOutlookView *view);
+void spc_outlook_view_draw(const SpcOutlookView *view);
+
 // Hazards: unviewed alerts wrapped for a full-screen vertical scroll, plus
 // the most severe alert's crawl for the bottom bar.
 #define HAZARDS_MAX_LINES 640

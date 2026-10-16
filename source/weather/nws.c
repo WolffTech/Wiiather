@@ -677,3 +677,64 @@ bool nws_get_alerts(double lat, double lon, Alerts *out, time_t *now, char *err,
 		alerts_drop_expired(out, *now);
 	return true;
 }
+
+// Whether a GeoJSON Polygon's rings, the area and then its holes, contain the point.
+static bool polygon_contains(json_t *rings, double lon, double lat)
+{
+	size_t i;
+	json_t *ring;
+	json_array_foreach(rings, i, ring) {
+		size_t n = json_array_size(ring);
+		double (*points)[2] = malloc(n * sizeof *points);
+		if (n && !points)
+			return false;
+		for (size_t k = 0; k < n; k++) {
+			json_t *point = json_array_get(ring, k);
+			points[k][0] = json_number_value(json_array_get(point, 0));
+			points[k][1] = json_number_value(json_array_get(point, 1));
+		}
+		bool inside = spc_ring_contains(points, n, lon, lat);
+		free(points);
+		if (inside != (i == 0))
+			return false;
+	}
+	return json_array_size(rings) > 0;
+}
+
+static bool geometry_contains(json_t *geometry, double lon, double lat)
+{
+	const char *type = string_field(geometry, "type");
+	json_t *coordinates = json_object_get(geometry, "coordinates");
+	if (type && strcmp(type, "Polygon") == 0)
+		return polygon_contains(coordinates, lon, lat);
+	if (type && strcmp(type, "MultiPolygon") == 0) {
+		size_t i;
+		json_t *polygon;
+		json_array_foreach(coordinates, i, polygon)
+			if (polygon_contains(polygon, lon, lat))
+				return true;
+	}
+	return false;
+}
+
+bool nws_get_spc_outlook(double lat, double lon, SpcOutlook *out)
+{
+	bool any = false;
+	for (int day = 0; day < SPC_DAYS; day++) {
+		out->risk[day] = SPC_NONE;
+		char url[96], err[128];
+		snprintf(url, sizeof url, "https://www.spc.noaa.gov/products/outlook/day%dotlk_cat.nolyr.geojson", day + 1);
+		json_t *root = get_json(url, GEOJSON, NULL, err, sizeof err);
+		json_t *features = json_object_get(root, "features");
+		any |= json_is_array(features);
+		size_t i;
+		json_t *feature;
+		json_array_foreach(features, i, feature) {
+			SpcRisk risk = spc_risk(string_field(json_object_get(feature, "properties"), "LABEL"));
+			if (risk > out->risk[day] && geometry_contains(json_object_get(feature, "geometry"), lon, lat))
+				out->risk[day] = risk;
+		}
+		json_decref(root);
+	}
+	return any;
+}

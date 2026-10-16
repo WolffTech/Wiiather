@@ -9,6 +9,7 @@
 #include "latest_obs.h"
 #include "obs.h"
 #include "regional.h"
+#include "spc.h"
 #include "travel_cities_gen.h"
 
 typedef struct {
@@ -54,3 +55,7 @@ IconId nws_small_icon(const char *icon_url);
 // Active alerts for the location, selected and ordered like ws4kp's Hazards,
 // with expired ones dropped. `now` receives the server's clock (UTC, 0 if unknown).
 bool nws_get_alerts(double lat, double lon, Alerts *out, time_t *now, char *err, size_t err_len);
+
+// The Storm Prediction Center's categorical risk at the location for each
+// day, from its outlook polygons like ws4kp. False if no day loaded.
+bool nws_get_spc_outlook(double lat, double lon, SpcOutlook *out);

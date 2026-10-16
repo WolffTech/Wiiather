@@ -45,6 +45,7 @@ IMAGES = [
     ("MOON_FULL_DEGRADED", "icons/moon-phases/Full-Moon-Degraded.gif"),
     ("MOON_LAST", "icons/moon-phases/Last-Quarter.gif"),
     ("BACKGROUND_1_CHART", "backgrounds/1-chart.png"),
+    ("BACKGROUND_6", "backgrounds/6.png"),
 ]
 
 ICON_DIR = "icons/current-conditions"
