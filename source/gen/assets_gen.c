@@ -9,6 +9,8 @@
 #include "font_star4000_small_28_png.h"
 #include "font_star4000_20_png.h"
 #include "font_star4000_large_28_png.h"
+#include "font_star4000_24_png.h"
+#include "font_arial_bold_38_png.h"
 #include "icon_blowing_snow_png.h"
 #include "icon_clear_png.h"
 #include "icon_cloudy_png.h"
@@ -76,6 +78,7 @@
 #include "img_moon_last_png.h"
 #include "img_background_1_chart_png.h"
 #include "img_background_6_png.h"
+#include "img_background_4_png.h"
 #include "map_conus_0_0_png.h"
 #include "map_conus_0_1_png.h"
 #include "map_conus_0_2_png.h"
@@ -187,6 +190,924 @@
 #include "map_hawaii_2_0_png.h"
 #include "map_hawaii_2_1_png.h"
 #include "map_hawaii_2_2_png.h"
+#include "map_radar_0_0_png.h"
+#include "map_radar_0_1_png.h"
+#include "map_radar_0_2_png.h"
+#include "map_radar_0_3_png.h"
+#include "map_radar_0_4_png.h"
+#include "map_radar_0_5_png.h"
+#include "map_radar_0_6_png.h"
+#include "map_radar_0_7_png.h"
+#include "map_radar_0_8_png.h"
+#include "map_radar_0_9_png.h"
+#include "map_radar_0_10_png.h"
+#include "map_radar_0_11_png.h"
+#include "map_radar_0_12_png.h"
+#include "map_radar_0_13_png.h"
+#include "map_radar_0_14_png.h"
+#include "map_radar_0_15_png.h"
+#include "map_radar_0_16_png.h"
+#include "map_radar_0_17_png.h"
+#include "map_radar_0_18_png.h"
+#include "map_radar_0_19_png.h"
+#include "map_radar_0_20_png.h"
+#include "map_radar_0_21_png.h"
+#include "map_radar_0_22_png.h"
+#include "map_radar_0_23_png.h"
+#include "map_radar_0_24_png.h"
+#include "map_radar_0_25_png.h"
+#include "map_radar_0_26_png.h"
+#include "map_radar_1_0_png.h"
+#include "map_radar_1_1_png.h"
+#include "map_radar_1_2_png.h"
+#include "map_radar_1_3_png.h"
+#include "map_radar_1_4_png.h"
+#include "map_radar_1_5_png.h"
+#include "map_radar_1_6_png.h"
+#include "map_radar_1_7_png.h"
+#include "map_radar_1_8_png.h"
+#include "map_radar_1_9_png.h"
+#include "map_radar_1_10_png.h"
+#include "map_radar_1_11_png.h"
+#include "map_radar_1_12_png.h"
+#include "map_radar_1_13_png.h"
+#include "map_radar_1_14_png.h"
+#include "map_radar_1_15_png.h"
+#include "map_radar_1_16_png.h"
+#include "map_radar_1_17_png.h"
+#include "map_radar_1_18_png.h"
+#include "map_radar_1_19_png.h"
+#include "map_radar_1_20_png.h"
+#include "map_radar_1_21_png.h"
+#include "map_radar_1_22_png.h"
+#include "map_radar_1_23_png.h"
+#include "map_radar_1_24_png.h"
+#include "map_radar_1_25_png.h"
+#include "map_radar_1_26_png.h"
+#include "map_radar_2_0_png.h"
+#include "map_radar_2_1_png.h"
+#include "map_radar_2_2_png.h"
+#include "map_radar_2_3_png.h"
+#include "map_radar_2_4_png.h"
+#include "map_radar_2_5_png.h"
+#include "map_radar_2_6_png.h"
+#include "map_radar_2_7_png.h"
+#include "map_radar_2_8_png.h"
+#include "map_radar_2_9_png.h"
+#include "map_radar_2_10_png.h"
+#include "map_radar_2_11_png.h"
+#include "map_radar_2_12_png.h"
+#include "map_radar_2_13_png.h"
+#include "map_radar_2_14_png.h"
+#include "map_radar_2_15_png.h"
+#include "map_radar_2_16_png.h"
+#include "map_radar_2_17_png.h"
+#include "map_radar_2_18_png.h"
+#include "map_radar_2_19_png.h"
+#include "map_radar_2_20_png.h"
+#include "map_radar_2_21_png.h"
+#include "map_radar_2_22_png.h"
+#include "map_radar_2_23_png.h"
+#include "map_radar_2_24_png.h"
+#include "map_radar_2_25_png.h"
+#include "map_radar_2_26_png.h"
+#include "map_radar_3_0_png.h"
+#include "map_radar_3_1_png.h"
+#include "map_radar_3_2_png.h"
+#include "map_radar_3_3_png.h"
+#include "map_radar_3_4_png.h"
+#include "map_radar_3_5_png.h"
+#include "map_radar_3_6_png.h"
+#include "map_radar_3_7_png.h"
+#include "map_radar_3_8_png.h"
+#include "map_radar_3_9_png.h"
+#include "map_radar_3_10_png.h"
+#include "map_radar_3_11_png.h"
+#include "map_radar_3_12_png.h"
+#include "map_radar_3_13_png.h"
+#include "map_radar_3_14_png.h"
+#include "map_radar_3_15_png.h"
+#include "map_radar_3_16_png.h"
+#include "map_radar_3_17_png.h"
+#include "map_radar_3_18_png.h"
+#include "map_radar_3_19_png.h"
+#include "map_radar_3_20_png.h"
+#include "map_radar_3_21_png.h"
+#include "map_radar_3_22_png.h"
+#include "map_radar_3_23_png.h"
+#include "map_radar_3_24_png.h"
+#include "map_radar_3_25_png.h"
+#include "map_radar_3_26_png.h"
+#include "map_radar_4_0_png.h"
+#include "map_radar_4_1_png.h"
+#include "map_radar_4_2_png.h"
+#include "map_radar_4_3_png.h"
+#include "map_radar_4_4_png.h"
+#include "map_radar_4_5_png.h"
+#include "map_radar_4_6_png.h"
+#include "map_radar_4_7_png.h"
+#include "map_radar_4_8_png.h"
+#include "map_radar_4_9_png.h"
+#include "map_radar_4_10_png.h"
+#include "map_radar_4_11_png.h"
+#include "map_radar_4_12_png.h"
+#include "map_radar_4_13_png.h"
+#include "map_radar_4_14_png.h"
+#include "map_radar_4_15_png.h"
+#include "map_radar_4_16_png.h"
+#include "map_radar_4_17_png.h"
+#include "map_radar_4_18_png.h"
+#include "map_radar_4_19_png.h"
+#include "map_radar_4_20_png.h"
+#include "map_radar_4_21_png.h"
+#include "map_radar_4_22_png.h"
+#include "map_radar_4_23_png.h"
+#include "map_radar_4_24_png.h"
+#include "map_radar_4_25_png.h"
+#include "map_radar_4_26_png.h"
+#include "map_radar_5_0_png.h"
+#include "map_radar_5_1_png.h"
+#include "map_radar_5_2_png.h"
+#include "map_radar_5_3_png.h"
+#include "map_radar_5_4_png.h"
+#include "map_radar_5_5_png.h"
+#include "map_radar_5_6_png.h"
+#include "map_radar_5_7_png.h"
+#include "map_radar_5_8_png.h"
+#include "map_radar_5_9_png.h"
+#include "map_radar_5_10_png.h"
+#include "map_radar_5_11_png.h"
+#include "map_radar_5_12_png.h"
+#include "map_radar_5_13_png.h"
+#include "map_radar_5_14_png.h"
+#include "map_radar_5_15_png.h"
+#include "map_radar_5_16_png.h"
+#include "map_radar_5_17_png.h"
+#include "map_radar_5_18_png.h"
+#include "map_radar_5_19_png.h"
+#include "map_radar_5_20_png.h"
+#include "map_radar_5_21_png.h"
+#include "map_radar_5_22_png.h"
+#include "map_radar_5_23_png.h"
+#include "map_radar_5_24_png.h"
+#include "map_radar_5_25_png.h"
+#include "map_radar_5_26_png.h"
+#include "map_radar_6_0_png.h"
+#include "map_radar_6_1_png.h"
+#include "map_radar_6_2_png.h"
+#include "map_radar_6_3_png.h"
+#include "map_radar_6_4_png.h"
+#include "map_radar_6_5_png.h"
+#include "map_radar_6_6_png.h"
+#include "map_radar_6_7_png.h"
+#include "map_radar_6_8_png.h"
+#include "map_radar_6_9_png.h"
+#include "map_radar_6_10_png.h"
+#include "map_radar_6_11_png.h"
+#include "map_radar_6_12_png.h"
+#include "map_radar_6_13_png.h"
+#include "map_radar_6_14_png.h"
+#include "map_radar_6_15_png.h"
+#include "map_radar_6_16_png.h"
+#include "map_radar_6_17_png.h"
+#include "map_radar_6_18_png.h"
+#include "map_radar_6_19_png.h"
+#include "map_radar_6_20_png.h"
+#include "map_radar_6_21_png.h"
+#include "map_radar_6_22_png.h"
+#include "map_radar_6_23_png.h"
+#include "map_radar_6_24_png.h"
+#include "map_radar_6_25_png.h"
+#include "map_radar_6_26_png.h"
+#include "map_radar_7_0_png.h"
+#include "map_radar_7_1_png.h"
+#include "map_radar_7_2_png.h"
+#include "map_radar_7_3_png.h"
+#include "map_radar_7_4_png.h"
+#include "map_radar_7_5_png.h"
+#include "map_radar_7_6_png.h"
+#include "map_radar_7_7_png.h"
+#include "map_radar_7_8_png.h"
+#include "map_radar_7_9_png.h"
+#include "map_radar_7_10_png.h"
+#include "map_radar_7_11_png.h"
+#include "map_radar_7_12_png.h"
+#include "map_radar_7_13_png.h"
+#include "map_radar_7_14_png.h"
+#include "map_radar_7_15_png.h"
+#include "map_radar_7_16_png.h"
+#include "map_radar_7_17_png.h"
+#include "map_radar_7_18_png.h"
+#include "map_radar_7_19_png.h"
+#include "map_radar_7_20_png.h"
+#include "map_radar_7_21_png.h"
+#include "map_radar_7_22_png.h"
+#include "map_radar_7_23_png.h"
+#include "map_radar_7_24_png.h"
+#include "map_radar_7_25_png.h"
+#include "map_radar_7_26_png.h"
+#include "map_radar_8_0_png.h"
+#include "map_radar_8_1_png.h"
+#include "map_radar_8_2_png.h"
+#include "map_radar_8_3_png.h"
+#include "map_radar_8_4_png.h"
+#include "map_radar_8_5_png.h"
+#include "map_radar_8_6_png.h"
+#include "map_radar_8_7_png.h"
+#include "map_radar_8_8_png.h"
+#include "map_radar_8_9_png.h"
+#include "map_radar_8_10_png.h"
+#include "map_radar_8_11_png.h"
+#include "map_radar_8_12_png.h"
+#include "map_radar_8_13_png.h"
+#include "map_radar_8_14_png.h"
+#include "map_radar_8_15_png.h"
+#include "map_radar_8_16_png.h"
+#include "map_radar_8_17_png.h"
+#include "map_radar_8_18_png.h"
+#include "map_radar_8_19_png.h"
+#include "map_radar_8_20_png.h"
+#include "map_radar_8_21_png.h"
+#include "map_radar_8_22_png.h"
+#include "map_radar_8_23_png.h"
+#include "map_radar_8_24_png.h"
+#include "map_radar_8_25_png.h"
+#include "map_radar_8_26_png.h"
+#include "map_radar_9_0_png.h"
+#include "map_radar_9_1_png.h"
+#include "map_radar_9_2_png.h"
+#include "map_radar_9_3_png.h"
+#include "map_radar_9_4_png.h"
+#include "map_radar_9_5_png.h"
+#include "map_radar_9_6_png.h"
+#include "map_radar_9_7_png.h"
+#include "map_radar_9_8_png.h"
+#include "map_radar_9_9_png.h"
+#include "map_radar_9_10_png.h"
+#include "map_radar_9_11_png.h"
+#include "map_radar_9_12_png.h"
+#include "map_radar_9_13_png.h"
+#include "map_radar_9_14_png.h"
+#include "map_radar_9_15_png.h"
+#include "map_radar_9_16_png.h"
+#include "map_radar_9_17_png.h"
+#include "map_radar_9_18_png.h"
+#include "map_radar_9_19_png.h"
+#include "map_radar_9_20_png.h"
+#include "map_radar_9_21_png.h"
+#include "map_radar_9_22_png.h"
+#include "map_radar_9_23_png.h"
+#include "map_radar_9_24_png.h"
+#include "map_radar_9_25_png.h"
+#include "map_radar_9_26_png.h"
+#include "map_radar_10_0_png.h"
+#include "map_radar_10_1_png.h"
+#include "map_radar_10_2_png.h"
+#include "map_radar_10_3_png.h"
+#include "map_radar_10_4_png.h"
+#include "map_radar_10_5_png.h"
+#include "map_radar_10_6_png.h"
+#include "map_radar_10_7_png.h"
+#include "map_radar_10_8_png.h"
+#include "map_radar_10_9_png.h"
+#include "map_radar_10_10_png.h"
+#include "map_radar_10_11_png.h"
+#include "map_radar_10_12_png.h"
+#include "map_radar_10_13_png.h"
+#include "map_radar_10_14_png.h"
+#include "map_radar_10_15_png.h"
+#include "map_radar_10_16_png.h"
+#include "map_radar_10_17_png.h"
+#include "map_radar_10_18_png.h"
+#include "map_radar_10_19_png.h"
+#include "map_radar_10_20_png.h"
+#include "map_radar_10_21_png.h"
+#include "map_radar_10_22_png.h"
+#include "map_radar_10_23_png.h"
+#include "map_radar_10_24_png.h"
+#include "map_radar_10_25_png.h"
+#include "map_radar_10_26_png.h"
+#include "map_radar_11_0_png.h"
+#include "map_radar_11_1_png.h"
+#include "map_radar_11_2_png.h"
+#include "map_radar_11_3_png.h"
+#include "map_radar_11_4_png.h"
+#include "map_radar_11_5_png.h"
+#include "map_radar_11_6_png.h"
+#include "map_radar_11_7_png.h"
+#include "map_radar_11_8_png.h"
+#include "map_radar_11_9_png.h"
+#include "map_radar_11_10_png.h"
+#include "map_radar_11_11_png.h"
+#include "map_radar_11_12_png.h"
+#include "map_radar_11_13_png.h"
+#include "map_radar_11_14_png.h"
+#include "map_radar_11_15_png.h"
+#include "map_radar_11_16_png.h"
+#include "map_radar_11_17_png.h"
+#include "map_radar_11_18_png.h"
+#include "map_radar_11_19_png.h"
+#include "map_radar_11_20_png.h"
+#include "map_radar_11_21_png.h"
+#include "map_radar_11_22_png.h"
+#include "map_radar_11_23_png.h"
+#include "map_radar_11_24_png.h"
+#include "map_radar_11_25_png.h"
+#include "map_radar_11_26_png.h"
+#include "map_radar_12_0_png.h"
+#include "map_radar_12_1_png.h"
+#include "map_radar_12_2_png.h"
+#include "map_radar_12_3_png.h"
+#include "map_radar_12_4_png.h"
+#include "map_radar_12_5_png.h"
+#include "map_radar_12_6_png.h"
+#include "map_radar_12_7_png.h"
+#include "map_radar_12_8_png.h"
+#include "map_radar_12_9_png.h"
+#include "map_radar_12_10_png.h"
+#include "map_radar_12_11_png.h"
+#include "map_radar_12_12_png.h"
+#include "map_radar_12_13_png.h"
+#include "map_radar_12_14_png.h"
+#include "map_radar_12_15_png.h"
+#include "map_radar_12_16_png.h"
+#include "map_radar_12_17_png.h"
+#include "map_radar_12_18_png.h"
+#include "map_radar_12_19_png.h"
+#include "map_radar_12_20_png.h"
+#include "map_radar_12_21_png.h"
+#include "map_radar_12_22_png.h"
+#include "map_radar_12_23_png.h"
+#include "map_radar_12_24_png.h"
+#include "map_radar_12_25_png.h"
+#include "map_radar_12_26_png.h"
+#include "map_radar_13_0_png.h"
+#include "map_radar_13_1_png.h"
+#include "map_radar_13_2_png.h"
+#include "map_radar_13_3_png.h"
+#include "map_radar_13_4_png.h"
+#include "map_radar_13_5_png.h"
+#include "map_radar_13_6_png.h"
+#include "map_radar_13_7_png.h"
+#include "map_radar_13_8_png.h"
+#include "map_radar_13_9_png.h"
+#include "map_radar_13_10_png.h"
+#include "map_radar_13_11_png.h"
+#include "map_radar_13_12_png.h"
+#include "map_radar_13_13_png.h"
+#include "map_radar_13_14_png.h"
+#include "map_radar_13_15_png.h"
+#include "map_radar_13_16_png.h"
+#include "map_radar_13_17_png.h"
+#include "map_radar_13_18_png.h"
+#include "map_radar_13_19_png.h"
+#include "map_radar_13_20_png.h"
+#include "map_radar_13_21_png.h"
+#include "map_radar_13_22_png.h"
+#include "map_radar_13_23_png.h"
+#include "map_radar_13_24_png.h"
+#include "map_radar_13_25_png.h"
+#include "map_radar_13_26_png.h"
+#include "map_radar_14_0_png.h"
+#include "map_radar_14_1_png.h"
+#include "map_radar_14_2_png.h"
+#include "map_radar_14_3_png.h"
+#include "map_radar_14_4_png.h"
+#include "map_radar_14_5_png.h"
+#include "map_radar_14_6_png.h"
+#include "map_radar_14_7_png.h"
+#include "map_radar_14_8_png.h"
+#include "map_radar_14_9_png.h"
+#include "map_radar_14_10_png.h"
+#include "map_radar_14_11_png.h"
+#include "map_radar_14_12_png.h"
+#include "map_radar_14_13_png.h"
+#include "map_radar_14_14_png.h"
+#include "map_radar_14_15_png.h"
+#include "map_radar_14_16_png.h"
+#include "map_radar_14_17_png.h"
+#include "map_radar_14_18_png.h"
+#include "map_radar_14_19_png.h"
+#include "map_radar_14_20_png.h"
+#include "map_radar_14_21_png.h"
+#include "map_radar_14_22_png.h"
+#include "map_radar_14_23_png.h"
+#include "map_radar_14_24_png.h"
+#include "map_radar_14_25_png.h"
+#include "map_radar_14_26_png.h"
+#include "map_radar_15_0_png.h"
+#include "map_radar_15_1_png.h"
+#include "map_radar_15_2_png.h"
+#include "map_radar_15_3_png.h"
+#include "map_radar_15_4_png.h"
+#include "map_radar_15_5_png.h"
+#include "map_radar_15_6_png.h"
+#include "map_radar_15_7_png.h"
+#include "map_radar_15_8_png.h"
+#include "map_radar_15_9_png.h"
+#include "map_radar_15_10_png.h"
+#include "map_radar_15_11_png.h"
+#include "map_radar_15_12_png.h"
+#include "map_radar_15_13_png.h"
+#include "map_radar_15_14_png.h"
+#include "map_radar_15_15_png.h"
+#include "map_radar_15_16_png.h"
+#include "map_radar_15_17_png.h"
+#include "map_radar_15_18_png.h"
+#include "map_radar_15_19_png.h"
+#include "map_radar_15_20_png.h"
+#include "map_radar_15_21_png.h"
+#include "map_radar_15_22_png.h"
+#include "map_radar_15_23_png.h"
+#include "map_radar_15_24_png.h"
+#include "map_radar_15_25_png.h"
+#include "map_radar_15_26_png.h"
+#include "map_radar_16_0_png.h"
+#include "map_radar_16_1_png.h"
+#include "map_radar_16_2_png.h"
+#include "map_radar_16_3_png.h"
+#include "map_radar_16_4_png.h"
+#include "map_radar_16_5_png.h"
+#include "map_radar_16_6_png.h"
+#include "map_radar_16_7_png.h"
+#include "map_radar_16_8_png.h"
+#include "map_radar_16_9_png.h"
+#include "map_radar_16_10_png.h"
+#include "map_radar_16_11_png.h"
+#include "map_radar_16_12_png.h"
+#include "map_radar_16_13_png.h"
+#include "map_radar_16_14_png.h"
+#include "map_radar_16_15_png.h"
+#include "map_radar_16_16_png.h"
+#include "map_radar_16_17_png.h"
+#include "map_radar_16_18_png.h"
+#include "map_radar_16_19_png.h"
+#include "map_radar_16_20_png.h"
+#include "map_radar_16_21_png.h"
+#include "map_radar_16_22_png.h"
+#include "map_radar_16_23_png.h"
+#include "map_radar_16_24_png.h"
+#include "map_radar_16_25_png.h"
+#include "map_radar_16_26_png.h"
+#include "map_radar_overlay_0_0_png.h"
+#include "map_radar_overlay_0_1_png.h"
+#include "map_radar_overlay_0_2_png.h"
+#include "map_radar_overlay_0_3_png.h"
+#include "map_radar_overlay_0_4_png.h"
+#include "map_radar_overlay_0_5_png.h"
+#include "map_radar_overlay_0_6_png.h"
+#include "map_radar_overlay_0_7_png.h"
+#include "map_radar_overlay_0_8_png.h"
+#include "map_radar_overlay_0_9_png.h"
+#include "map_radar_overlay_0_10_png.h"
+#include "map_radar_overlay_0_11_png.h"
+#include "map_radar_overlay_0_12_png.h"
+#include "map_radar_overlay_0_13_png.h"
+#include "map_radar_overlay_0_14_png.h"
+#include "map_radar_overlay_0_15_png.h"
+#include "map_radar_overlay_0_16_png.h"
+#include "map_radar_overlay_0_17_png.h"
+#include "map_radar_overlay_0_18_png.h"
+#include "map_radar_overlay_0_19_png.h"
+#include "map_radar_overlay_0_20_png.h"
+#include "map_radar_overlay_0_21_png.h"
+#include "map_radar_overlay_0_22_png.h"
+#include "map_radar_overlay_0_23_png.h"
+#include "map_radar_overlay_0_24_png.h"
+#include "map_radar_overlay_0_25_png.h"
+#include "map_radar_overlay_0_26_png.h"
+#include "map_radar_overlay_1_0_png.h"
+#include "map_radar_overlay_1_1_png.h"
+#include "map_radar_overlay_1_2_png.h"
+#include "map_radar_overlay_1_3_png.h"
+#include "map_radar_overlay_1_4_png.h"
+#include "map_radar_overlay_1_5_png.h"
+#include "map_radar_overlay_1_6_png.h"
+#include "map_radar_overlay_1_7_png.h"
+#include "map_radar_overlay_1_8_png.h"
+#include "map_radar_overlay_1_9_png.h"
+#include "map_radar_overlay_1_10_png.h"
+#include "map_radar_overlay_1_11_png.h"
+#include "map_radar_overlay_1_12_png.h"
+#include "map_radar_overlay_1_13_png.h"
+#include "map_radar_overlay_1_14_png.h"
+#include "map_radar_overlay_1_15_png.h"
+#include "map_radar_overlay_1_16_png.h"
+#include "map_radar_overlay_1_17_png.h"
+#include "map_radar_overlay_1_18_png.h"
+#include "map_radar_overlay_1_19_png.h"
+#include "map_radar_overlay_1_20_png.h"
+#include "map_radar_overlay_1_21_png.h"
+#include "map_radar_overlay_1_22_png.h"
+#include "map_radar_overlay_1_23_png.h"
+#include "map_radar_overlay_1_24_png.h"
+#include "map_radar_overlay_1_25_png.h"
+#include "map_radar_overlay_1_26_png.h"
+#include "map_radar_overlay_2_0_png.h"
+#include "map_radar_overlay_2_1_png.h"
+#include "map_radar_overlay_2_2_png.h"
+#include "map_radar_overlay_2_3_png.h"
+#include "map_radar_overlay_2_4_png.h"
+#include "map_radar_overlay_2_5_png.h"
+#include "map_radar_overlay_2_6_png.h"
+#include "map_radar_overlay_2_7_png.h"
+#include "map_radar_overlay_2_8_png.h"
+#include "map_radar_overlay_2_9_png.h"
+#include "map_radar_overlay_2_10_png.h"
+#include "map_radar_overlay_2_11_png.h"
+#include "map_radar_overlay_2_12_png.h"
+#include "map_radar_overlay_2_13_png.h"
+#include "map_radar_overlay_2_14_png.h"
+#include "map_radar_overlay_2_15_png.h"
+#include "map_radar_overlay_2_16_png.h"
+#include "map_radar_overlay_2_17_png.h"
+#include "map_radar_overlay_2_18_png.h"
+#include "map_radar_overlay_2_19_png.h"
+#include "map_radar_overlay_2_20_png.h"
+#include "map_radar_overlay_2_21_png.h"
+#include "map_radar_overlay_2_22_png.h"
+#include "map_radar_overlay_2_23_png.h"
+#include "map_radar_overlay_2_24_png.h"
+#include "map_radar_overlay_2_25_png.h"
+#include "map_radar_overlay_2_26_png.h"
+#include "map_radar_overlay_3_0_png.h"
+#include "map_radar_overlay_3_1_png.h"
+#include "map_radar_overlay_3_2_png.h"
+#include "map_radar_overlay_3_3_png.h"
+#include "map_radar_overlay_3_4_png.h"
+#include "map_radar_overlay_3_5_png.h"
+#include "map_radar_overlay_3_6_png.h"
+#include "map_radar_overlay_3_7_png.h"
+#include "map_radar_overlay_3_8_png.h"
+#include "map_radar_overlay_3_9_png.h"
+#include "map_radar_overlay_3_10_png.h"
+#include "map_radar_overlay_3_11_png.h"
+#include "map_radar_overlay_3_12_png.h"
+#include "map_radar_overlay_3_13_png.h"
+#include "map_radar_overlay_3_14_png.h"
+#include "map_radar_overlay_3_15_png.h"
+#include "map_radar_overlay_3_16_png.h"
+#include "map_radar_overlay_3_17_png.h"
+#include "map_radar_overlay_3_18_png.h"
+#include "map_radar_overlay_3_19_png.h"
+#include "map_radar_overlay_3_20_png.h"
+#include "map_radar_overlay_3_21_png.h"
+#include "map_radar_overlay_3_22_png.h"
+#include "map_radar_overlay_3_23_png.h"
+#include "map_radar_overlay_3_24_png.h"
+#include "map_radar_overlay_3_25_png.h"
+#include "map_radar_overlay_3_26_png.h"
+#include "map_radar_overlay_4_0_png.h"
+#include "map_radar_overlay_4_1_png.h"
+#include "map_radar_overlay_4_2_png.h"
+#include "map_radar_overlay_4_3_png.h"
+#include "map_radar_overlay_4_4_png.h"
+#include "map_radar_overlay_4_5_png.h"
+#include "map_radar_overlay_4_6_png.h"
+#include "map_radar_overlay_4_7_png.h"
+#include "map_radar_overlay_4_8_png.h"
+#include "map_radar_overlay_4_9_png.h"
+#include "map_radar_overlay_4_10_png.h"
+#include "map_radar_overlay_4_11_png.h"
+#include "map_radar_overlay_4_12_png.h"
+#include "map_radar_overlay_4_13_png.h"
+#include "map_radar_overlay_4_14_png.h"
+#include "map_radar_overlay_4_15_png.h"
+#include "map_radar_overlay_4_16_png.h"
+#include "map_radar_overlay_4_17_png.h"
+#include "map_radar_overlay_4_18_png.h"
+#include "map_radar_overlay_4_19_png.h"
+#include "map_radar_overlay_4_20_png.h"
+#include "map_radar_overlay_4_21_png.h"
+#include "map_radar_overlay_4_22_png.h"
+#include "map_radar_overlay_4_23_png.h"
+#include "map_radar_overlay_4_24_png.h"
+#include "map_radar_overlay_4_25_png.h"
+#include "map_radar_overlay_4_26_png.h"
+#include "map_radar_overlay_5_0_png.h"
+#include "map_radar_overlay_5_1_png.h"
+#include "map_radar_overlay_5_2_png.h"
+#include "map_radar_overlay_5_3_png.h"
+#include "map_radar_overlay_5_4_png.h"
+#include "map_radar_overlay_5_5_png.h"
+#include "map_radar_overlay_5_6_png.h"
+#include "map_radar_overlay_5_7_png.h"
+#include "map_radar_overlay_5_8_png.h"
+#include "map_radar_overlay_5_9_png.h"
+#include "map_radar_overlay_5_10_png.h"
+#include "map_radar_overlay_5_11_png.h"
+#include "map_radar_overlay_5_12_png.h"
+#include "map_radar_overlay_5_13_png.h"
+#include "map_radar_overlay_5_14_png.h"
+#include "map_radar_overlay_5_15_png.h"
+#include "map_radar_overlay_5_16_png.h"
+#include "map_radar_overlay_5_17_png.h"
+#include "map_radar_overlay_5_18_png.h"
+#include "map_radar_overlay_5_19_png.h"
+#include "map_radar_overlay_5_20_png.h"
+#include "map_radar_overlay_5_21_png.h"
+#include "map_radar_overlay_5_22_png.h"
+#include "map_radar_overlay_5_23_png.h"
+#include "map_radar_overlay_5_24_png.h"
+#include "map_radar_overlay_5_25_png.h"
+#include "map_radar_overlay_5_26_png.h"
+#include "map_radar_overlay_6_0_png.h"
+#include "map_radar_overlay_6_1_png.h"
+#include "map_radar_overlay_6_2_png.h"
+#include "map_radar_overlay_6_3_png.h"
+#include "map_radar_overlay_6_4_png.h"
+#include "map_radar_overlay_6_5_png.h"
+#include "map_radar_overlay_6_6_png.h"
+#include "map_radar_overlay_6_7_png.h"
+#include "map_radar_overlay_6_8_png.h"
+#include "map_radar_overlay_6_9_png.h"
+#include "map_radar_overlay_6_10_png.h"
+#include "map_radar_overlay_6_11_png.h"
+#include "map_radar_overlay_6_12_png.h"
+#include "map_radar_overlay_6_13_png.h"
+#include "map_radar_overlay_6_14_png.h"
+#include "map_radar_overlay_6_15_png.h"
+#include "map_radar_overlay_6_16_png.h"
+#include "map_radar_overlay_6_17_png.h"
+#include "map_radar_overlay_6_18_png.h"
+#include "map_radar_overlay_6_19_png.h"
+#include "map_radar_overlay_6_20_png.h"
+#include "map_radar_overlay_6_21_png.h"
+#include "map_radar_overlay_6_22_png.h"
+#include "map_radar_overlay_6_23_png.h"
+#include "map_radar_overlay_6_24_png.h"
+#include "map_radar_overlay_6_25_png.h"
+#include "map_radar_overlay_6_26_png.h"
+#include "map_radar_overlay_7_0_png.h"
+#include "map_radar_overlay_7_1_png.h"
+#include "map_radar_overlay_7_2_png.h"
+#include "map_radar_overlay_7_3_png.h"
+#include "map_radar_overlay_7_4_png.h"
+#include "map_radar_overlay_7_5_png.h"
+#include "map_radar_overlay_7_6_png.h"
+#include "map_radar_overlay_7_7_png.h"
+#include "map_radar_overlay_7_8_png.h"
+#include "map_radar_overlay_7_9_png.h"
+#include "map_radar_overlay_7_10_png.h"
+#include "map_radar_overlay_7_11_png.h"
+#include "map_radar_overlay_7_12_png.h"
+#include "map_radar_overlay_7_13_png.h"
+#include "map_radar_overlay_7_14_png.h"
+#include "map_radar_overlay_7_15_png.h"
+#include "map_radar_overlay_7_16_png.h"
+#include "map_radar_overlay_7_17_png.h"
+#include "map_radar_overlay_7_18_png.h"
+#include "map_radar_overlay_7_19_png.h"
+#include "map_radar_overlay_7_20_png.h"
+#include "map_radar_overlay_7_21_png.h"
+#include "map_radar_overlay_7_22_png.h"
+#include "map_radar_overlay_7_23_png.h"
+#include "map_radar_overlay_7_24_png.h"
+#include "map_radar_overlay_7_25_png.h"
+#include "map_radar_overlay_7_26_png.h"
+#include "map_radar_overlay_8_0_png.h"
+#include "map_radar_overlay_8_1_png.h"
+#include "map_radar_overlay_8_2_png.h"
+#include "map_radar_overlay_8_3_png.h"
+#include "map_radar_overlay_8_4_png.h"
+#include "map_radar_overlay_8_5_png.h"
+#include "map_radar_overlay_8_6_png.h"
+#include "map_radar_overlay_8_7_png.h"
+#include "map_radar_overlay_8_8_png.h"
+#include "map_radar_overlay_8_9_png.h"
+#include "map_radar_overlay_8_10_png.h"
+#include "map_radar_overlay_8_11_png.h"
+#include "map_radar_overlay_8_12_png.h"
+#include "map_radar_overlay_8_13_png.h"
+#include "map_radar_overlay_8_14_png.h"
+#include "map_radar_overlay_8_15_png.h"
+#include "map_radar_overlay_8_16_png.h"
+#include "map_radar_overlay_8_17_png.h"
+#include "map_radar_overlay_8_18_png.h"
+#include "map_radar_overlay_8_19_png.h"
+#include "map_radar_overlay_8_20_png.h"
+#include "map_radar_overlay_8_21_png.h"
+#include "map_radar_overlay_8_22_png.h"
+#include "map_radar_overlay_8_23_png.h"
+#include "map_radar_overlay_8_24_png.h"
+#include "map_radar_overlay_8_25_png.h"
+#include "map_radar_overlay_8_26_png.h"
+#include "map_radar_overlay_9_0_png.h"
+#include "map_radar_overlay_9_1_png.h"
+#include "map_radar_overlay_9_2_png.h"
+#include "map_radar_overlay_9_3_png.h"
+#include "map_radar_overlay_9_4_png.h"
+#include "map_radar_overlay_9_5_png.h"
+#include "map_radar_overlay_9_6_png.h"
+#include "map_radar_overlay_9_7_png.h"
+#include "map_radar_overlay_9_8_png.h"
+#include "map_radar_overlay_9_9_png.h"
+#include "map_radar_overlay_9_10_png.h"
+#include "map_radar_overlay_9_11_png.h"
+#include "map_radar_overlay_9_12_png.h"
+#include "map_radar_overlay_9_13_png.h"
+#include "map_radar_overlay_9_14_png.h"
+#include "map_radar_overlay_9_15_png.h"
+#include "map_radar_overlay_9_16_png.h"
+#include "map_radar_overlay_9_17_png.h"
+#include "map_radar_overlay_9_18_png.h"
+#include "map_radar_overlay_9_19_png.h"
+#include "map_radar_overlay_9_20_png.h"
+#include "map_radar_overlay_9_21_png.h"
+#include "map_radar_overlay_9_22_png.h"
+#include "map_radar_overlay_9_23_png.h"
+#include "map_radar_overlay_9_24_png.h"
+#include "map_radar_overlay_9_25_png.h"
+#include "map_radar_overlay_9_26_png.h"
+#include "map_radar_overlay_10_0_png.h"
+#include "map_radar_overlay_10_1_png.h"
+#include "map_radar_overlay_10_2_png.h"
+#include "map_radar_overlay_10_3_png.h"
+#include "map_radar_overlay_10_4_png.h"
+#include "map_radar_overlay_10_5_png.h"
+#include "map_radar_overlay_10_6_png.h"
+#include "map_radar_overlay_10_7_png.h"
+#include "map_radar_overlay_10_8_png.h"
+#include "map_radar_overlay_10_9_png.h"
+#include "map_radar_overlay_10_10_png.h"
+#include "map_radar_overlay_10_11_png.h"
+#include "map_radar_overlay_10_12_png.h"
+#include "map_radar_overlay_10_13_png.h"
+#include "map_radar_overlay_10_14_png.h"
+#include "map_radar_overlay_10_15_png.h"
+#include "map_radar_overlay_10_16_png.h"
+#include "map_radar_overlay_10_17_png.h"
+#include "map_radar_overlay_10_18_png.h"
+#include "map_radar_overlay_10_19_png.h"
+#include "map_radar_overlay_10_20_png.h"
+#include "map_radar_overlay_10_21_png.h"
+#include "map_radar_overlay_10_22_png.h"
+#include "map_radar_overlay_10_23_png.h"
+#include "map_radar_overlay_10_24_png.h"
+#include "map_radar_overlay_10_25_png.h"
+#include "map_radar_overlay_10_26_png.h"
+#include "map_radar_overlay_11_0_png.h"
+#include "map_radar_overlay_11_1_png.h"
+#include "map_radar_overlay_11_2_png.h"
+#include "map_radar_overlay_11_3_png.h"
+#include "map_radar_overlay_11_4_png.h"
+#include "map_radar_overlay_11_5_png.h"
+#include "map_radar_overlay_11_6_png.h"
+#include "map_radar_overlay_11_7_png.h"
+#include "map_radar_overlay_11_8_png.h"
+#include "map_radar_overlay_11_9_png.h"
+#include "map_radar_overlay_11_10_png.h"
+#include "map_radar_overlay_11_11_png.h"
+#include "map_radar_overlay_11_12_png.h"
+#include "map_radar_overlay_11_13_png.h"
+#include "map_radar_overlay_11_14_png.h"
+#include "map_radar_overlay_11_15_png.h"
+#include "map_radar_overlay_11_16_png.h"
+#include "map_radar_overlay_11_17_png.h"
+#include "map_radar_overlay_11_18_png.h"
+#include "map_radar_overlay_11_19_png.h"
+#include "map_radar_overlay_11_20_png.h"
+#include "map_radar_overlay_11_21_png.h"
+#include "map_radar_overlay_11_22_png.h"
+#include "map_radar_overlay_11_23_png.h"
+#include "map_radar_overlay_11_24_png.h"
+#include "map_radar_overlay_11_25_png.h"
+#include "map_radar_overlay_11_26_png.h"
+#include "map_radar_overlay_12_0_png.h"
+#include "map_radar_overlay_12_1_png.h"
+#include "map_radar_overlay_12_2_png.h"
+#include "map_radar_overlay_12_3_png.h"
+#include "map_radar_overlay_12_4_png.h"
+#include "map_radar_overlay_12_5_png.h"
+#include "map_radar_overlay_12_6_png.h"
+#include "map_radar_overlay_12_7_png.h"
+#include "map_radar_overlay_12_8_png.h"
+#include "map_radar_overlay_12_9_png.h"
+#include "map_radar_overlay_12_10_png.h"
+#include "map_radar_overlay_12_11_png.h"
+#include "map_radar_overlay_12_12_png.h"
+#include "map_radar_overlay_12_13_png.h"
+#include "map_radar_overlay_12_14_png.h"
+#include "map_radar_overlay_12_15_png.h"
+#include "map_radar_overlay_12_16_png.h"
+#include "map_radar_overlay_12_17_png.h"
+#include "map_radar_overlay_12_18_png.h"
+#include "map_radar_overlay_12_19_png.h"
+#include "map_radar_overlay_12_20_png.h"
+#include "map_radar_overlay_12_21_png.h"
+#include "map_radar_overlay_12_22_png.h"
+#include "map_radar_overlay_12_23_png.h"
+#include "map_radar_overlay_12_24_png.h"
+#include "map_radar_overlay_12_25_png.h"
+#include "map_radar_overlay_12_26_png.h"
+#include "map_radar_overlay_13_0_png.h"
+#include "map_radar_overlay_13_1_png.h"
+#include "map_radar_overlay_13_2_png.h"
+#include "map_radar_overlay_13_3_png.h"
+#include "map_radar_overlay_13_4_png.h"
+#include "map_radar_overlay_13_5_png.h"
+#include "map_radar_overlay_13_6_png.h"
+#include "map_radar_overlay_13_7_png.h"
+#include "map_radar_overlay_13_8_png.h"
+#include "map_radar_overlay_13_9_png.h"
+#include "map_radar_overlay_13_10_png.h"
+#include "map_radar_overlay_13_11_png.h"
+#include "map_radar_overlay_13_12_png.h"
+#include "map_radar_overlay_13_13_png.h"
+#include "map_radar_overlay_13_14_png.h"
+#include "map_radar_overlay_13_15_png.h"
+#include "map_radar_overlay_13_16_png.h"
+#include "map_radar_overlay_13_17_png.h"
+#include "map_radar_overlay_13_18_png.h"
+#include "map_radar_overlay_13_19_png.h"
+#include "map_radar_overlay_13_20_png.h"
+#include "map_radar_overlay_13_21_png.h"
+#include "map_radar_overlay_13_22_png.h"
+#include "map_radar_overlay_13_23_png.h"
+#include "map_radar_overlay_13_24_png.h"
+#include "map_radar_overlay_13_25_png.h"
+#include "map_radar_overlay_13_26_png.h"
+#include "map_radar_overlay_14_0_png.h"
+#include "map_radar_overlay_14_1_png.h"
+#include "map_radar_overlay_14_2_png.h"
+#include "map_radar_overlay_14_3_png.h"
+#include "map_radar_overlay_14_4_png.h"
+#include "map_radar_overlay_14_5_png.h"
+#include "map_radar_overlay_14_6_png.h"
+#include "map_radar_overlay_14_7_png.h"
+#include "map_radar_overlay_14_8_png.h"
+#include "map_radar_overlay_14_9_png.h"
+#include "map_radar_overlay_14_10_png.h"
+#include "map_radar_overlay_14_11_png.h"
+#include "map_radar_overlay_14_12_png.h"
+#include "map_radar_overlay_14_13_png.h"
+#include "map_radar_overlay_14_14_png.h"
+#include "map_radar_overlay_14_15_png.h"
+#include "map_radar_overlay_14_16_png.h"
+#include "map_radar_overlay_14_17_png.h"
+#include "map_radar_overlay_14_18_png.h"
+#include "map_radar_overlay_14_19_png.h"
+#include "map_radar_overlay_14_20_png.h"
+#include "map_radar_overlay_14_21_png.h"
+#include "map_radar_overlay_14_22_png.h"
+#include "map_radar_overlay_14_23_png.h"
+#include "map_radar_overlay_14_24_png.h"
+#include "map_radar_overlay_14_25_png.h"
+#include "map_radar_overlay_14_26_png.h"
+#include "map_radar_overlay_15_0_png.h"
+#include "map_radar_overlay_15_1_png.h"
+#include "map_radar_overlay_15_2_png.h"
+#include "map_radar_overlay_15_3_png.h"
+#include "map_radar_overlay_15_4_png.h"
+#include "map_radar_overlay_15_5_png.h"
+#include "map_radar_overlay_15_6_png.h"
+#include "map_radar_overlay_15_7_png.h"
+#include "map_radar_overlay_15_8_png.h"
+#include "map_radar_overlay_15_9_png.h"
+#include "map_radar_overlay_15_10_png.h"
+#include "map_radar_overlay_15_11_png.h"
+#include "map_radar_overlay_15_12_png.h"
+#include "map_radar_overlay_15_13_png.h"
+#include "map_radar_overlay_15_14_png.h"
+#include "map_radar_overlay_15_15_png.h"
+#include "map_radar_overlay_15_16_png.h"
+#include "map_radar_overlay_15_17_png.h"
+#include "map_radar_overlay_15_18_png.h"
+#include "map_radar_overlay_15_19_png.h"
+#include "map_radar_overlay_15_20_png.h"
+#include "map_radar_overlay_15_21_png.h"
+#include "map_radar_overlay_15_22_png.h"
+#include "map_radar_overlay_15_23_png.h"
+#include "map_radar_overlay_15_24_png.h"
+#include "map_radar_overlay_15_25_png.h"
+#include "map_radar_overlay_15_26_png.h"
+#include "map_radar_overlay_16_0_png.h"
+#include "map_radar_overlay_16_1_png.h"
+#include "map_radar_overlay_16_2_png.h"
+#include "map_radar_overlay_16_3_png.h"
+#include "map_radar_overlay_16_4_png.h"
+#include "map_radar_overlay_16_5_png.h"
+#include "map_radar_overlay_16_6_png.h"
+#include "map_radar_overlay_16_7_png.h"
+#include "map_radar_overlay_16_8_png.h"
+#include "map_radar_overlay_16_9_png.h"
+#include "map_radar_overlay_16_10_png.h"
+#include "map_radar_overlay_16_11_png.h"
+#include "map_radar_overlay_16_12_png.h"
+#include "map_radar_overlay_16_13_png.h"
+#include "map_radar_overlay_16_14_png.h"
+#include "map_radar_overlay_16_15_png.h"
+#include "map_radar_overlay_16_16_png.h"
+#include "map_radar_overlay_16_17_png.h"
+#include "map_radar_overlay_16_18_png.h"
+#include "map_radar_overlay_16_19_png.h"
+#include "map_radar_overlay_16_20_png.h"
+#include "map_radar_overlay_16_21_png.h"
+#include "map_radar_overlay_16_22_png.h"
+#include "map_radar_overlay_16_23_png.h"
+#include "map_radar_overlay_16_24_png.h"
+#include "map_radar_overlay_16_25_png.h"
+#include "map_radar_overlay_16_26_png.h"
 
 const FontAsset font_assets[FONT_COUNT] = {
 	[FONT_STAR4000_32] = { font_star4000_32_png, 29, 7, 1, {
@@ -1926,6 +2847,392 @@ const FontAsset font_assets[FONT_COUNT] = {
 		[254] = { 272, 160, 16, 0, 0, 0, 16 },
 		[255] = { 289, 160, 14, 0, 0, 0, 14 },
 	} },
+	[FONT_STAR4000_24] = { font_star4000_24_png, 22, 5, 1, {
+		[32] = { 0, 0, 11, 0, 0, 0, 11 },
+		[33] = { 12, 0, 11, 16, 0, -16, 11 },
+		[34] = { 24, 0, 11, 17, 0, -17, 11 },
+		[35] = { 36, 0, 11, 16, 0, -16, 11 },
+		[36] = { 48, 0, 11, 18, 0, -16, 11 },
+		[37] = { 60, 0, 12, 16, 0, -16, 11 },
+		[38] = { 73, 0, 11, 16, 0, -16, 11 },
+		[39] = { 85, 0, 11, 17, 0, -17, 11 },
+		[40] = { 97, 0, 11, 18, 0, -16, 11 },
+		[41] = { 109, 0, 11, 18, 0, -16, 11 },
+		[42] = { 121, 0, 11, 16, 0, -16, 11 },
+		[43] = { 133, 0, 11, 14, 0, -14, 11 },
+		[44] = { 145, 0, 11, 7, 0, -4, 11 },
+		[45] = { 157, 0, 11, 7, 0, -7, 11 },
+		[46] = { 169, 0, 11, 3, 0, -3, 11 },
+		[47] = { 181, 0, 11, 18, 0, -16, 11 },
+		[48] = { 193, 0, 11, 16, 0, -16, 11 },
+		[49] = { 205, 0, 11, 16, 0, -16, 11 },
+		[50] = { 217, 0, 11, 16, 0, -16, 11 },
+		[51] = { 229, 0, 11, 16, 0, -16, 11 },
+		[52] = { 241, 0, 11, 16, 0, -16, 11 },
+		[53] = { 253, 0, 11, 16, 0, -16, 11 },
+		[54] = { 265, 0, 11, 16, 0, -16, 11 },
+		[55] = { 277, 0, 11, 16, 0, -16, 11 },
+		[56] = { 289, 0, 11, 16, 0, -16, 11 },
+		[57] = { 301, 0, 11, 16, 0, -16, 11 },
+		[58] = { 313, 0, 11, 13, 0, -13, 11 },
+		[59] = { 325, 0, 11, 16, 0, -13, 11 },
+		[60] = { 337, 0, 11, 15, 0, -15, 11 },
+		[61] = { 349, 0, 11, 11, 0, -11, 11 },
+		[62] = { 361, 0, 11, 15, 0, -15, 11 },
+		[63] = { 373, 0, 11, 16, 0, -16, 11 },
+		[64] = { 385, 0, 11, 16, 0, -16, 11 },
+		[65] = { 397, 0, 11, 16, 0, -16, 11 },
+		[66] = { 409, 0, 11, 16, 0, -16, 11 },
+		[67] = { 421, 0, 11, 16, 0, -16, 11 },
+		[68] = { 433, 0, 11, 16, 0, -16, 11 },
+		[69] = { 445, 0, 11, 16, 0, -16, 11 },
+		[70] = { 457, 0, 11, 16, 0, -16, 11 },
+		[71] = { 469, 0, 12, 16, 0, -16, 11 },
+		[72] = { 482, 0, 11, 16, 0, -16, 11 },
+		[73] = { 494, 0, 11, 16, 0, -16, 11 },
+		[74] = { 0, 19, 11, 16, 0, -16, 11 },
+		[75] = { 12, 19, 11, 16, 0, -16, 11 },
+		[76] = { 24, 19, 11, 16, 0, -16, 11 },
+		[77] = { 36, 19, 11, 16, 0, -16, 11 },
+		[78] = { 48, 19, 11, 16, 0, -16, 11 },
+		[79] = { 60, 19, 12, 16, 0, -16, 11 },
+		[80] = { 73, 19, 11, 16, 0, -16, 11 },
+		[81] = { 85, 19, 12, 17, 0, -16, 11 },
+		[82] = { 98, 19, 11, 16, 0, -16, 11 },
+		[83] = { 110, 19, 11, 16, 0, -16, 11 },
+		[84] = { 122, 19, 11, 16, 0, -16, 11 },
+		[85] = { 134, 19, 11, 16, 0, -16, 11 },
+		[86] = { 146, 19, 11, 16, 0, -16, 11 },
+		[87] = { 158, 19, 12, 16, 0, -16, 11 },
+		[88] = { 171, 19, 11, 16, 0, -16, 11 },
+		[89] = { 183, 19, 11, 16, 0, -16, 11 },
+		[90] = { 195, 19, 11, 16, 0, -16, 11 },
+		[91] = { 207, 19, 11, 18, 0, -16, 11 },
+		[92] = { 219, 19, 11, 18, 0, -16, 11 },
+		[93] = { 231, 19, 11, 18, 0, -16, 11 },
+		[94] = { 243, 19, 11, 17, 0, -17, 11 },
+		[95] = { 255, 19, 11, 6, 0, 0, 11 },
+		[96] = { 267, 19, 11, 18, 0, -18, 11 },
+		[97] = { 279, 19, 11, 14, 0, -13, 11 },
+		[98] = { 291, 19, 11, 16, 0, -16, 11 },
+		[99] = { 303, 19, 11, 13, 0, -13, 11 },
+		[100] = { 315, 19, 11, 16, 0, -16, 11 },
+		[101] = { 327, 19, 11, 13, 0, -13, 11 },
+		[102] = { 339, 19, 11, 16, 0, -16, 11 },
+		[103] = { 351, 19, 11, 15, 0, -13, 11 },
+		[104] = { 363, 19, 11, 16, 0, -16, 11 },
+		[105] = { 375, 19, 11, 16, 0, -16, 11 },
+		[106] = { 387, 19, 11, 18, 0, -16, 11 },
+		[107] = { 399, 19, 11, 16, 0, -16, 11 },
+		[108] = { 411, 19, 11, 16, 0, -16, 11 },
+		[109] = { 423, 19, 12, 13, 0, -13, 11 },
+		[110] = { 436, 19, 11, 13, 0, -13, 11 },
+		[111] = { 448, 19, 11, 13, 0, -13, 11 },
+		[112] = { 460, 19, 11, 15, 0, -13, 11 },
+		[113] = { 472, 19, 11, 15, 0, -13, 11 },
+		[114] = { 484, 19, 11, 13, 0, -13, 11 },
+		[115] = { 496, 19, 11, 13, 0, -13, 11 },
+		[116] = { 0, 38, 11, 15, 0, -15, 11 },
+		[117] = { 12, 38, 11, 13, 0, -13, 11 },
+		[118] = { 24, 38, 11, 13, 0, -13, 11 },
+		[119] = { 36, 38, 13, 13, -1, -13, 11 },
+		[120] = { 50, 38, 11, 13, 0, -13, 11 },
+		[121] = { 62, 38, 12, 15, 0, -13, 11 },
+		[122] = { 75, 38, 11, 13, 0, -13, 11 },
+		[123] = { 87, 38, 11, 18, 0, -16, 11 },
+		[124] = { 99, 38, 11, 20, 0, -18, 11 },
+		[125] = { 111, 38, 11, 18, 0, -16, 11 },
+		[126] = { 123, 38, 11, 9, 0, -9, 11 },
+		[160] = { 135, 38, 11, 0, 0, 0, 11 },
+		[161] = { 147, 38, 11, 0, 0, 0, 11 },
+		[162] = { 159, 38, 11, 0, 0, 0, 11 },
+		[163] = { 171, 38, 11, 0, 0, 0, 11 },
+		[164] = { 183, 38, 11, 0, 0, 0, 11 },
+		[165] = { 195, 38, 11, 0, 0, 0, 11 },
+		[166] = { 207, 38, 11, 0, 0, 0, 11 },
+		[167] = { 219, 38, 11, 0, 0, 0, 11 },
+		[168] = { 231, 38, 11, 0, 0, 0, 11 },
+		[169] = { 243, 38, 12, 15, 0, -15, 11 },
+		[170] = { 256, 38, 11, 0, 0, 0, 11 },
+		[171] = { 268, 38, 11, 0, 0, 0, 11 },
+		[172] = { 280, 38, 11, 0, 0, 0, 11 },
+		[173] = { 292, 38, 0, 0, 0, 0, 0 },
+		[174] = { 293, 38, 12, 15, 0, -15, 11 },
+		[175] = { 306, 38, 11, 0, 0, 0, 11 },
+		[176] = { 318, 38, 11, 16, 0, -16, 11 },
+		[177] = { 330, 38, 11, 0, 0, 0, 11 },
+		[178] = { 342, 38, 11, 0, 0, 0, 11 },
+		[179] = { 354, 38, 11, 0, 0, 0, 11 },
+		[180] = { 366, 38, 11, 0, 0, 0, 11 },
+		[181] = { 378, 38, 11, 0, 0, 0, 11 },
+		[182] = { 390, 38, 11, 0, 0, 0, 11 },
+		[183] = { 402, 38, 11, 0, 0, 0, 11 },
+		[184] = { 414, 38, 11, 0, 0, 0, 11 },
+		[185] = { 426, 38, 11, 0, 0, 0, 11 },
+		[186] = { 438, 38, 11, 0, 0, 0, 11 },
+		[187] = { 450, 38, 11, 0, 0, 0, 11 },
+		[188] = { 462, 38, 11, 0, 0, 0, 11 },
+		[189] = { 474, 38, 11, 0, 0, 0, 11 },
+		[190] = { 486, 38, 11, 0, 0, 0, 11 },
+		[191] = { 498, 38, 11, 0, 0, 0, 11 },
+		[192] = { 0, 59, 11, 0, 0, 0, 11 },
+		[193] = { 12, 59, 11, 0, 0, 0, 11 },
+		[194] = { 24, 59, 11, 0, 0, 0, 11 },
+		[195] = { 36, 59, 11, 0, 0, 0, 11 },
+		[196] = { 48, 59, 11, 0, 0, 0, 11 },
+		[197] = { 60, 59, 11, 0, 0, 0, 11 },
+		[198] = { 72, 59, 11, 0, 0, 0, 11 },
+		[199] = { 84, 59, 11, 0, 0, 0, 11 },
+		[200] = { 96, 59, 11, 0, 0, 0, 11 },
+		[201] = { 108, 59, 11, 0, 0, 0, 11 },
+		[202] = { 120, 59, 11, 0, 0, 0, 11 },
+		[203] = { 132, 59, 11, 0, 0, 0, 11 },
+		[204] = { 144, 59, 11, 0, 0, 0, 11 },
+		[205] = { 156, 59, 11, 0, 0, 0, 11 },
+		[206] = { 168, 59, 11, 0, 0, 0, 11 },
+		[207] = { 180, 59, 11, 0, 0, 0, 11 },
+		[208] = { 192, 59, 11, 0, 0, 0, 11 },
+		[209] = { 204, 59, 11, 0, 0, 0, 11 },
+		[210] = { 216, 59, 11, 0, 0, 0, 11 },
+		[211] = { 228, 59, 11, 0, 0, 0, 11 },
+		[212] = { 240, 59, 11, 0, 0, 0, 11 },
+		[213] = { 252, 59, 11, 0, 0, 0, 11 },
+		[214] = { 264, 59, 11, 0, 0, 0, 11 },
+		[215] = { 276, 59, 11, 0, 0, 0, 11 },
+		[216] = { 288, 59, 11, 0, 0, 0, 11 },
+		[217] = { 300, 59, 11, 0, 0, 0, 11 },
+		[218] = { 312, 59, 11, 0, 0, 0, 11 },
+		[219] = { 324, 59, 11, 0, 0, 0, 11 },
+		[220] = { 336, 59, 11, 0, 0, 0, 11 },
+		[221] = { 348, 59, 11, 0, 0, 0, 11 },
+		[222] = { 360, 59, 11, 0, 0, 0, 11 },
+		[223] = { 372, 59, 11, 0, 0, 0, 11 },
+		[224] = { 384, 59, 11, 0, 0, 0, 11 },
+		[225] = { 396, 59, 11, 0, 0, 0, 11 },
+		[226] = { 408, 59, 11, 0, 0, 0, 11 },
+		[227] = { 420, 59, 11, 0, 0, 0, 11 },
+		[228] = { 432, 59, 11, 0, 0, 0, 11 },
+		[229] = { 444, 59, 11, 0, 0, 0, 11 },
+		[230] = { 456, 59, 11, 0, 0, 0, 11 },
+		[231] = { 468, 59, 11, 0, 0, 0, 11 },
+		[232] = { 480, 59, 11, 0, 0, 0, 11 },
+		[233] = { 492, 59, 11, 0, 0, 0, 11 },
+		[234] = { 0, 60, 11, 0, 0, 0, 11 },
+		[235] = { 12, 60, 11, 0, 0, 0, 11 },
+		[236] = { 24, 60, 11, 0, 0, 0, 11 },
+		[237] = { 36, 60, 11, 0, 0, 0, 11 },
+		[238] = { 48, 60, 11, 0, 0, 0, 11 },
+		[239] = { 60, 60, 11, 0, 0, 0, 11 },
+		[240] = { 72, 60, 11, 0, 0, 0, 11 },
+		[241] = { 84, 60, 11, 0, 0, 0, 11 },
+		[242] = { 96, 60, 11, 0, 0, 0, 11 },
+		[243] = { 108, 60, 11, 0, 0, 0, 11 },
+		[244] = { 120, 60, 11, 0, 0, 0, 11 },
+		[245] = { 132, 60, 11, 0, 0, 0, 11 },
+		[246] = { 144, 60, 11, 0, 0, 0, 11 },
+		[247] = { 156, 60, 11, 0, 0, 0, 11 },
+		[248] = { 168, 60, 11, 0, 0, 0, 11 },
+		[249] = { 180, 60, 11, 0, 0, 0, 11 },
+		[250] = { 192, 60, 11, 0, 0, 0, 11 },
+		[251] = { 204, 60, 11, 0, 0, 0, 11 },
+		[252] = { 216, 60, 11, 0, 0, 0, 11 },
+		[253] = { 228, 60, 11, 0, 0, 0, 11 },
+		[254] = { 240, 60, 11, 0, 0, 0, 11 },
+		[255] = { 252, 60, 11, 0, 0, 0, 11 },
+	} },
+	[FONT_ARIAL_BOLD_38] = { font_arial_bold_38_png, 34, 8, 1, {
+		[32] = { 0, 0, 11, 0, 0, 0, 11 },
+		[33] = { 12, 0, 13, 26, 0, -26, 13 },
+		[34] = { 26, 0, 18, 26, 0, -26, 18 },
+		[35] = { 45, 0, 21, 26, 0, -26, 21 },
+		[36] = { 67, 0, 21, 33, 0, -29, 21 },
+		[37] = { 89, 0, 34, 26, 0, -26, 34 },
+		[38] = { 124, 0, 27, 26, 0, -26, 27 },
+		[39] = { 152, 0, 9, 26, 0, -26, 9 },
+		[40] = { 162, 0, 13, 36, 0, -28, 13 },
+		[41] = { 176, 0, 13, 36, 0, -28, 13 },
+		[42] = { 190, 0, 15, 26, 0, -26, 15 },
+		[43] = { 206, 0, 22, 23, 0, -23, 22 },
+		[44] = { 229, 0, 11, 12, 0, -6, 11 },
+		[45] = { 241, 0, 13, 12, 0, -12, 13 },
+		[46] = { 255, 0, 11, 6, 0, -6, 11 },
+		[47] = { 267, 0, 11, 29, 0, -28, 11 },
+		[48] = { 279, 0, 21, 26, 0, -26, 21 },
+		[49] = { 301, 0, 21, 26, 0, -26, 21 },
+		[50] = { 323, 0, 21, 26, 0, -26, 21 },
+		[51] = { 345, 0, 21, 26, 0, -26, 21 },
+		[52] = { 367, 0, 21, 26, 0, -26, 21 },
+		[53] = { 389, 0, 21, 26, 0, -26, 21 },
+		[54] = { 411, 0, 21, 26, 0, -26, 21 },
+		[55] = { 433, 0, 21, 26, 0, -26, 21 },
+		[56] = { 455, 0, 21, 26, 0, -26, 21 },
+		[57] = { 477, 0, 21, 26, 0, -26, 21 },
+		[58] = { 0, 37, 13, 19, 0, -19, 13 },
+		[59] = { 14, 37, 13, 25, 0, -19, 13 },
+		[60] = { 28, 37, 22, 23, 0, -23, 22 },
+		[61] = { 51, 37, 22, 20, 0, -20, 22 },
+		[62] = { 74, 37, 22, 23, 0, -23, 22 },
+		[63] = { 97, 37, 23, 26, 0, -26, 23 },
+		[64] = { 121, 37, 37, 32, 0, -26, 37 },
+		[65] = { 159, 37, 27, 26, 0, -26, 27 },
+		[66] = { 187, 37, 27, 26, 0, -26, 27 },
+		[67] = { 215, 37, 27, 26, 0, -26, 27 },
+		[68] = { 243, 37, 27, 26, 0, -26, 27 },
+		[69] = { 271, 37, 25, 26, 0, -26, 25 },
+		[70] = { 297, 37, 23, 26, 0, -26, 23 },
+		[71] = { 321, 37, 30, 26, 0, -26, 30 },
+		[72] = { 352, 37, 27, 26, 0, -26, 27 },
+		[73] = { 380, 37, 11, 26, 0, -26, 11 },
+		[74] = { 392, 37, 21, 26, 0, -26, 21 },
+		[75] = { 414, 37, 28, 26, 0, -26, 27 },
+		[76] = { 443, 37, 23, 26, 0, -26, 23 },
+		[77] = { 467, 37, 32, 26, 0, -26, 32 },
+		[78] = { 0, 70, 27, 26, 0, -26, 27 },
+		[79] = { 28, 70, 30, 26, 0, -26, 30 },
+		[80] = { 59, 70, 25, 26, 0, -26, 25 },
+		[81] = { 85, 70, 30, 33, 0, -26, 30 },
+		[82] = { 116, 70, 27, 26, 0, -26, 27 },
+		[83] = { 144, 70, 25, 26, 0, -26, 25 },
+		[84] = { 170, 70, 23, 26, 0, -26, 23 },
+		[85] = { 194, 70, 27, 26, 0, -26, 27 },
+		[86] = { 222, 70, 26, 26, 0, -26, 25 },
+		[87] = { 249, 70, 36, 26, 0, -26, 36 },
+		[88] = { 286, 70, 26, 26, 0, -26, 25 },
+		[89] = { 313, 70, 25, 26, 0, -26, 25 },
+		[90] = { 339, 70, 23, 26, 0, -26, 23 },
+		[91] = { 363, 70, 13, 36, 0, -28, 13 },
+		[92] = { 377, 70, 11, 29, 0, -28, 11 },
+		[93] = { 389, 70, 13, 36, 0, -28, 13 },
+		[94] = { 403, 70, 22, 26, 0, -26, 22 },
+		[95] = { 426, 70, 23, 5, -1, 0, 21 },
+		[96] = { 450, 70, 13, 28, 0, -28, 13 },
+		[97] = { 464, 70, 22, 21, 0, -21, 21 },
+		[98] = { 487, 70, 23, 28, 0, -28, 23 },
+		[99] = { 0, 107, 21, 21, 0, -21, 21 },
+		[100] = { 22, 107, 23, 28, 0, -28, 23 },
+		[101] = { 46, 107, 21, 21, 0, -21, 21 },
+		[102] = { 68, 107, 13, 28, 0, -28, 13 },
+		[103] = { 82, 107, 23, 29, 0, -21, 23 },
+		[104] = { 106, 107, 23, 28, 0, -28, 23 },
+		[105] = { 130, 107, 11, 28, 0, -28, 11 },
+		[106] = { 142, 107, 12, 36, -1, -28, 11 },
+		[107] = { 155, 107, 22, 28, 0, -28, 21 },
+		[108] = { 178, 107, 11, 28, 0, -28, 11 },
+		[109] = { 190, 107, 34, 21, 0, -21, 34 },
+		[110] = { 225, 107, 23, 21, 0, -21, 23 },
+		[111] = { 249, 107, 23, 21, 0, -21, 23 },
+		[112] = { 273, 107, 23, 29, 0, -21, 23 },
+		[113] = { 297, 107, 23, 29, 0, -21, 23 },
+		[114] = { 321, 107, 15, 21, 0, -21, 15 },
+		[115] = { 337, 107, 21, 21, 0, -21, 21 },
+		[116] = { 359, 107, 13, 26, 0, -26, 13 },
+		[117] = { 373, 107, 23, 21, 0, -21, 23 },
+		[118] = { 397, 107, 21, 21, 0, -21, 21 },
+		[119] = { 419, 107, 31, 21, -1, -21, 30 },
+		[120] = { 451, 107, 21, 21, 0, -21, 21 },
+		[121] = { 473, 107, 21, 29, 0, -21, 21 },
+		[122] = { 0, 144, 19, 21, 0, -21, 19 },
+		[123] = { 20, 144, 15, 36, 0, -28, 15 },
+		[124] = { 36, 144, 11, 36, 0, -28, 11 },
+		[125] = { 48, 144, 15, 36, 0, -28, 15 },
+		[126] = { 64, 144, 22, 16, 0, -16, 22 },
+		[160] = { 87, 144, 11, 0, 0, 0, 11 },
+		[161] = { 99, 144, 13, 27, 0, -21, 13 },
+		[162] = { 113, 144, 21, 28, 0, -27, 21 },
+		[163] = { 135, 144, 21, 26, 0, -26, 21 },
+		[164] = { 157, 144, 21, 23, 0, -23, 21 },
+		[165] = { 179, 144, 21, 26, 0, -26, 21 },
+		[166] = { 201, 144, 11, 36, 0, -28, 11 },
+		[167] = { 213, 144, 21, 30, 0, -26, 21 },
+		[168] = { 235, 144, 13, 27, 0, -27, 13 },
+		[169] = { 249, 144, 28, 26, 0, -26, 28 },
+		[170] = { 278, 144, 15, 26, 0, -26, 14 },
+		[171] = { 294, 144, 21, 17, 0, -17, 21 },
+		[172] = { 316, 144, 22, 15, 0, -15, 22 },
+		[173] = { 339, 144, 0, 0, 0, 0, 0 },
+		[174] = { 340, 144, 28, 26, 0, -26, 28 },
+		[175] = { 369, 144, 23, 29, -1, -29, 21 },
+		[176] = { 393, 144, 15, 26, 0, -26, 15 },
+		[177] = { 409, 144, 21, 24, 0, -24, 21 },
+		[178] = { 431, 144, 13, 26, 0, -26, 13 },
+		[179] = { 445, 144, 13, 26, 0, -26, 13 },
+		[180] = { 459, 144, 13, 28, 0, -28, 13 },
+		[181] = { 473, 144, 22, 29, 0, -21, 22 },
+		[182] = { 0, 181, 21, 31, 0, -26, 21 },
+		[183] = { 22, 181, 13, 16, 0, -16, 13 },
+		[184] = { 36, 181, 13, 8, 0, 0, 13 },
+		[185] = { 50, 181, 13, 26, 0, -26, 13 },
+		[186] = { 64, 181, 14, 26, 0, -26, 14 },
+		[187] = { 79, 181, 21, 17, 0, -17, 21 },
+		[188] = { 101, 181, 35, 30, 0, -26, 32 },
+		[189] = { 137, 181, 32, 26, 0, -26, 32 },
+		[190] = { 170, 181, 35, 30, 0, -26, 32 },
+		[191] = { 206, 181, 23, 27, 0, -21, 23 },
+		[192] = { 230, 181, 27, 33, 0, -33, 27 },
+		[193] = { 258, 181, 27, 33, 0, -33, 27 },
+		[194] = { 286, 181, 27, 33, 0, -33, 27 },
+		[195] = { 314, 181, 27, 33, 0, -33, 27 },
+		[196] = { 342, 181, 27, 32, 0, -32, 27 },
+		[197] = { 370, 181, 27, 33, 0, -33, 27 },
+		[198] = { 398, 181, 38, 26, 0, -26, 38 },
+		[199] = { 437, 181, 27, 34, 0, -26, 27 },
+		[200] = { 465, 181, 25, 33, 0, -33, 25 },
+		[201] = { 0, 216, 25, 33, 0, -33, 25 },
+		[202] = { 26, 216, 25, 33, 0, -33, 25 },
+		[203] = { 52, 216, 25, 32, 0, -32, 25 },
+		[204] = { 78, 216, 12, 33, -1, -33, 11 },
+		[205] = { 91, 216, 12, 33, 0, -33, 11 },
+		[206] = { 104, 216, 15, 33, -2, -33, 11 },
+		[207] = { 120, 216, 13, 32, -1, -32, 11 },
+		[208] = { 134, 216, 27, 26, 0, -26, 27 },
+		[209] = { 162, 216, 27, 33, 0, -33, 27 },
+		[210] = { 190, 216, 30, 33, 0, -33, 30 },
+		[211] = { 221, 216, 30, 33, 0, -33, 30 },
+		[212] = { 252, 216, 30, 33, 0, -33, 30 },
+		[213] = { 283, 216, 30, 33, 0, -33, 30 },
+		[214] = { 314, 216, 30, 32, 0, -32, 30 },
+		[215] = { 345, 216, 22, 22, 0, -22, 22 },
+		[216] = { 368, 216, 30, 29, 0, -27, 30 },
+		[217] = { 399, 216, 27, 33, 0, -33, 27 },
+		[218] = { 427, 216, 27, 33, 0, -33, 27 },
+		[219] = { 455, 216, 27, 33, 0, -33, 27 },
+		[220] = { 483, 216, 27, 32, 0, -32, 27 },
+		[221] = { 0, 250, 25, 33, 0, -33, 25 },
+		[222] = { 26, 250, 25, 26, 0, -26, 25 },
+		[223] = { 52, 250, 23, 28, 0, -28, 23 },
+		[224] = { 76, 250, 22, 29, 0, -29, 21 },
+		[225] = { 99, 250, 22, 29, 0, -29, 21 },
+		[226] = { 122, 250, 22, 29, 0, -29, 21 },
+		[227] = { 145, 250, 22, 28, 0, -28, 21 },
+		[228] = { 168, 250, 22, 27, 0, -27, 21 },
+		[229] = { 191, 250, 22, 32, 0, -32, 21 },
+		[230] = { 214, 250, 34, 21, 0, -21, 34 },
+		[231] = { 249, 250, 21, 29, 0, -21, 21 },
+		[232] = { 271, 250, 21, 29, 0, -29, 21 },
+		[233] = { 293, 250, 21, 29, 0, -29, 21 },
+		[234] = { 315, 250, 21, 29, 0, -29, 21 },
+		[235] = { 337, 250, 21, 27, 0, -27, 21 },
+		[236] = { 359, 250, 13, 29, -2, -29, 11 },
+		[237] = { 373, 250, 12, 29, 0, -29, 11 },
+		[238] = { 386, 250, 15, 29, -2, -29, 11 },
+		[239] = { 402, 250, 13, 27, -1, -27, 11 },
+		[240] = { 416, 250, 23, 28, 0, -28, 23 },
+		[241] = { 440, 250, 23, 28, 0, -28, 23 },
+		[242] = { 464, 250, 23, 29, 0, -29, 23 },
+		[243] = { 488, 250, 23, 29, 0, -29, 23 },
+		[244] = { 0, 284, 23, 29, 0, -29, 23 },
+		[245] = { 24, 284, 23, 28, 0, -28, 23 },
+		[246] = { 48, 284, 23, 27, 0, -27, 23 },
+		[247] = { 72, 284, 21, 22, 0, -22, 21 },
+		[248] = { 94, 284, 24, 23, 0, -22, 23 },
+		[249] = { 119, 284, 23, 29, 0, -29, 23 },
+		[250] = { 143, 284, 23, 29, 0, -29, 23 },
+		[251] = { 167, 284, 23, 29, 0, -29, 23 },
+		[252] = { 191, 284, 23, 27, 0, -27, 23 },
+		[253] = { 215, 284, 21, 37, 0, -29, 21 },
+		[254] = { 237, 284, 23, 36, 0, -28, 23 },
+		[255] = { 261, 284, 21, 35, 0, -27, 21 },
+	} },
 };
 
 const IconAsset icon_assets[ICON_COUNT] = {
@@ -1999,130 +3306,1057 @@ const ImageAsset image_assets[IMG_COUNT] = {
 	[IMG_MOON_LAST] = { img_moon_last_png, 100, 94 },
 	[IMG_BACKGROUND_1_CHART] = { img_background_1_chart_png, 640, 480 },
 	[IMG_BACKGROUND_6] = { img_background_6_png, 640, 480 },
+	[IMG_BACKGROUND_4] = { img_background_4_png, 640, 480 },
 };
 
-static const u8 *const map_conus_tiles[] = {
-	map_conus_0_0_png,
-	map_conus_0_1_png,
-	map_conus_0_2_png,
-	map_conus_0_3_png,
-	map_conus_0_4_png,
-	map_conus_0_5_png,
-	map_conus_0_6_png,
-	map_conus_0_7_png,
-	map_conus_0_8_png,
-	map_conus_0_9_png,
-	map_conus_0_10_png,
-	map_conus_1_0_png,
-	map_conus_1_1_png,
-	map_conus_1_2_png,
-	map_conus_1_3_png,
-	map_conus_1_4_png,
-	map_conus_1_5_png,
-	map_conus_1_6_png,
-	map_conus_1_7_png,
-	map_conus_1_8_png,
-	map_conus_1_9_png,
-	map_conus_1_10_png,
-	map_conus_2_0_png,
-	map_conus_2_1_png,
-	map_conus_2_2_png,
-	map_conus_2_3_png,
-	map_conus_2_4_png,
-	map_conus_2_5_png,
-	map_conus_2_6_png,
-	map_conus_2_7_png,
-	map_conus_2_8_png,
-	map_conus_2_9_png,
-	map_conus_2_10_png,
-	map_conus_3_0_png,
-	map_conus_3_1_png,
-	map_conus_3_2_png,
-	map_conus_3_3_png,
-	map_conus_3_4_png,
-	map_conus_3_5_png,
-	map_conus_3_6_png,
-	map_conus_3_7_png,
-	map_conus_3_8_png,
-	map_conus_3_9_png,
-	map_conus_3_10_png,
-	map_conus_4_0_png,
-	map_conus_4_1_png,
-	map_conus_4_2_png,
-	map_conus_4_3_png,
-	map_conus_4_4_png,
-	map_conus_4_5_png,
-	map_conus_4_6_png,
-	map_conus_4_7_png,
-	map_conus_4_8_png,
-	map_conus_4_9_png,
-	map_conus_4_10_png,
-	map_conus_5_0_png,
-	map_conus_5_1_png,
-	map_conus_5_2_png,
-	map_conus_5_3_png,
-	map_conus_5_4_png,
-	map_conus_5_5_png,
-	map_conus_5_6_png,
-	map_conus_5_7_png,
-	map_conus_5_8_png,
-	map_conus_5_9_png,
-	map_conus_5_10_png,
-	map_conus_6_0_png,
-	map_conus_6_1_png,
-	map_conus_6_2_png,
-	map_conus_6_3_png,
-	map_conus_6_4_png,
-	map_conus_6_5_png,
-	map_conus_6_6_png,
-	map_conus_6_7_png,
-	map_conus_6_8_png,
-	map_conus_6_9_png,
-	map_conus_6_10_png,
+static const MapTileAsset map_conus_tiles[] = {
+	{ map_conus_0_0_png, 11262 },
+	{ map_conus_0_1_png, 1801 },
+	{ map_conus_0_2_png, 1794 },
+	{ map_conus_0_3_png, 609 },
+	{ map_conus_0_4_png, 674 },
+	{ map_conus_0_5_png, 4107 },
+	{ map_conus_0_6_png, 5781 },
+	{ map_conus_0_7_png, 3899 },
+	{ map_conus_0_8_png, 564 },
+	{ map_conus_0_9_png, 5098 },
+	{ map_conus_0_10_png, 932 },
+	{ map_conus_1_0_png, 1817 },
+	{ map_conus_1_1_png, 2466 },
+	{ map_conus_1_2_png, 3912 },
+	{ map_conus_1_3_png, 698 },
+	{ map_conus_1_4_png, 1021 },
+	{ map_conus_1_5_png, 4349 },
+	{ map_conus_1_6_png, 5390 },
+	{ map_conus_1_7_png, 7244 },
+	{ map_conus_1_8_png, 4651 },
+	{ map_conus_1_9_png, 8135 },
+	{ map_conus_1_10_png, 835 },
+	{ map_conus_2_0_png, 2872 },
+	{ map_conus_2_1_png, 1513 },
+	{ map_conus_2_2_png, 1874 },
+	{ map_conus_2_3_png, 627 },
+	{ map_conus_2_4_png, 716 },
+	{ map_conus_2_5_png, 3032 },
+	{ map_conus_2_6_png, 5887 },
+	{ map_conus_2_7_png, 6064 },
+	{ map_conus_2_8_png, 11653 },
+	{ map_conus_2_9_png, 1267 },
+	{ map_conus_2_10_png, 602 },
+	{ map_conus_3_0_png, 945 },
+	{ map_conus_3_1_png, 3271 },
+	{ map_conus_3_2_png, 3504 },
+	{ map_conus_3_3_png, 584 },
+	{ map_conus_3_4_png, 2166 },
+	{ map_conus_3_5_png, 3040 },
+	{ map_conus_3_6_png, 5526 },
+	{ map_conus_3_7_png, 6328 },
+	{ map_conus_3_8_png, 4710 },
+	{ map_conus_3_9_png, 568 },
+	{ map_conus_3_10_png, 568 },
+	{ map_conus_4_0_png, 568 },
+	{ map_conus_4_1_png, 1438 },
+	{ map_conus_4_2_png, 5567 },
+	{ map_conus_4_3_png, 2605 },
+	{ map_conus_4_4_png, 3311 },
+	{ map_conus_4_5_png, 5904 },
+	{ map_conus_4_6_png, 6010 },
+	{ map_conus_4_7_png, 5259 },
+	{ map_conus_4_8_png, 568 },
+	{ map_conus_4_9_png, 568 },
+	{ map_conus_4_10_png, 568 },
+	{ map_conus_5_0_png, 568 },
+	{ map_conus_5_1_png, 568 },
+	{ map_conus_5_2_png, 5612 },
+	{ map_conus_5_3_png, 2835 },
+	{ map_conus_5_4_png, 3260 },
+	{ map_conus_5_5_png, 934 },
+	{ map_conus_5_6_png, 568 },
+	{ map_conus_5_7_png, 4558 },
+	{ map_conus_5_8_png, 5343 },
+	{ map_conus_5_9_png, 568 },
+	{ map_conus_5_10_png, 568 },
+	{ map_conus_6_0_png, 568 },
+	{ map_conus_6_1_png, 568 },
+	{ map_conus_6_2_png, 873 },
+	{ map_conus_6_3_png, 970 },
+	{ map_conus_6_4_png, 1109 },
+	{ map_conus_6_5_png, 568 },
+	{ map_conus_6_6_png, 568 },
+	{ map_conus_6_7_png, 3450 },
+	{ map_conus_6_8_png, 3092 },
+	{ map_conus_6_9_png, 1140 },
+	{ map_conus_6_10_png, 568 },
 };
 
-static const u8 *const map_alaska_tiles[] = {
-	map_alaska_0_0_png,
-	map_alaska_0_1_png,
-	map_alaska_0_2_png,
-	map_alaska_0_3_png,
-	map_alaska_0_4_png,
-	map_alaska_1_0_png,
-	map_alaska_1_1_png,
-	map_alaska_1_2_png,
-	map_alaska_1_3_png,
-	map_alaska_1_4_png,
-	map_alaska_2_0_png,
-	map_alaska_2_1_png,
-	map_alaska_2_2_png,
-	map_alaska_2_3_png,
-	map_alaska_2_4_png,
-	map_alaska_3_0_png,
-	map_alaska_3_1_png,
-	map_alaska_3_2_png,
-	map_alaska_3_3_png,
-	map_alaska_3_4_png,
-	map_alaska_4_0_png,
-	map_alaska_4_1_png,
-	map_alaska_4_2_png,
-	map_alaska_4_3_png,
-	map_alaska_4_4_png,
+static const MapTileAsset map_alaska_tiles[] = {
+	{ map_alaska_0_0_png, 679 },
+	{ map_alaska_0_1_png, 1299 },
+	{ map_alaska_0_2_png, 1060 },
+	{ map_alaska_0_3_png, 1508 },
+	{ map_alaska_0_4_png, 1691 },
+	{ map_alaska_1_0_png, 2081 },
+	{ map_alaska_1_1_png, 1606 },
+	{ map_alaska_1_2_png, 564 },
+	{ map_alaska_1_3_png, 611 },
+	{ map_alaska_1_4_png, 564 },
+	{ map_alaska_2_0_png, 1304 },
+	{ map_alaska_2_1_png, 1601 },
+	{ map_alaska_2_2_png, 2134 },
+	{ map_alaska_2_3_png, 1520 },
+	{ map_alaska_2_4_png, 577 },
+	{ map_alaska_3_0_png, 956 },
+	{ map_alaska_3_1_png, 2209 },
+	{ map_alaska_3_2_png, 1485 },
+	{ map_alaska_3_3_png, 1714 },
+	{ map_alaska_3_4_png, 3326 },
+	{ map_alaska_4_0_png, 933 },
+	{ map_alaska_4_1_png, 568 },
+	{ map_alaska_4_2_png, 568 },
+	{ map_alaska_4_3_png, 568 },
+	{ map_alaska_4_4_png, 1545 },
 };
 
-static const u8 *const map_hawaii_tiles[] = {
-	map_hawaii_0_0_png,
-	map_hawaii_0_1_png,
-	map_hawaii_0_2_png,
-	map_hawaii_1_0_png,
-	map_hawaii_1_1_png,
-	map_hawaii_1_2_png,
-	map_hawaii_2_0_png,
-	map_hawaii_2_1_png,
-	map_hawaii_2_2_png,
+static const MapTileAsset map_hawaii_tiles[] = {
+	{ map_hawaii_0_0_png, 828 },
+	{ map_hawaii_0_1_png, 1111 },
+	{ map_hawaii_0_2_png, 568 },
+	{ map_hawaii_1_0_png, 568 },
+	{ map_hawaii_1_1_png, 997 },
+	{ map_hawaii_1_2_png, 568 },
+	{ map_hawaii_2_0_png, 568 },
+	{ map_hawaii_2_1_png, 568 },
+	{ map_hawaii_2_2_png, 568 },
+};
+
+static const MapTileAsset map_radar_tiles[] = {
+	{ map_radar_0_0_png, 5677 },
+	{ map_radar_0_1_png, 9559 },
+	{ map_radar_0_2_png, 4617 },
+	{ map_radar_0_3_png, 1032 },
+	{ map_radar_0_4_png, 1798 },
+	{ map_radar_0_5_png, 3027 },
+	{ map_radar_0_6_png, 2209 },
+	{ map_radar_0_7_png, 1362 },
+	{ map_radar_0_8_png, 1129 },
+	{ map_radar_0_9_png, 1207 },
+	{ map_radar_0_10_png, 1166 },
+	{ map_radar_0_11_png, 1886 },
+	{ map_radar_0_12_png, 1271 },
+	{ map_radar_0_13_png, 2014 },
+	{ map_radar_0_14_png, 7341 },
+	{ map_radar_0_15_png, 586 },
+	{ map_radar_0_16_png, 480 },
+	{ map_radar_0_17_png, 2845 },
+	{ map_radar_0_18_png, 763 },
+	{ map_radar_0_19_png, 477 },
+	{ map_radar_0_20_png, 529 },
+	{ map_radar_0_21_png, 790 },
+	{ map_radar_0_22_png, 477 },
+	{ map_radar_0_23_png, 477 },
+	{ map_radar_0_24_png, 477 },
+	{ map_radar_0_25_png, 1436 },
+	{ map_radar_0_26_png, 4212 },
+	{ map_radar_1_0_png, 783 },
+	{ map_radar_1_1_png, 7454 },
+	{ map_radar_1_2_png, 14065 },
+	{ map_radar_1_3_png, 9178 },
+	{ map_radar_1_4_png, 7775 },
+	{ map_radar_1_5_png, 7284 },
+	{ map_radar_1_6_png, 7138 },
+	{ map_radar_1_7_png, 5925 },
+	{ map_radar_1_8_png, 5574 },
+	{ map_radar_1_9_png, 7551 },
+	{ map_radar_1_10_png, 8108 },
+	{ map_radar_1_11_png, 7422 },
+	{ map_radar_1_12_png, 5570 },
+	{ map_radar_1_13_png, 7303 },
+	{ map_radar_1_14_png, 5772 },
+	{ map_radar_1_15_png, 5546 },
+	{ map_radar_1_16_png, 5652 },
+	{ map_radar_1_17_png, 5112 },
+	{ map_radar_1_18_png, 3648 },
+	{ map_radar_1_19_png, 477 },
+	{ map_radar_1_20_png, 509 },
+	{ map_radar_1_21_png, 1169 },
+	{ map_radar_1_22_png, 477 },
+	{ map_radar_1_23_png, 477 },
+	{ map_radar_1_24_png, 1453 },
+	{ map_radar_1_25_png, 9356 },
+	{ map_radar_1_26_png, 2696 },
+	{ map_radar_2_0_png, 477 },
+	{ map_radar_2_1_png, 6098 },
+	{ map_radar_2_2_png, 9959 },
+	{ map_radar_2_3_png, 9524 },
+	{ map_radar_2_4_png, 9484 },
+	{ map_radar_2_5_png, 6030 },
+	{ map_radar_2_6_png, 11294 },
+	{ map_radar_2_7_png, 9011 },
+	{ map_radar_2_8_png, 7659 },
+	{ map_radar_2_9_png, 6817 },
+	{ map_radar_2_10_png, 5895 },
+	{ map_radar_2_11_png, 8859 },
+	{ map_radar_2_12_png, 7379 },
+	{ map_radar_2_13_png, 8556 },
+	{ map_radar_2_14_png, 9107 },
+	{ map_radar_2_15_png, 8790 },
+	{ map_radar_2_16_png, 8542 },
+	{ map_radar_2_17_png, 9190 },
+	{ map_radar_2_18_png, 10352 },
+	{ map_radar_2_19_png, 6915 },
+	{ map_radar_2_20_png, 3963 },
+	{ map_radar_2_21_png, 2249 },
+	{ map_radar_2_22_png, 2707 },
+	{ map_radar_2_23_png, 4280 },
+	{ map_radar_2_24_png, 4886 },
+	{ map_radar_2_25_png, 5543 },
+	{ map_radar_2_26_png, 3177 },
+	{ map_radar_3_0_png, 588 },
+	{ map_radar_3_1_png, 7379 },
+	{ map_radar_3_2_png, 7781 },
+	{ map_radar_3_3_png, 5296 },
+	{ map_radar_3_4_png, 10017 },
+	{ map_radar_3_5_png, 8306 },
+	{ map_radar_3_6_png, 9481 },
+	{ map_radar_3_7_png, 7280 },
+	{ map_radar_3_8_png, 7234 },
+	{ map_radar_3_9_png, 5852 },
+	{ map_radar_3_10_png, 5947 },
+	{ map_radar_3_11_png, 8815 },
+	{ map_radar_3_12_png, 8672 },
+	{ map_radar_3_13_png, 10029 },
+	{ map_radar_3_14_png, 10778 },
+	{ map_radar_3_15_png, 12891 },
+	{ map_radar_3_16_png, 9744 },
+	{ map_radar_3_17_png, 11625 },
+	{ map_radar_3_18_png, 11967 },
+	{ map_radar_3_19_png, 8127 },
+	{ map_radar_3_20_png, 6467 },
+	{ map_radar_3_21_png, 3484 },
+	{ map_radar_3_22_png, 8998 },
+	{ map_radar_3_23_png, 12817 },
+	{ map_radar_3_24_png, 14079 },
+	{ map_radar_3_25_png, 14883 },
+	{ map_radar_3_26_png, 4955 },
+	{ map_radar_4_0_png, 714 },
+	{ map_radar_4_1_png, 8406 },
+	{ map_radar_4_2_png, 4560 },
+	{ map_radar_4_3_png, 2505 },
+	{ map_radar_4_4_png, 2881 },
+	{ map_radar_4_5_png, 6524 },
+	{ map_radar_4_6_png, 10065 },
+	{ map_radar_4_7_png, 5476 },
+	{ map_radar_4_8_png, 5647 },
+	{ map_radar_4_9_png, 6421 },
+	{ map_radar_4_10_png, 5198 },
+	{ map_radar_4_11_png, 4593 },
+	{ map_radar_4_12_png, 8751 },
+	{ map_radar_4_13_png, 10564 },
+	{ map_radar_4_14_png, 7595 },
+	{ map_radar_4_15_png, 8204 },
+	{ map_radar_4_16_png, 10497 },
+	{ map_radar_4_17_png, 8058 },
+	{ map_radar_4_18_png, 13044 },
+	{ map_radar_4_19_png, 14082 },
+	{ map_radar_4_20_png, 9058 },
+	{ map_radar_4_21_png, 13151 },
+	{ map_radar_4_22_png, 15305 },
+	{ map_radar_4_23_png, 15117 },
+	{ map_radar_4_24_png, 18635 },
+	{ map_radar_4_25_png, 2357 },
+	{ map_radar_4_26_png, 477 },
+	{ map_radar_5_0_png, 477 },
+	{ map_radar_5_1_png, 5608 },
+	{ map_radar_5_2_png, 7220 },
+	{ map_radar_5_3_png, 3278 },
+	{ map_radar_5_4_png, 5750 },
+	{ map_radar_5_5_png, 3534 },
+	{ map_radar_5_6_png, 10208 },
+	{ map_radar_5_7_png, 7546 },
+	{ map_radar_5_8_png, 5378 },
+	{ map_radar_5_9_png, 8515 },
+	{ map_radar_5_10_png, 6932 },
+	{ map_radar_5_11_png, 6948 },
+	{ map_radar_5_12_png, 6595 },
+	{ map_radar_5_13_png, 10197 },
+	{ map_radar_5_14_png, 8857 },
+	{ map_radar_5_15_png, 8673 },
+	{ map_radar_5_16_png, 11997 },
+	{ map_radar_5_17_png, 13534 },
+	{ map_radar_5_18_png, 11297 },
+	{ map_radar_5_19_png, 13044 },
+	{ map_radar_5_20_png, 14037 },
+	{ map_radar_5_21_png, 12999 },
+	{ map_radar_5_22_png, 16651 },
+	{ map_radar_5_23_png, 18789 },
+	{ map_radar_5_24_png, 10210 },
+	{ map_radar_5_25_png, 2755 },
+	{ map_radar_5_26_png, 477 },
+	{ map_radar_6_0_png, 477 },
+	{ map_radar_6_1_png, 4710 },
+	{ map_radar_6_2_png, 14296 },
+	{ map_radar_6_3_png, 11768 },
+	{ map_radar_6_4_png, 3674 },
+	{ map_radar_6_5_png, 4207 },
+	{ map_radar_6_6_png, 5974 },
+	{ map_radar_6_7_png, 4895 },
+	{ map_radar_6_8_png, 7662 },
+	{ map_radar_6_9_png, 12071 },
+	{ map_radar_6_10_png, 6935 },
+	{ map_radar_6_11_png, 5480 },
+	{ map_radar_6_12_png, 6267 },
+	{ map_radar_6_13_png, 9521 },
+	{ map_radar_6_14_png, 13664 },
+	{ map_radar_6_15_png, 11989 },
+	{ map_radar_6_16_png, 14522 },
+	{ map_radar_6_17_png, 12493 },
+	{ map_radar_6_18_png, 16109 },
+	{ map_radar_6_19_png, 14947 },
+	{ map_radar_6_20_png, 18247 },
+	{ map_radar_6_21_png, 18186 },
+	{ map_radar_6_22_png, 19721 },
+	{ map_radar_6_23_png, 7429 },
+	{ map_radar_6_24_png, 616 },
+	{ map_radar_6_25_png, 477 },
+	{ map_radar_6_26_png, 477 },
+	{ map_radar_7_0_png, 477 },
+	{ map_radar_7_1_png, 675 },
+	{ map_radar_7_2_png, 15724 },
+	{ map_radar_7_3_png, 11038 },
+	{ map_radar_7_4_png, 5613 },
+	{ map_radar_7_5_png, 3678 },
+	{ map_radar_7_6_png, 6907 },
+	{ map_radar_7_7_png, 5826 },
+	{ map_radar_7_8_png, 7849 },
+	{ map_radar_7_9_png, 6855 },
+	{ map_radar_7_10_png, 5988 },
+	{ map_radar_7_11_png, 5421 },
+	{ map_radar_7_12_png, 5524 },
+	{ map_radar_7_13_png, 8926 },
+	{ map_radar_7_14_png, 8453 },
+	{ map_radar_7_15_png, 10240 },
+	{ map_radar_7_16_png, 14306 },
+	{ map_radar_7_17_png, 18044 },
+	{ map_radar_7_18_png, 19580 },
+	{ map_radar_7_19_png, 18753 },
+	{ map_radar_7_20_png, 18624 },
+	{ map_radar_7_21_png, 17851 },
+	{ map_radar_7_22_png, 18361 },
+	{ map_radar_7_23_png, 764 },
+	{ map_radar_7_24_png, 618 },
+	{ map_radar_7_25_png, 477 },
+	{ map_radar_7_26_png, 477 },
+	{ map_radar_8_0_png, 477 },
+	{ map_radar_8_1_png, 477 },
+	{ map_radar_8_2_png, 4873 },
+	{ map_radar_8_3_png, 9478 },
+	{ map_radar_8_4_png, 3294 },
+	{ map_radar_8_5_png, 9164 },
+	{ map_radar_8_6_png, 6022 },
+	{ map_radar_8_7_png, 3110 },
+	{ map_radar_8_8_png, 4907 },
+	{ map_radar_8_9_png, 7810 },
+	{ map_radar_8_10_png, 7954 },
+	{ map_radar_8_11_png, 6337 },
+	{ map_radar_8_12_png, 7916 },
+	{ map_radar_8_13_png, 13267 },
+	{ map_radar_8_14_png, 11978 },
+	{ map_radar_8_15_png, 10820 },
+	{ map_radar_8_16_png, 14774 },
+	{ map_radar_8_17_png, 14921 },
+	{ map_radar_8_18_png, 18095 },
+	{ map_radar_8_19_png, 19106 },
+	{ map_radar_8_20_png, 17353 },
+	{ map_radar_8_21_png, 16992 },
+	{ map_radar_8_22_png, 15323 },
+	{ map_radar_8_23_png, 477 },
+	{ map_radar_8_24_png, 477 },
+	{ map_radar_8_25_png, 477 },
+	{ map_radar_8_26_png, 477 },
+	{ map_radar_9_0_png, 608 },
+	{ map_radar_9_1_png, 477 },
+	{ map_radar_9_2_png, 647 },
+	{ map_radar_9_3_png, 8400 },
+	{ map_radar_9_4_png, 12915 },
+	{ map_radar_9_5_png, 6520 },
+	{ map_radar_9_6_png, 7040 },
+	{ map_radar_9_7_png, 5097 },
+	{ map_radar_9_8_png, 3279 },
+	{ map_radar_9_9_png, 4591 },
+	{ map_radar_9_10_png, 5958 },
+	{ map_radar_9_11_png, 5709 },
+	{ map_radar_9_12_png, 8955 },
+	{ map_radar_9_13_png, 12287 },
+	{ map_radar_9_14_png, 11257 },
+	{ map_radar_9_15_png, 13971 },
+	{ map_radar_9_16_png, 12870 },
+	{ map_radar_9_17_png, 13302 },
+	{ map_radar_9_18_png, 17408 },
+	{ map_radar_9_19_png, 20289 },
+	{ map_radar_9_20_png, 16949 },
+	{ map_radar_9_21_png, 13329 },
+	{ map_radar_9_22_png, 3296 },
+	{ map_radar_9_23_png, 477 },
+	{ map_radar_9_24_png, 617 },
+	{ map_radar_9_25_png, 477 },
+	{ map_radar_9_26_png, 477 },
+	{ map_radar_10_0_png, 608 },
+	{ map_radar_10_1_png, 477 },
+	{ map_radar_10_2_png, 595 },
+	{ map_radar_10_3_png, 1022 },
+	{ map_radar_10_4_png, 5494 },
+	{ map_radar_10_5_png, 6184 },
+	{ map_radar_10_6_png, 5402 },
+	{ map_radar_10_7_png, 7330 },
+	{ map_radar_10_8_png, 6713 },
+	{ map_radar_10_9_png, 5571 },
+	{ map_radar_10_10_png, 6495 },
+	{ map_radar_10_11_png, 6082 },
+	{ map_radar_10_12_png, 8740 },
+	{ map_radar_10_13_png, 14719 },
+	{ map_radar_10_14_png, 12220 },
+	{ map_radar_10_15_png, 12545 },
+	{ map_radar_10_16_png, 12940 },
+	{ map_radar_10_17_png, 12046 },
+	{ map_radar_10_18_png, 13996 },
+	{ map_radar_10_19_png, 16608 },
+	{ map_radar_10_20_png, 14949 },
+	{ map_radar_10_21_png, 1927 },
+	{ map_radar_10_22_png, 477 },
+	{ map_radar_10_23_png, 477 },
+	{ map_radar_10_24_png, 618 },
+	{ map_radar_10_25_png, 477 },
+	{ map_radar_10_26_png, 477 },
+	{ map_radar_11_0_png, 477 },
+	{ map_radar_11_1_png, 477 },
+	{ map_radar_11_2_png, 477 },
+	{ map_radar_11_3_png, 477 },
+	{ map_radar_11_4_png, 1460 },
+	{ map_radar_11_5_png, 3168 },
+	{ map_radar_11_6_png, 2958 },
+	{ map_radar_11_7_png, 2318 },
+	{ map_radar_11_8_png, 1000 },
+	{ map_radar_11_9_png, 3514 },
+	{ map_radar_11_10_png, 7444 },
+	{ map_radar_11_11_png, 5934 },
+	{ map_radar_11_12_png, 10075 },
+	{ map_radar_11_13_png, 16345 },
+	{ map_radar_11_14_png, 13824 },
+	{ map_radar_11_15_png, 14754 },
+	{ map_radar_11_16_png, 15096 },
+	{ map_radar_11_17_png, 11324 },
+	{ map_radar_11_18_png, 13212 },
+	{ map_radar_11_19_png, 15261 },
+	{ map_radar_11_20_png, 7135 },
+	{ map_radar_11_21_png, 477 },
+	{ map_radar_11_22_png, 477 },
+	{ map_radar_11_23_png, 477 },
+	{ map_radar_11_24_png, 477 },
+	{ map_radar_11_25_png, 477 },
+	{ map_radar_11_26_png, 477 },
+	{ map_radar_12_0_png, 608 },
+	{ map_radar_12_1_png, 477 },
+	{ map_radar_12_2_png, 595 },
+	{ map_radar_12_3_png, 488 },
+	{ map_radar_12_4_png, 1193 },
+	{ map_radar_12_5_png, 4417 },
+	{ map_radar_12_6_png, 7277 },
+	{ map_radar_12_7_png, 1029 },
+	{ map_radar_12_8_png, 477 },
+	{ map_radar_12_9_png, 477 },
+	{ map_radar_12_10_png, 3262 },
+	{ map_radar_12_11_png, 4194 },
+	{ map_radar_12_12_png, 10646 },
+	{ map_radar_12_13_png, 16092 },
+	{ map_radar_12_14_png, 7301 },
+	{ map_radar_12_15_png, 4014 },
+	{ map_radar_12_16_png, 7244 },
+	{ map_radar_12_17_png, 590 },
+	{ map_radar_12_18_png, 1695 },
+	{ map_radar_12_19_png, 8777 },
+	{ map_radar_12_20_png, 11122 },
+	{ map_radar_12_21_png, 596 },
+	{ map_radar_12_22_png, 477 },
+	{ map_radar_12_23_png, 477 },
+	{ map_radar_12_24_png, 618 },
+	{ map_radar_12_25_png, 477 },
+	{ map_radar_12_26_png, 477 },
+	{ map_radar_13_0_png, 607 },
+	{ map_radar_13_1_png, 477 },
+	{ map_radar_13_2_png, 614 },
+	{ map_radar_13_3_png, 477 },
+	{ map_radar_13_4_png, 477 },
+	{ map_radar_13_5_png, 4979 },
+	{ map_radar_13_6_png, 5610 },
+	{ map_radar_13_7_png, 3567 },
+	{ map_radar_13_8_png, 734 },
+	{ map_radar_13_9_png, 477 },
+	{ map_radar_13_10_png, 477 },
+	{ map_radar_13_11_png, 483 },
+	{ map_radar_13_12_png, 6865 },
+	{ map_radar_13_13_png, 7170 },
+	{ map_radar_13_14_png, 477 },
+	{ map_radar_13_15_png, 477 },
+	{ map_radar_13_16_png, 617 },
+	{ map_radar_13_17_png, 477 },
+	{ map_radar_13_18_png, 606 },
+	{ map_radar_13_19_png, 6772 },
+	{ map_radar_13_20_png, 11136 },
+	{ map_radar_13_21_png, 2664 },
+	{ map_radar_13_22_png, 1283 },
+	{ map_radar_13_23_png, 477 },
+	{ map_radar_13_24_png, 618 },
+	{ map_radar_13_25_png, 477 },
+	{ map_radar_13_26_png, 477 },
+	{ map_radar_14_0_png, 477 },
+	{ map_radar_14_1_png, 477 },
+	{ map_radar_14_2_png, 477 },
+	{ map_radar_14_3_png, 477 },
+	{ map_radar_14_4_png, 477 },
+	{ map_radar_14_5_png, 477 },
+	{ map_radar_14_6_png, 2711 },
+	{ map_radar_14_7_png, 2259 },
+	{ map_radar_14_8_png, 3061 },
+	{ map_radar_14_9_png, 477 },
+	{ map_radar_14_10_png, 477 },
+	{ map_radar_14_11_png, 477 },
+	{ map_radar_14_12_png, 2007 },
+	{ map_radar_14_13_png, 5663 },
+	{ map_radar_14_14_png, 477 },
+	{ map_radar_14_15_png, 477 },
+	{ map_radar_14_16_png, 477 },
+	{ map_radar_14_17_png, 477 },
+	{ map_radar_14_18_png, 477 },
+	{ map_radar_14_19_png, 557 },
+	{ map_radar_14_20_png, 8152 },
+	{ map_radar_14_21_png, 2205 },
+	{ map_radar_14_22_png, 3831 },
+	{ map_radar_14_23_png, 477 },
+	{ map_radar_14_24_png, 477 },
+	{ map_radar_14_25_png, 477 },
+	{ map_radar_14_26_png, 477 },
+	{ map_radar_15_0_png, 608 },
+	{ map_radar_15_1_png, 477 },
+	{ map_radar_15_2_png, 615 },
+	{ map_radar_15_3_png, 477 },
+	{ map_radar_15_4_png, 477 },
+	{ map_radar_15_5_png, 597 },
+	{ map_radar_15_6_png, 810 },
+	{ map_radar_15_7_png, 6022 },
+	{ map_radar_15_8_png, 2350 },
+	{ map_radar_15_9_png, 2442 },
+	{ map_radar_15_10_png, 477 },
+	{ map_radar_15_11_png, 477 },
+	{ map_radar_15_12_png, 763 },
+	{ map_radar_15_13_png, 2792 },
+	{ map_radar_15_14_png, 477 },
+	{ map_radar_15_15_png, 477 },
+	{ map_radar_15_16_png, 617 },
+	{ map_radar_15_17_png, 477 },
+	{ map_radar_15_18_png, 752 },
+	{ map_radar_15_19_png, 2042 },
+	{ map_radar_15_20_png, 2616 },
+	{ map_radar_15_21_png, 3147 },
+	{ map_radar_15_22_png, 4032 },
+	{ map_radar_15_23_png, 1745 },
+	{ map_radar_15_24_png, 618 },
+	{ map_radar_15_25_png, 477 },
+	{ map_radar_15_26_png, 477 },
+	{ map_radar_16_0_png, 477 },
+	{ map_radar_16_1_png, 477 },
+	{ map_radar_16_2_png, 477 },
+	{ map_radar_16_3_png, 477 },
+	{ map_radar_16_4_png, 477 },
+	{ map_radar_16_5_png, 477 },
+	{ map_radar_16_6_png, 477 },
+	{ map_radar_16_7_png, 801 },
+	{ map_radar_16_8_png, 513 },
+	{ map_radar_16_9_png, 2262 },
+	{ map_radar_16_10_png, 477 },
+	{ map_radar_16_11_png, 477 },
+	{ map_radar_16_12_png, 516 },
+	{ map_radar_16_13_png, 2039 },
+	{ map_radar_16_14_png, 477 },
+	{ map_radar_16_15_png, 477 },
+	{ map_radar_16_16_png, 477 },
+	{ map_radar_16_17_png, 477 },
+	{ map_radar_16_18_png, 2029 },
+	{ map_radar_16_19_png, 5515 },
+	{ map_radar_16_20_png, 3744 },
+	{ map_radar_16_21_png, 5256 },
+	{ map_radar_16_22_png, 863 },
+	{ map_radar_16_23_png, 629 },
+	{ map_radar_16_24_png, 477 },
+	{ map_radar_16_25_png, 477 },
+	{ map_radar_16_26_png, 477 },
+};
+
+static const MapTileAsset map_radar_overlay_tiles[] = {
+	{ map_radar_overlay_0_0_png, 2524 },
+	{ map_radar_overlay_0_1_png, 4091 },
+	{ map_radar_overlay_0_2_png, 1281 },
+	{ map_radar_overlay_0_3_png, 456 },
+	{ map_radar_overlay_0_4_png, 814 },
+	{ map_radar_overlay_0_5_png, 1385 },
+	{ map_radar_overlay_0_6_png, 527 },
+	{ map_radar_overlay_0_7_png, 629 },
+	{ map_radar_overlay_0_8_png, 459 },
+	{ map_radar_overlay_0_9_png, 467 },
+	{ map_radar_overlay_0_10_png, 456 },
+	{ map_radar_overlay_0_11_png, 794 },
+	{ map_radar_overlay_0_12_png, 479 },
+	{ map_radar_overlay_0_13_png, 676 },
+	{ map_radar_overlay_0_14_png, 3549 },
+	{ map_radar_overlay_0_15_png, 343 },
+	{ map_radar_overlay_0_16_png, 293 },
+	{ map_radar_overlay_0_17_png, 1230 },
+	{ map_radar_overlay_0_18_png, 402 },
+	{ map_radar_overlay_0_19_png, 293 },
+	{ map_radar_overlay_0_20_png, 293 },
+	{ map_radar_overlay_0_21_png, 538 },
+	{ map_radar_overlay_0_22_png, 293 },
+	{ map_radar_overlay_0_23_png, 293 },
+	{ map_radar_overlay_0_24_png, 293 },
+	{ map_radar_overlay_0_25_png, 613 },
+	{ map_radar_overlay_0_26_png, 1504 },
+	{ map_radar_overlay_1_0_png, 293 },
+	{ map_radar_overlay_1_1_png, 3338 },
+	{ map_radar_overlay_1_2_png, 6593 },
+	{ map_radar_overlay_1_3_png, 4156 },
+	{ map_radar_overlay_1_4_png, 3243 },
+	{ map_radar_overlay_1_5_png, 3206 },
+	{ map_radar_overlay_1_6_png, 3049 },
+	{ map_radar_overlay_1_7_png, 2527 },
+	{ map_radar_overlay_1_8_png, 2493 },
+	{ map_radar_overlay_1_9_png, 3367 },
+	{ map_radar_overlay_1_10_png, 3777 },
+	{ map_radar_overlay_1_11_png, 3322 },
+	{ map_radar_overlay_1_12_png, 2348 },
+	{ map_radar_overlay_1_13_png, 2974 },
+	{ map_radar_overlay_1_14_png, 2641 },
+	{ map_radar_overlay_1_15_png, 2507 },
+	{ map_radar_overlay_1_16_png, 2323 },
+	{ map_radar_overlay_1_17_png, 2374 },
+	{ map_radar_overlay_1_18_png, 1476 },
+	{ map_radar_overlay_1_19_png, 293 },
+	{ map_radar_overlay_1_20_png, 293 },
+	{ map_radar_overlay_1_21_png, 715 },
+	{ map_radar_overlay_1_22_png, 293 },
+	{ map_radar_overlay_1_23_png, 293 },
+	{ map_radar_overlay_1_24_png, 701 },
+	{ map_radar_overlay_1_25_png, 3723 },
+	{ map_radar_overlay_1_26_png, 1106 },
+	{ map_radar_overlay_2_0_png, 293 },
+	{ map_radar_overlay_2_1_png, 2987 },
+	{ map_radar_overlay_2_2_png, 4254 },
+	{ map_radar_overlay_2_3_png, 3739 },
+	{ map_radar_overlay_2_4_png, 4116 },
+	{ map_radar_overlay_2_5_png, 2515 },
+	{ map_radar_overlay_2_6_png, 4726 },
+	{ map_radar_overlay_2_7_png, 3893 },
+	{ map_radar_overlay_2_8_png, 2476 },
+	{ map_radar_overlay_2_9_png, 2464 },
+	{ map_radar_overlay_2_10_png, 2345 },
+	{ map_radar_overlay_2_11_png, 3808 },
+	{ map_radar_overlay_2_12_png, 2887 },
+	{ map_radar_overlay_2_13_png, 3052 },
+	{ map_radar_overlay_2_14_png, 3743 },
+	{ map_radar_overlay_2_15_png, 3295 },
+	{ map_radar_overlay_2_16_png, 3592 },
+	{ map_radar_overlay_2_17_png, 4272 },
+	{ map_radar_overlay_2_18_png, 4158 },
+	{ map_radar_overlay_2_19_png, 2966 },
+	{ map_radar_overlay_2_20_png, 1905 },
+	{ map_radar_overlay_2_21_png, 918 },
+	{ map_radar_overlay_2_22_png, 1244 },
+	{ map_radar_overlay_2_23_png, 1791 },
+	{ map_radar_overlay_2_24_png, 2129 },
+	{ map_radar_overlay_2_25_png, 2356 },
+	{ map_radar_overlay_2_26_png, 1488 },
+	{ map_radar_overlay_3_0_png, 293 },
+	{ map_radar_overlay_3_1_png, 3659 },
+	{ map_radar_overlay_3_2_png, 3425 },
+	{ map_radar_overlay_3_3_png, 2443 },
+	{ map_radar_overlay_3_4_png, 4660 },
+	{ map_radar_overlay_3_5_png, 4176 },
+	{ map_radar_overlay_3_6_png, 3981 },
+	{ map_radar_overlay_3_7_png, 3332 },
+	{ map_radar_overlay_3_8_png, 3392 },
+	{ map_radar_overlay_3_9_png, 2033 },
+	{ map_radar_overlay_3_10_png, 2200 },
+	{ map_radar_overlay_3_11_png, 4092 },
+	{ map_radar_overlay_3_12_png, 3838 },
+	{ map_radar_overlay_3_13_png, 4135 },
+	{ map_radar_overlay_3_14_png, 5169 },
+	{ map_radar_overlay_3_15_png, 5466 },
+	{ map_radar_overlay_3_16_png, 3260 },
+	{ map_radar_overlay_3_17_png, 5083 },
+	{ map_radar_overlay_3_18_png, 4330 },
+	{ map_radar_overlay_3_19_png, 3452 },
+	{ map_radar_overlay_3_20_png, 2681 },
+	{ map_radar_overlay_3_21_png, 1083 },
+	{ map_radar_overlay_3_22_png, 3913 },
+	{ map_radar_overlay_3_23_png, 5692 },
+	{ map_radar_overlay_3_24_png, 6624 },
+	{ map_radar_overlay_3_25_png, 7611 },
+	{ map_radar_overlay_3_26_png, 2561 },
+	{ map_radar_overlay_4_0_png, 293 },
+	{ map_radar_overlay_4_1_png, 3841 },
+	{ map_radar_overlay_4_2_png, 1825 },
+	{ map_radar_overlay_4_3_png, 1169 },
+	{ map_radar_overlay_4_4_png, 1213 },
+	{ map_radar_overlay_4_5_png, 2696 },
+	{ map_radar_overlay_4_6_png, 3832 },
+	{ map_radar_overlay_4_7_png, 1985 },
+	{ map_radar_overlay_4_8_png, 2457 },
+	{ map_radar_overlay_4_9_png, 2271 },
+	{ map_radar_overlay_4_10_png, 1798 },
+	{ map_radar_overlay_4_11_png, 1916 },
+	{ map_radar_overlay_4_12_png, 4198 },
+	{ map_radar_overlay_4_13_png, 4534 },
+	{ map_radar_overlay_4_14_png, 3293 },
+	{ map_radar_overlay_4_15_png, 3256 },
+	{ map_radar_overlay_4_16_png, 4060 },
+	{ map_radar_overlay_4_17_png, 3002 },
+	{ map_radar_overlay_4_18_png, 4805 },
+	{ map_radar_overlay_4_19_png, 5066 },
+	{ map_radar_overlay_4_20_png, 2972 },
+	{ map_radar_overlay_4_21_png, 5129 },
+	{ map_radar_overlay_4_22_png, 6288 },
+	{ map_radar_overlay_4_23_png, 6421 },
+	{ map_radar_overlay_4_24_png, 8462 },
+	{ map_radar_overlay_4_25_png, 1068 },
+	{ map_radar_overlay_4_26_png, 293 },
+	{ map_radar_overlay_5_0_png, 293 },
+	{ map_radar_overlay_5_1_png, 2630 },
+	{ map_radar_overlay_5_2_png, 3455 },
+	{ map_radar_overlay_5_3_png, 1533 },
+	{ map_radar_overlay_5_4_png, 2065 },
+	{ map_radar_overlay_5_5_png, 1350 },
+	{ map_radar_overlay_5_6_png, 4046 },
+	{ map_radar_overlay_5_7_png, 3089 },
+	{ map_radar_overlay_5_8_png, 1919 },
+	{ map_radar_overlay_5_9_png, 3125 },
+	{ map_radar_overlay_5_10_png, 2469 },
+	{ map_radar_overlay_5_11_png, 2499 },
+	{ map_radar_overlay_5_12_png, 2637 },
+	{ map_radar_overlay_5_13_png, 4129 },
+	{ map_radar_overlay_5_14_png, 3277 },
+	{ map_radar_overlay_5_15_png, 3662 },
+	{ map_radar_overlay_5_16_png, 4432 },
+	{ map_radar_overlay_5_17_png, 5066 },
+	{ map_radar_overlay_5_18_png, 4778 },
+	{ map_radar_overlay_5_19_png, 5315 },
+	{ map_radar_overlay_5_20_png, 5641 },
+	{ map_radar_overlay_5_21_png, 6124 },
+	{ map_radar_overlay_5_22_png, 7412 },
+	{ map_radar_overlay_5_23_png, 8603 },
+	{ map_radar_overlay_5_24_png, 5229 },
+	{ map_radar_overlay_5_25_png, 1492 },
+	{ map_radar_overlay_5_26_png, 293 },
+	{ map_radar_overlay_6_0_png, 293 },
+	{ map_radar_overlay_6_1_png, 1957 },
+	{ map_radar_overlay_6_2_png, 6544 },
+	{ map_radar_overlay_6_3_png, 5262 },
+	{ map_radar_overlay_6_4_png, 1584 },
+	{ map_radar_overlay_6_5_png, 1800 },
+	{ map_radar_overlay_6_6_png, 1904 },
+	{ map_radar_overlay_6_7_png, 1818 },
+	{ map_radar_overlay_6_8_png, 2709 },
+	{ map_radar_overlay_6_9_png, 5188 },
+	{ map_radar_overlay_6_10_png, 2510 },
+	{ map_radar_overlay_6_11_png, 1837 },
+	{ map_radar_overlay_6_12_png, 2504 },
+	{ map_radar_overlay_6_13_png, 4077 },
+	{ map_radar_overlay_6_14_png, 5245 },
+	{ map_radar_overlay_6_15_png, 5185 },
+	{ map_radar_overlay_6_16_png, 5803 },
+	{ map_radar_overlay_6_17_png, 5196 },
+	{ map_radar_overlay_6_18_png, 6716 },
+	{ map_radar_overlay_6_19_png, 7003 },
+	{ map_radar_overlay_6_20_png, 8231 },
+	{ map_radar_overlay_6_21_png, 7899 },
+	{ map_radar_overlay_6_22_png, 9264 },
+	{ map_radar_overlay_6_23_png, 3463 },
+	{ map_radar_overlay_6_24_png, 293 },
+	{ map_radar_overlay_6_25_png, 293 },
+	{ map_radar_overlay_6_26_png, 293 },
+	{ map_radar_overlay_7_0_png, 293 },
+	{ map_radar_overlay_7_1_png, 376 },
+	{ map_radar_overlay_7_2_png, 7008 },
+	{ map_radar_overlay_7_3_png, 5180 },
+	{ map_radar_overlay_7_4_png, 2864 },
+	{ map_radar_overlay_7_5_png, 1320 },
+	{ map_radar_overlay_7_6_png, 2542 },
+	{ map_radar_overlay_7_7_png, 2639 },
+	{ map_radar_overlay_7_8_png, 3274 },
+	{ map_radar_overlay_7_9_png, 3316 },
+	{ map_radar_overlay_7_10_png, 2226 },
+	{ map_radar_overlay_7_11_png, 2146 },
+	{ map_radar_overlay_7_12_png, 2341 },
+	{ map_radar_overlay_7_13_png, 3427 },
+	{ map_radar_overlay_7_14_png, 3199 },
+	{ map_radar_overlay_7_15_png, 3996 },
+	{ map_radar_overlay_7_16_png, 6281 },
+	{ map_radar_overlay_7_17_png, 8257 },
+	{ map_radar_overlay_7_18_png, 9044 },
+	{ map_radar_overlay_7_19_png, 9102 },
+	{ map_radar_overlay_7_20_png, 8529 },
+	{ map_radar_overlay_7_21_png, 8606 },
+	{ map_radar_overlay_7_22_png, 9288 },
+	{ map_radar_overlay_7_23_png, 438 },
+	{ map_radar_overlay_7_24_png, 293 },
+	{ map_radar_overlay_7_25_png, 293 },
+	{ map_radar_overlay_7_26_png, 293 },
+	{ map_radar_overlay_8_0_png, 293 },
+	{ map_radar_overlay_8_1_png, 293 },
+	{ map_radar_overlay_8_2_png, 1919 },
+	{ map_radar_overlay_8_3_png, 3324 },
+	{ map_radar_overlay_8_4_png, 1550 },
+	{ map_radar_overlay_8_5_png, 3498 },
+	{ map_radar_overlay_8_6_png, 2616 },
+	{ map_radar_overlay_8_7_png, 1293 },
+	{ map_radar_overlay_8_8_png, 1776 },
+	{ map_radar_overlay_8_9_png, 3165 },
+	{ map_radar_overlay_8_10_png, 2878 },
+	{ map_radar_overlay_8_11_png, 2038 },
+	{ map_radar_overlay_8_12_png, 3365 },
+	{ map_radar_overlay_8_13_png, 5328 },
+	{ map_radar_overlay_8_14_png, 4878 },
+	{ map_radar_overlay_8_15_png, 4623 },
+	{ map_radar_overlay_8_16_png, 6315 },
+	{ map_radar_overlay_8_17_png, 6345 },
+	{ map_radar_overlay_8_18_png, 8226 },
+	{ map_radar_overlay_8_19_png, 8974 },
+	{ map_radar_overlay_8_20_png, 7447 },
+	{ map_radar_overlay_8_21_png, 7263 },
+	{ map_radar_overlay_8_22_png, 8018 },
+	{ map_radar_overlay_8_23_png, 293 },
+	{ map_radar_overlay_8_24_png, 293 },
+	{ map_radar_overlay_8_25_png, 293 },
+	{ map_radar_overlay_8_26_png, 293 },
+	{ map_radar_overlay_9_0_png, 293 },
+	{ map_radar_overlay_9_1_png, 293 },
+	{ map_radar_overlay_9_2_png, 293 },
+	{ map_radar_overlay_9_3_png, 3229 },
+	{ map_radar_overlay_9_4_png, 4414 },
+	{ map_radar_overlay_9_5_png, 2176 },
+	{ map_radar_overlay_9_6_png, 2352 },
+	{ map_radar_overlay_9_7_png, 2052 },
+	{ map_radar_overlay_9_8_png, 1236 },
+	{ map_radar_overlay_9_9_png, 1653 },
+	{ map_radar_overlay_9_10_png, 2622 },
+	{ map_radar_overlay_9_11_png, 2060 },
+	{ map_radar_overlay_9_12_png, 3809 },
+	{ map_radar_overlay_9_13_png, 5241 },
+	{ map_radar_overlay_9_14_png, 4833 },
+	{ map_radar_overlay_9_15_png, 6185 },
+	{ map_radar_overlay_9_16_png, 5624 },
+	{ map_radar_overlay_9_17_png, 5982 },
+	{ map_radar_overlay_9_18_png, 7770 },
+	{ map_radar_overlay_9_19_png, 9753 },
+	{ map_radar_overlay_9_20_png, 7565 },
+	{ map_radar_overlay_9_21_png, 6131 },
+	{ map_radar_overlay_9_22_png, 1747 },
+	{ map_radar_overlay_9_23_png, 293 },
+	{ map_radar_overlay_9_24_png, 293 },
+	{ map_radar_overlay_9_25_png, 293 },
+	{ map_radar_overlay_9_26_png, 293 },
+	{ map_radar_overlay_10_0_png, 293 },
+	{ map_radar_overlay_10_1_png, 293 },
+	{ map_radar_overlay_10_2_png, 293 },
+	{ map_radar_overlay_10_3_png, 537 },
+	{ map_radar_overlay_10_4_png, 2007 },
+	{ map_radar_overlay_10_5_png, 2312 },
+	{ map_radar_overlay_10_6_png, 2056 },
+	{ map_radar_overlay_10_7_png, 2863 },
+	{ map_radar_overlay_10_8_png, 2511 },
+	{ map_radar_overlay_10_9_png, 1970 },
+	{ map_radar_overlay_10_10_png, 2549 },
+	{ map_radar_overlay_10_11_png, 2073 },
+	{ map_radar_overlay_10_12_png, 3768 },
+	{ map_radar_overlay_10_13_png, 5401 },
+	{ map_radar_overlay_10_14_png, 5776 },
+	{ map_radar_overlay_10_15_png, 5915 },
+	{ map_radar_overlay_10_16_png, 5295 },
+	{ map_radar_overlay_10_17_png, 4912 },
+	{ map_radar_overlay_10_18_png, 6303 },
+	{ map_radar_overlay_10_19_png, 8297 },
+	{ map_radar_overlay_10_20_png, 7428 },
+	{ map_radar_overlay_10_21_png, 925 },
+	{ map_radar_overlay_10_22_png, 293 },
+	{ map_radar_overlay_10_23_png, 293 },
+	{ map_radar_overlay_10_24_png, 293 },
+	{ map_radar_overlay_10_25_png, 293 },
+	{ map_radar_overlay_10_26_png, 293 },
+	{ map_radar_overlay_11_0_png, 293 },
+	{ map_radar_overlay_11_1_png, 293 },
+	{ map_radar_overlay_11_2_png, 293 },
+	{ map_radar_overlay_11_3_png, 293 },
+	{ map_radar_overlay_11_4_png, 663 },
+	{ map_radar_overlay_11_5_png, 1368 },
+	{ map_radar_overlay_11_6_png, 1217 },
+	{ map_radar_overlay_11_7_png, 896 },
+	{ map_radar_overlay_11_8_png, 436 },
+	{ map_radar_overlay_11_9_png, 1619 },
+	{ map_radar_overlay_11_10_png, 2920 },
+	{ map_radar_overlay_11_11_png, 2353 },
+	{ map_radar_overlay_11_12_png, 4369 },
+	{ map_radar_overlay_11_13_png, 7339 },
+	{ map_radar_overlay_11_14_png, 6307 },
+	{ map_radar_overlay_11_15_png, 6548 },
+	{ map_radar_overlay_11_16_png, 6607 },
+	{ map_radar_overlay_11_17_png, 4675 },
+	{ map_radar_overlay_11_18_png, 6504 },
+	{ map_radar_overlay_11_19_png, 7011 },
+	{ map_radar_overlay_11_20_png, 3171 },
+	{ map_radar_overlay_11_21_png, 293 },
+	{ map_radar_overlay_11_22_png, 293 },
+	{ map_radar_overlay_11_23_png, 293 },
+	{ map_radar_overlay_11_24_png, 293 },
+	{ map_radar_overlay_11_25_png, 293 },
+	{ map_radar_overlay_11_26_png, 293 },
+	{ map_radar_overlay_12_0_png, 293 },
+	{ map_radar_overlay_12_1_png, 293 },
+	{ map_radar_overlay_12_2_png, 293 },
+	{ map_radar_overlay_12_3_png, 293 },
+	{ map_radar_overlay_12_4_png, 641 },
+	{ map_radar_overlay_12_5_png, 1861 },
+	{ map_radar_overlay_12_6_png, 3210 },
+	{ map_radar_overlay_12_7_png, 545 },
+	{ map_radar_overlay_12_8_png, 293 },
+	{ map_radar_overlay_12_9_png, 293 },
+	{ map_radar_overlay_12_10_png, 1522 },
+	{ map_radar_overlay_12_11_png, 1979 },
+	{ map_radar_overlay_12_12_png, 3938 },
+	{ map_radar_overlay_12_13_png, 8263 },
+	{ map_radar_overlay_12_14_png, 3606 },
+	{ map_radar_overlay_12_15_png, 2000 },
+	{ map_radar_overlay_12_16_png, 3407 },
+	{ map_radar_overlay_12_17_png, 293 },
+	{ map_radar_overlay_12_18_png, 892 },
+	{ map_radar_overlay_12_19_png, 3865 },
+	{ map_radar_overlay_12_20_png, 5062 },
+	{ map_radar_overlay_12_21_png, 293 },
+	{ map_radar_overlay_12_22_png, 293 },
+	{ map_radar_overlay_12_23_png, 293 },
+	{ map_radar_overlay_12_24_png, 293 },
+	{ map_radar_overlay_12_25_png, 293 },
+	{ map_radar_overlay_12_26_png, 293 },
+	{ map_radar_overlay_13_0_png, 293 },
+	{ map_radar_overlay_13_1_png, 293 },
+	{ map_radar_overlay_13_2_png, 293 },
+	{ map_radar_overlay_13_3_png, 293 },
+	{ map_radar_overlay_13_4_png, 293 },
+	{ map_radar_overlay_13_5_png, 2182 },
+	{ map_radar_overlay_13_6_png, 2405 },
+	{ map_radar_overlay_13_7_png, 1493 },
+	{ map_radar_overlay_13_8_png, 392 },
+	{ map_radar_overlay_13_9_png, 293 },
+	{ map_radar_overlay_13_10_png, 293 },
+	{ map_radar_overlay_13_11_png, 293 },
+	{ map_radar_overlay_13_12_png, 3109 },
+	{ map_radar_overlay_13_13_png, 3704 },
+	{ map_radar_overlay_13_14_png, 293 },
+	{ map_radar_overlay_13_15_png, 293 },
+	{ map_radar_overlay_13_16_png, 293 },
+	{ map_radar_overlay_13_17_png, 293 },
+	{ map_radar_overlay_13_18_png, 293 },
+	{ map_radar_overlay_13_19_png, 3285 },
+	{ map_radar_overlay_13_20_png, 4909 },
+	{ map_radar_overlay_13_21_png, 1196 },
+	{ map_radar_overlay_13_22_png, 696 },
+	{ map_radar_overlay_13_23_png, 293 },
+	{ map_radar_overlay_13_24_png, 293 },
+	{ map_radar_overlay_13_25_png, 293 },
+	{ map_radar_overlay_13_26_png, 293 },
+	{ map_radar_overlay_14_0_png, 293 },
+	{ map_radar_overlay_14_1_png, 293 },
+	{ map_radar_overlay_14_2_png, 293 },
+	{ map_radar_overlay_14_3_png, 293 },
+	{ map_radar_overlay_14_4_png, 293 },
+	{ map_radar_overlay_14_5_png, 293 },
+	{ map_radar_overlay_14_6_png, 1214 },
+	{ map_radar_overlay_14_7_png, 900 },
+	{ map_radar_overlay_14_8_png, 1260 },
+	{ map_radar_overlay_14_9_png, 293 },
+	{ map_radar_overlay_14_10_png, 293 },
+	{ map_radar_overlay_14_11_png, 293 },
+	{ map_radar_overlay_14_12_png, 1039 },
+	{ map_radar_overlay_14_13_png, 2871 },
+	{ map_radar_overlay_14_14_png, 293 },
+	{ map_radar_overlay_14_15_png, 293 },
+	{ map_radar_overlay_14_16_png, 293 },
+	{ map_radar_overlay_14_17_png, 293 },
+	{ map_radar_overlay_14_18_png, 293 },
+	{ map_radar_overlay_14_19_png, 341 },
+	{ map_radar_overlay_14_20_png, 3410 },
+	{ map_radar_overlay_14_21_png, 887 },
+	{ map_radar_overlay_14_22_png, 1822 },
+	{ map_radar_overlay_14_23_png, 293 },
+	{ map_radar_overlay_14_24_png, 293 },
+	{ map_radar_overlay_14_25_png, 293 },
+	{ map_radar_overlay_14_26_png, 293 },
+	{ map_radar_overlay_15_0_png, 293 },
+	{ map_radar_overlay_15_1_png, 293 },
+	{ map_radar_overlay_15_2_png, 293 },
+	{ map_radar_overlay_15_3_png, 293 },
+	{ map_radar_overlay_15_4_png, 293 },
+	{ map_radar_overlay_15_5_png, 293 },
+	{ map_radar_overlay_15_6_png, 407 },
+	{ map_radar_overlay_15_7_png, 2456 },
+	{ map_radar_overlay_15_8_png, 933 },
+	{ map_radar_overlay_15_9_png, 1002 },
+	{ map_radar_overlay_15_10_png, 293 },
+	{ map_radar_overlay_15_11_png, 293 },
+	{ map_radar_overlay_15_12_png, 406 },
+	{ map_radar_overlay_15_13_png, 1273 },
+	{ map_radar_overlay_15_14_png, 293 },
+	{ map_radar_overlay_15_15_png, 293 },
+	{ map_radar_overlay_15_16_png, 293 },
+	{ map_radar_overlay_15_17_png, 293 },
+	{ map_radar_overlay_15_18_png, 293 },
+	{ map_radar_overlay_15_19_png, 838 },
+	{ map_radar_overlay_15_20_png, 1195 },
+	{ map_radar_overlay_15_21_png, 1463 },
+	{ map_radar_overlay_15_22_png, 1890 },
+	{ map_radar_overlay_15_23_png, 925 },
+	{ map_radar_overlay_15_24_png, 293 },
+	{ map_radar_overlay_15_25_png, 293 },
+	{ map_radar_overlay_15_26_png, 293 },
+	{ map_radar_overlay_16_0_png, 293 },
+	{ map_radar_overlay_16_1_png, 293 },
+	{ map_radar_overlay_16_2_png, 293 },
+	{ map_radar_overlay_16_3_png, 293 },
+	{ map_radar_overlay_16_4_png, 293 },
+	{ map_radar_overlay_16_5_png, 293 },
+	{ map_radar_overlay_16_6_png, 293 },
+	{ map_radar_overlay_16_7_png, 411 },
+	{ map_radar_overlay_16_8_png, 293 },
+	{ map_radar_overlay_16_9_png, 1176 },
+	{ map_radar_overlay_16_10_png, 293 },
+	{ map_radar_overlay_16_11_png, 293 },
+	{ map_radar_overlay_16_12_png, 293 },
+	{ map_radar_overlay_16_13_png, 1162 },
+	{ map_radar_overlay_16_14_png, 293 },
+	{ map_radar_overlay_16_15_png, 293 },
+	{ map_radar_overlay_16_16_png, 293 },
+	{ map_radar_overlay_16_17_png, 293 },
+	{ map_radar_overlay_16_18_png, 941 },
+	{ map_radar_overlay_16_19_png, 2037 },
+	{ map_radar_overlay_16_20_png, 1452 },
+	{ map_radar_overlay_16_21_png, 2349 },
+	{ map_radar_overlay_16_22_png, 527 },
+	{ map_radar_overlay_16_23_png, 343 },
+	{ map_radar_overlay_16_24_png, 293 },
+	{ map_radar_overlay_16_25_png, 293 },
+	{ map_radar_overlay_16_26_png, 293 },
 };
 
 const MapAsset map_assets[MAP_COUNT] = {
 	[MAP_CONUS] = { 2550, 1600, 11, 7, map_conus_tiles },
 	[MAP_ALASKA] = { 1200, 1142, 5, 5, map_alaska_tiles },
 	[MAP_HAWAII] = { 600, 571, 3, 3, map_hawaii_tiles },
+	[MAP_RADAR] = { 6800, 4257, 27, 17, map_radar_tiles },
+	[MAP_RADAR_OVERLAY] = { 6800, 4257, 27, 17, map_radar_overlay_tiles },
 };

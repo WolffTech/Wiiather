@@ -3,11 +3,14 @@
 #include <grrlib.h>
 #include <math.h>
 #include <ctype.h>
+#include <png.h>
+#include <stdlib.h>
 #include <string.h>
 
 static GRRLIB_texImg *font_tex[FONT_COUNT];
 static GRRLIB_texImg *icon_tex[ICON_COUNT];
 static GRRLIB_texImg *image_tex[IMG_COUNT];
+static u32 map_frame; // frames presented, for the map tile cache
 
 void gfx_init(void)
 {
@@ -33,6 +36,7 @@ void gfx_init(void)
 
 void gfx_present(void)
 {
+	map_frame++;
 	// GRRLIB enables the deflicker copy filter whenever it draws with
 	// antialiasing on; keep pixel art sharp regardless of the last draw.
 	GX_SetCopyFilter(GX_FALSE, rmode->sample_pattern, GX_FALSE, rmode->vfilter);
@@ -196,9 +200,9 @@ void gfx_icon(IconId id, f32 x, f32 y, u32 time_ms)
 	gfx_icon_scaled(id, x, y, icon->w, icon->h, time_ms);
 }
 
-// Decoded map tiles; enough for every tile a 640x480 view can touch, so a
-// steady view never reloads one.
-#define MAP_CACHE_SLOTS 12
+// Decoded map tiles; enough for every tile a 640x480 view can touch in both
+// of the radar's layers, so a steady view never reloads one.
+#define MAP_CACHE_SLOTS 24
 
 typedef struct {
 	GRRLIB_texImg *tex; // NULL when empty
@@ -208,7 +212,29 @@ typedef struct {
 } MapTile;
 
 static MapTile map_cache[MAP_CACHE_SLOTS];
-static u32 map_frame;
+
+// GRRLIB's PNG loader can't read palette images, which the radar maps are.
+static GRRLIB_texImg *load_png(const MapTileAsset *asset)
+{
+	png_image image = { .version = PNG_IMAGE_VERSION };
+	if (!png_image_begin_read_from_memory(&image, asset->png, asset->size))
+		return NULL;
+	image.format = PNG_FORMAT_RGBA;
+	u32 *pixels = malloc(PNG_IMAGE_SIZE(image));
+	GRRLIB_texImg *tex = NULL;
+	if (pixels && png_image_finish_read(&image, NULL, pixels, 0, NULL))
+		tex = GRRLIB_CreateEmptyTexture(image.width, image.height);
+	png_image_free(&image);
+	if (tex) {
+		// Big-endian RGBA bytes read as a u32 are GRRLIB's 0xRRGGBBAA.
+		for (u32 y = 0; y < image.height; y++)
+			for (u32 x = 0; x < image.width; x++)
+				GRRLIB_SetPixelTotexImg(x, y, tex, pixels[y * image.width + x]);
+		GRRLIB_FlushTex(tex);
+	}
+	free(pixels);
+	return tex;
+}
 
 static GRRLIB_texImg *map_tile(MapId map, int tile)
 {
@@ -226,7 +252,7 @@ static GRRLIB_texImg *map_tile(MapId map, int tile)
 	// finished with.
 	if (slot->tex)
 		GRRLIB_FreeTexture(slot->tex);
-	*slot = (MapTile){ GRRLIB_LoadTexturePNG(map_assets[map].tiles[tile]), map, tile, map_frame };
+	*slot = (MapTile){ load_png(&map_assets[map].tiles[tile]), map, tile, map_frame };
 	if (slot->tex)
 		GRRLIB_SetHandle(slot->tex, slot->tex->w / 2, slot->tex->h / 2); // see gfx_init
 	return slot->tex;
@@ -235,7 +261,6 @@ static GRRLIB_texImg *map_tile(MapId map, int tile)
 void gfx_map(MapId map, f32 src_x, f32 src_y, f32 scale, f32 x, f32 y, f32 w, f32 h)
 {
 	const MapAsset *m = &map_assets[map];
-	map_frame++;
 	int first_col = floorf(src_x / MAP_TILE_STRIDE), last_col = floorf((src_x + w / scale) / MAP_TILE_STRIDE);
 	int first_row = floorf(src_y / MAP_TILE_STRIDE), last_row = floorf((src_y + h / scale) / MAP_TILE_STRIDE);
 	GRRLIB_SetAntiAliasing(true);

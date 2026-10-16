@@ -1,6 +1,10 @@
 """Convert ws4kp assets into Wii-friendly PNGs and generate C metadata.
 
-Usage: uv run --with pillow --with freetype-py tools/build_assets.py <path-to-ws4kp-checkout>
+Usage: uv run --with pillow --with freetype-py tools/build_assets.py <path-to-ws4kp-checkout> <path-to-liberation-fonts>
+
+The second path is a directory holding LiberationSans-Bold.ttf from the
+Liberation Fonts release (liberation-fonts-ttf-2.1.5). It stands in for the
+Arial that ws4kp's radar title asks for, as Chrome on Linux does.
 
 Writes PNGs to data/ and data/maps/ (embedded by the Makefile) and tables to source/gen/.
 GX textures must be at most 1024x1024 with dimensions divisible by 4, so
@@ -30,6 +34,11 @@ FONTS = [
     ("STAR4000_SMALL_28", "Star4000 Small.woff", 28),
     ("STAR4000_20", "Star4000.woff", 20),
     ("STAR4000_LARGE_28", "Star4000 Large.woff", 28),
+    ("STAR4000_24", "Star4000.woff", 24),
+]
+# Same, from the Liberation Fonts directory.
+LIBERATION_FONTS = [
+    ("ARIAL_BOLD_38", "LiberationSans-Bold.ttf", 38),
 ]
 
 # (enum suffix, path under server/images)
@@ -46,6 +55,7 @@ IMAGES = [
     ("MOON_LAST", "icons/moon-phases/Last-Quarter.gif"),
     ("BACKGROUND_1_CHART", "backgrounds/1-chart.png"),
     ("BACKGROUND_6", "backgrounds/6.png"),
+    ("BACKGROUND_4", "backgrounds/4.png"),
 ]
 
 ICON_DIR = "icons/current-conditions"
@@ -60,6 +70,18 @@ MAPS = [
     ("ALASKA", "maps/radar-alaska.png"),
     ("HAWAII", "maps/radar-hawaii.png"),
 ]
+# (enum suffix, tile name) for the Local Radar's base map and its overlay of
+# borders and labels. ws4kp shows them as a grid of tiles, some a pixel short
+# that the browser stretches, so the maps are rebuilt from those tiles.
+RADAR_MAPS = [
+    ("RADAR", "map"),
+    ("RADAR_OVERLAY", "overlay"),
+]
+RADAR_TILE_W, RADAR_TILE_H = 680, 387
+RADAR_TILE_COLS, RADAR_TILE_ROWS = 10, 11
+# Embedded as they are, the radar maps would add about 20 MB. They hold few
+# distinct colors, so a 32-color palette loses nothing visible.
+RADAR_MAP_COLORS = 32
 # The maps are far larger than a texture can be, and decoding a whole one
 # would take megabytes, so they are cut into tiles loaded as needed. Each
 # tile repeats its neighbors' edge pixels so bilinear filtering is seamless.
@@ -181,13 +203,13 @@ def build_image(enum: str, path: Path):
     return {"enum": enum, "sym": sym, "w": img.width, "h": img.height}
 
 
-def build_map(enum: str, path: Path):
-    img = Image.open(path).convert("RGB")
+def build_map(enum: str, img: Image.Image, colors: int = 0):
+    """Tiles an RGB or RGBA map, reduced to a palette of `colors` if nonzero."""
     w, h = img.size
     cols, rows = -(-w // MAP_STRIDE), -(-h // MAP_STRIDE)
     # The map at (1, 1) with a border filling out the last tiles, where each
     # pixel repeats the nearest edge pixel: stretch the edge columns, then rows.
-    padded = Image.new("RGB", (cols * MAP_STRIDE + 2, rows * MAP_STRIDE + 2))
+    padded = Image.new(img.mode, (cols * MAP_STRIDE + 2, rows * MAP_STRIDE + 2))
     pw, ph = padded.size
     padded.paste(img, (1, 1))
     stretch = lambda box, size: padded.crop(box).resize(size, Image.NEAREST)
@@ -195,14 +217,33 @@ def build_map(enum: str, path: Path):
     padded.paste(stretch((w, 0, w + 1, ph), (pw - w - 1, ph)), (w + 1, 0))
     padded.paste(stretch((0, 1, pw, 2), (pw, 1)), (0, 0))
     padded.paste(stretch((0, h, pw, h + 1), (pw, ph - h - 1)), (0, h + 1))
-    syms = []
+    if colors:
+        # One palette for the whole map so tiles match at their seams.
+        method = Image.Quantize.FASTOCTREE if img.mode == "RGBA" else Image.Quantize.MEDIANCUT
+        padded = padded.quantize(colors, method=method, dither=Image.Dither.NONE)
+    tiles = []
     for r in range(rows):
         for c in range(cols):
             x, y = c * MAP_STRIDE, r * MAP_STRIDE
             name = f"map_{enum.lower()}_{r}_{c}"
-            padded.crop((x, y, x + MAP_TILE, y + MAP_TILE)).save(MAPS_DATA / f"{name}.png", optimize=True)
-            syms.append(f"{name}_png")
-    return {"enum": enum, "w": w, "h": h, "cols": cols, "rows": rows, "tiles": syms}
+            path = MAPS_DATA / f"{name}.png"
+            padded.crop((x, y, x + MAP_TILE, y + MAP_TILE)).save(path, optimize=True)
+            tiles.append((f"{name}_png", path.stat().st_size))
+    return {"enum": enum, "w": w, "h": h, "cols": cols, "rows": rows, "tiles": tiles}
+
+
+def radar_map(tiles: Path, name: str) -> Image.Image:
+    """Lays ws4kp's radar tiles out as the browser does, each at its full tile size."""
+    first = Image.open(tiles / f"{name}-0-0.webp")
+    mode = "RGBA" if first.mode == "RGBA" else "RGB"
+    img = Image.new(mode, (RADAR_TILE_COLS * RADAR_TILE_W, RADAR_TILE_ROWS * RADAR_TILE_H))
+    for r in range(RADAR_TILE_ROWS):
+        for c in range(RADAR_TILE_COLS):
+            tile = Image.open(tiles / f"{name}-{r}-{c}.webp").convert(mode)
+            if tile.size != (RADAR_TILE_W, RADAR_TILE_H):
+                tile = tile.resize((RADAR_TILE_W, RADAR_TILE_H), Image.BILINEAR)
+            img.paste(tile, (c * RADAR_TILE_W, r * RADAR_TILE_H))
+    return img
 
 
 def write_c(fonts, icons, images, maps, source_rev: str):
@@ -242,9 +283,14 @@ def write_c(fonts, icons, images, maps, source_rev: str):
         "#define MAP_TILE_STRIDE (MAP_TILE_SIZE - 2) // map pixels per tile, without the 1px apron on each side",
         "",
         "typedef struct {",
+        "\tconst u8 *png;",
+        "\tu32 size;",
+        "} MapTileAsset;",
+        "",
+        "typedef struct {",
         "\tu16 w, h;",
         "\tu8 cols, rows;",
-        "\tconst u8 *const *tiles; // row-major; tile (c, r) starts at map pixel (c, r) * stride - 1",
+        "\tconst MapTileAsset *tiles; // row-major; tile (c, r) starts at map pixel (c, r) * stride - 1",
         "} MapAsset;",
         "",
         "typedef enum {",
@@ -276,7 +322,7 @@ def write_c(fonts, icons, images, maps, source_rev: str):
     (GEN / "assets_gen.h").write_text("\n".join(h))
 
     c = ["// Generated by tools/build_assets.py. Do not edit.", '#include "assets_gen.h"']
-    tiles = [t for m in maps for t in m["tiles"]]
+    tiles = [sym for m in maps for sym, _ in m["tiles"]]
     for sym in [f["sym"] for f in fonts] + [i["sym"] for i in icons] + [i["sym"] for i in images] + tiles:
         c.append(f'#include "{sym}.h"')
     c += ["", "const FontAsset font_assets[FONT_COUNT] = {"]
@@ -294,8 +340,8 @@ def write_c(fonts, icons, images, maps, source_rev: str):
         c.append(f"\t[IMG_{i['enum']}] = {{ {i['sym']}, {i['w']}, {i['h']} }},")
     c += ["};", ""]
     for m in maps:
-        c.append(f"static const u8 *const map_{m['enum'].lower()}_tiles[] = {{")
-        c += [f"\t{t}," for t in m["tiles"]]
+        c.append(f"static const MapTileAsset map_{m['enum'].lower()}_tiles[] = {{")
+        c += [f"\t{{ {sym}, {size} }}," for sym, size in m["tiles"]]
         c += ["};", ""]
     c.append("const MapAsset map_assets[MAP_COUNT] = {")
     for m in maps:
@@ -410,9 +456,10 @@ def write_regional_cities(ws4kp: Path):
 
 
 def main():
-    if len(sys.argv) != 2:
+    if len(sys.argv) != 3:
         sys.exit(__doc__)
     ws4kp = Path(sys.argv[1]).resolve()
+    liberation = Path(sys.argv[2]).resolve()
     server = ws4kp / "server"
     DATA.mkdir(exist_ok=True)
     GEN.mkdir(parents=True, exist_ok=True)
@@ -423,10 +470,13 @@ def main():
     rev = subprocess.run(["git", "-C", str(ws4kp), "rev-parse", "HEAD"],
                          capture_output=True, text=True).stdout.strip() or "unknown"
     fonts = [build_font(e, server / "fonts" / f, s) for e, f, s in FONTS]
+    fonts += [build_font(e, liberation / f, s) for e, f, s in LIBERATION_FONTS]
     icons = [build_icon(p) for p in sorted((server / "images" / ICON_DIR).glob("*.gif"))]
     icons += [build_icon(p, SMALL_ICON_PREFIX) for p in sorted((server / "images" / SMALL_ICON_DIR).glob("*.gif"))]
     images = [build_image(e, server / "images" / p) for e, p in IMAGES]
-    maps = [build_map(e, server / "images" / p) for e, p in MAPS]
+    maps = [build_map(e, Image.open(server / "images" / p).convert("RGB")) for e, p in MAPS]
+    radar_tiles = server / "images" / "maps" / "radar"
+    maps += [build_map(e, radar_map(radar_tiles, n), RADAR_MAP_COLORS) for e, n in RADAR_MAPS]
     write_c(fonts, icons, images, maps, rev)
     station_count = write_stations(ws4kp)
     travel_count = write_travel_cities(ws4kp)

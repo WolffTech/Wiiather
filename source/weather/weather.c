@@ -14,6 +14,7 @@
 #include "net/ca_update.h"
 #include "net/geoip.h"
 #include "net/https.h"
+#include "radar_fetch.h"
 
 #define REFRESH_SECONDS (10 * 60)
 #define RETRY_SECONDS 60
@@ -25,6 +26,8 @@
 static lwp_t thread;
 static mutex_t lock;
 static WeatherSnapshot shared;
+static RadarImages shared_radar;
+static u32 radar_generation; // increments whenever shared_radar changes
 static char app_dir[256];
 // Counts weather_set_location calls (0 means no location yet), so results
 // fetched for an earlier location are dropped.
@@ -95,6 +98,33 @@ static void update_utc_offset(void)
 	shared.has_utc_offset = true;
 }
 
+// The Local Radar is optional too. Its images are kept from an earlier
+// refresh if a later one fails, and reused as they slide back in time.
+static void refresh_radar(const Location *loc, u32 version, const NwsPoint *point)
+{
+	static RadarImages images; // for `images_version`'s location
+	static u32 images_version;
+	// ws4kp has no radar for Alaska and Hawaii.
+	if (strcmp(point->state, "AK") == 0 || strcmp(point->state, "HI") == 0)
+		return;
+	if (images_version != version) {
+		images_version = version;
+		images.count = 0;
+	}
+	time_t utc, rtc;
+	if (!https_last_date(&utc, &rtc) || !radar_fetch(loc->lat, loc->lon, utc + (time(NULL) - rtc), &images) ||
+		!lock_current(version))
+		return;
+	bool changed = shared_radar.count != images.count;
+	for (size_t i = 0; !changed && i < images.count; i++)
+		changed = shared_radar.images[i].time != images.images[i].time;
+	if (changed) {
+		shared_radar = images;
+		radar_generation++;
+	}
+	LWP_MutexUnlock(lock);
+}
+
 static bool refresh(const Location *loc, u32 version, NwsPoint *point, bool *have_point)
 {
 	char err[128];
@@ -158,6 +188,8 @@ static bool refresh(const Location *loc, u32 version, NwsPoint *point, bool *hav
 		shared.generation++;
 		LWP_MutexUnlock(lock);
 	}
+
+	refresh_radar(loc, version, point);
 	return true;
 }
 
@@ -372,6 +404,8 @@ void weather_set_location(const Location *location)
 	s->zip_guess = zip_guess;
 	s->travel = travel;
 	s->generation = generation + 1;
+	shared_radar.count = 0;
+	radar_generation++;
 	LWP_MutexUnlock(lock);
 }
 
@@ -380,4 +414,16 @@ void weather_snapshot(WeatherSnapshot *out)
 	LWP_MutexLock(lock);
 	*out = shared;
 	LWP_MutexUnlock(lock);
+}
+
+bool weather_radar(u32 *generation, RadarImages *out)
+{
+	LWP_MutexLock(lock);
+	bool changed = *generation != radar_generation;
+	if (changed) {
+		*out = shared_radar;
+		*generation = radar_generation;
+	}
+	LWP_MutexUnlock(lock);
+	return changed;
 }
