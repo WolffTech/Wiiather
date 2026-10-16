@@ -17,3 +17,6 @@ void config_load(const char *argv0, Config *out);
 // Writes the location to settings.ini. Returns false if the SD card can't be
 // written.
 bool config_save(const Config *config);
+
+// Restores the defaults, with no location, and deletes settings.ini.
+void config_reset(Config *config);

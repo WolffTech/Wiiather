@@ -16,8 +16,8 @@ typedef enum { PICKER_OPEN, PICKER_CHOSEN, PICKER_CANCELED } PickerResult;
 // Starts at `current`'s ZIP, or with a blank entry when `current` is NULL.
 LocationPicker location_picker_make(const Location *current);
 
-// Applies this frame's button presses. On PICKER_CHOSEN, `chosen` receives
-// the location.
+// Applies this frame's button presses. Button 1 fills in `guess` once it is
+// found. On PICKER_CHOSEN, `chosen` receives the location.
 PickerResult location_picker_update(LocationPicker *p, u32 pressed, const ZipGuess *guess, Location *chosen);
 
 void location_picker_draw(const LocationPicker *p, const ZipGuess *guess);

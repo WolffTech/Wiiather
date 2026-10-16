@@ -67,6 +67,16 @@ void config_load(const char *argv0, Config *out)
 	}
 }
 
+void config_reset(Config *config)
+{
+	char path[sizeof config->dir + 16];
+	settings_path(config, path, sizeof path);
+	remove(path);
+	Config reset = { 0 };
+	snprintf(reset.dir, sizeof reset.dir, "%s", config->dir);
+	*config = reset;
+}
+
 bool config_save(const Config *config)
 {
 	char path[sizeof config->dir + 16];

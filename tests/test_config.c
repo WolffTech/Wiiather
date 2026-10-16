@@ -67,6 +67,20 @@ static void test_save(void)
 	CHECK_NEAR(loaded.location.lon, c.location.lon);
 }
 
+static void test_reset(void)
+{
+	Config c;
+	config_load(boot, &c);
+	CHECK(c.has_location);
+	config_reset(&c);
+	CHECK(!c.has_location);
+	CHECK(strcmp(c.dir, dir) == 0);
+
+	Config loaded;
+	config_load(boot, &loaded);
+	CHECK(!loaded.has_location);
+}
+
 int main(void)
 {
 	snprintf(dir, sizeof dir, "/tmp/wiiather-test-XXXXXX");
@@ -75,6 +89,7 @@ int main(void)
 	snprintf(boot, sizeof boot, "%s/boot.dol", dir);
 	test_load();
 	test_save();
+	test_reset();
 
 	char path[128];
 	snprintf(path, sizeof path, "%s/settings.ini", dir);

@@ -1,5 +1,6 @@
 #pragma once
 #include <gctypes.h>
+#include <time.h>
 
 #include "location.h"
 #include "nws.h"
@@ -12,8 +13,8 @@ typedef enum {
 	WEATHER_FAILED, // no data; `message` holds the error, retry is scheduled
 } WeatherStatus;
 
-// The ZIP code guessed from the IP address when the app starts without a
-// location.
+// The ZIP code guessed from the IP address, when the app starts without a
+// location or the location picker asks for one.
 typedef enum { GUESS_NONE, GUESS_PENDING, GUESS_FOUND, GUESS_FAILED } GuessStatus;
 
 typedef struct {
@@ -58,6 +59,8 @@ typedef struct {
 	Alerts alerts; // kept from earlier fetches if later ones fail, minus expired ones
 	u32 alert_fetches; // attempts so far; ws4kp re-shows viewed alerts every tenth
 	ZipGuess zip_guess;
+	time_t updated; // RTC time of the last current conditions, 0 before any
+	u64 ca_date; // the CA bundle in use as YYYYMMDDhhmmss, 0 until the network is up
 	u32 generation; // increments whenever any data changes
 } WeatherSnapshot;
 
@@ -69,6 +72,10 @@ void weather_start(const Location *location, const char *dir);
 
 // Switches to a new location, dropping the old location's data.
 void weather_set_location(const Location *location);
+
+// Starts guessing the ZIP code from the IP address unless a guess is under way
+// or has succeeded.
+void weather_request_zip_guess(void);
 
 // Copies the latest state. Safe to call every frame.
 void weather_snapshot(WeatherSnapshot *out);

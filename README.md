@@ -29,6 +29,7 @@ in the style of The Weather Channel's 1990s local forecast.
 - A scrolling bottom bar with conditions and active NWS hazard alerts
 - ZIP code lookup, with a suggestion based on the Wii's public IP address
 - Optional background music from your own MP3s
+- A settings menu for the location, with an About page and a reset option
 - Signed certificate authority updates, so HTTPS keeps working after release
 
 US locations only, since all data comes from the NWS.
@@ -48,7 +49,7 @@ internet connection set up in the Wii's system settings.
 ### Music
 
 To add background music, copy `.mp3` files to `apps/wiiather/music/` on the
-SD card. They play in random order, and the Wii Remote's A button turns music
+SD card. They play in random order, and the Wii Remote's B button turns music
 on and off. ws4kp's royalty-free tracks in
 [`server/music/default`](https://github.com/netbymatt/ws4kp/tree/main/server/music/default)
 work well.
@@ -58,8 +59,25 @@ work well.
 On first launch, Wiiather asks for a ZIP code. It suggests one based on the
 Wii's public IP address, looked up with [ipinfo.io](https://ipinfo.io), which
 sees that address. Change digits with the D-pad's up and down, move between
-them with left and right, and press A to save. Press + at any time to pick a
-new location, and B to back out.
+them with left and right, and press A to save. If you've changed the digits,
+press 1 to go back to the suggested ZIP code.
+
+### Controls
+
+| Button | Action |
+| --- | --- |
+| A | Open the settings menu |
+| B | Turn music on or off |
+| HOME | Exit to the Homebrew Channel |
+
+In the settings menu, use the D-pad to move, A to select and B to go back.
+The displays pause while the menu is open, and changes are saved when it
+closes.
+
+- **Location** opens the ZIP code entry.
+- **About** shows the version, the location's coordinates, the date of the
+  certificate bundle in use and when the weather last updated. Its **Reset
+  Settings** option deletes `settings.ini` and asks for a location again.
 
 The location is saved in `apps/wiiather/settings.ini`. To use exact
 coordinates instead, for example for a place without a ZIP code, edit the

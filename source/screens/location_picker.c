@@ -32,6 +32,10 @@ PickerResult location_picker_update(LocationPicker *p, u32 pressed, const ZipGue
 
 	if (pressed & (WPAD_BUTTON_UP | WPAD_BUTTON_DOWN | WPAD_BUTTON_LEFT | WPAD_BUTTON_RIGHT))
 		p->edited = true;
+	if ((pressed & WPAD_BUTTON_1) && guess->status == GUESS_FOUND) {
+		p->entry = zip_entry_make(guess->zip);
+		p->edited = true;
+	}
 	if (pressed & WPAD_BUTTON_UP)
 		zip_entry_step(&p->entry, 1);
 	if (pressed & WPAD_BUTTON_DOWN)
@@ -84,13 +88,17 @@ void location_picker_draw(const LocationPicker *p, const ZipGuess *guess)
 	}
 	gfx_text(&preview_style, 320, 285, ALIGN_CENTER, preview);
 
+	char note[48] = "";
 	if (!p->cancelable && !p->edited) {
-		const char *note = guess->status == GUESS_PENDING ? "Detecting your location..."
-			: guess->status == GUESS_FOUND ? "Detected from your internet connection"
-			: NULL;
-		if (note)
-			gfx_text(&note_style, 320, 325, ALIGN_CENTER, note);
+		if (guess->status == GUESS_PENDING)
+			snprintf(note, sizeof note, "Detecting your location...");
+		else if (guess->status == GUESS_FOUND)
+			snprintf(note, sizeof note, "Detected from your internet connection");
+	} else if (guess->status == GUESS_FOUND && zip_entry_value(&p->entry) != guess->zip) {
+		snprintf(note, sizeof note, "1: Use detected ZIP (%05lu)", (unsigned long)guess->zip);
 	}
+	if (note[0])
+		gfx_text(&note_style, 320, 325, ALIGN_CENTER, note);
 
 	scroll_draw(p->cancelable ? "D-Pad: Edit  A: Save  B: Back" : "D-Pad: Edit  A: Save");
 }

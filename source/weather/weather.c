@@ -83,6 +83,9 @@ static bool bring_up_network(void)
 		return false;
 	}
 	ca_update_init(app_dir);
+	LWP_MutexLock(lock);
+	shared.ca_date = ca_update_date();
+	LWP_MutexUnlock(lock);
 	return true;
 }
 
@@ -149,6 +152,7 @@ static bool refresh(const Location *loc, u32 version, NwsPoint *point, bool *hav
 	shared.message[0] = '\0';
 	shared.point = *point;
 	shared.observation = obs;
+	shared.updated = time(NULL);
 	update_utc_offset();
 	shared.generation++;
 	LWP_MutexUnlock(lock);
@@ -294,7 +298,6 @@ static void *worker(void *arg)
 {
 	while (!bring_up_network())
 		sleep(RETRY_SECONDS);
-	guess_zip();
 
 	NwsPoint point;
 	bool have_point = false;
@@ -321,6 +324,10 @@ static void *worker(void *arg)
 			ca_update_check(false);
 			next_ca_check = gettime() + secs_to_ticks(CA_CHECK_SECONDS);
 		}
+		LWP_MutexLock(lock);
+		shared.ca_date = ca_update_date();
+		LWP_MutexUnlock(lock);
+		guess_zip();
 
 		LWP_MutexLock(lock);
 		u32 version = location_version;
@@ -394,6 +401,7 @@ void weather_set_location(const Location *location)
 	long utc_offset = s->utc_offset;
 	ZipGuess zip_guess = s->zip_guess;
 	u32 generation = s->generation;
+	u64 ca_date = s->ca_date;
 	TravelForecast travel = s->travel;
 	memset(s, 0, sizeof *s);
 	s->status = WEATHER_LOADING;
@@ -402,10 +410,20 @@ void weather_set_location(const Location *location)
 	s->has_utc_offset = has_utc_offset;
 	s->utc_offset = utc_offset;
 	s->zip_guess = zip_guess;
+	s->ca_date = ca_date;
 	s->travel = travel;
 	s->generation = generation + 1;
 	shared_radar.count = 0;
 	radar_generation++;
+	LWP_MutexUnlock(lock);
+}
+
+void weather_request_zip_guess(void)
+{
+	LWP_MutexLock(lock);
+	GuessStatus status = shared.zip_guess.status;
+	if (status == GUESS_NONE || status == GUESS_FAILED)
+		shared.zip_guess.status = GUESS_PENDING;
 	LWP_MutexUnlock(lock);
 }
 
