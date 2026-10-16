@@ -202,6 +202,21 @@ static void spc_outlook_draw(const DisplayData *d, size_t screen, u32 time_ms)
 	spc_outlook_view_draw(&d->spc_outlook);
 }
 
+static size_t radar_count(const DisplayData *d)
+{
+	return radar_view_ready(&d->radar) ? RADAR_STEPS : 0;
+}
+
+static u32 radar_ms(const DisplayData *d, size_t screen)
+{
+	return radar_step_ms(screen);
+}
+
+static void radar_draw(const DisplayData *d, size_t screen, u32 time_ms)
+{
+	radar_view_draw(&d->radar, radar_step_image(screen, d->radar.count));
+}
+
 // ws4kp's order, limited to the displays ported so far.
 static const Display displays[] = {
 	{ hazards_count, hazards_screen_ms, hazards_display_draw },
@@ -215,6 +230,7 @@ static const Display displays[] = {
 	{ extended_count, extended_ms, extended_draw },
 	{ almanac_count, almanac_ms, almanac_draw },
 	{ spc_outlook_count, spc_outlook_ms, spc_outlook_draw },
+	{ radar_count, radar_ms, radar_draw },
 };
 #define DISPLAY_COUNT (sizeof displays / sizeof displays[0])
 
@@ -241,6 +257,7 @@ void displays_prepare(const WeatherSnapshot *snap, DisplayData *out)
 		out->latest_observations.count = 0;
 	almanac_view_prepare(snap, &out->almanac);
 	spc_outlook_view_prepare(snap, &out->spc_outlook);
+	radar_view_prepare(snap, &out->radar);
 	hazards_prepare(snap, &out->hazards);
 }
 
@@ -254,6 +271,7 @@ void displays_tick(const WeatherSnapshot *snap, DisplayData *data)
 		hourly_view_prepare(snap, &data->hourly);
 	if (hourly_graph_view_outdated(&data->hourly_graph))
 		hourly_graph_view_prepare(snap, &data->hourly_graph);
+	radar_view_update(&data->radar);
 }
 
 void rotation_update(Rotation *r, DisplayData *data, u32 now_ms)
@@ -294,6 +312,8 @@ void displays_draw(const Rotation *r, const DisplayData *data, u32 now_ms)
 
 bool displays_scroll_visible(const Rotation *r)
 {
-	// Hazards fills the screen; ws4kp sets okToDrawCurrentConditions = false.
-	return displays[r->display].draw != hazards_display_draw;
+	// Hazards and the radar fill the screen; ws4kp sets
+	// okToDrawCurrentConditions = false.
+	const Display *d = &displays[r->display];
+	return d->draw != hazards_display_draw && d->draw != radar_draw;
 }

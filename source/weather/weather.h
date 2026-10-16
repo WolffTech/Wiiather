@@ -3,6 +3,7 @@
 
 #include "location.h"
 #include "nws.h"
+#include "radar.h"
 
 // Status of the current observation, which every display depends on.
 typedef enum {
@@ -71,3 +72,8 @@ void weather_set_location(const Location *location);
 
 // Copies the latest state. Safe to call every frame.
 void weather_snapshot(WeatherSnapshot *out);
+
+// Copies the Local Radar's images for the current location if they changed
+// since `*generation`, and updates it. They're too large to copy with every
+// snapshot.
+bool weather_radar(u32 *generation, RadarImages *out);

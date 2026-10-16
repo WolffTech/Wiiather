@@ -23,8 +23,9 @@ in the style of The Weather Channel's 1990s local forecast.
 ## Features
 
 - Current conditions, latest observations, hourly, travel, regional, local and
-  extended forecasts, an hourly graph, an almanac and the Storm Prediction
-  Center's severe weather outlook, rotating like the original
+  extended forecasts, an hourly graph, an almanac, the Storm Prediction
+  Center's severe weather outlook and the local radar, rotating like the
+  original
 - A scrolling bottom bar with conditions and active NWS hazard alerts
 - ZIP code lookup, with a suggestion based on the Wii's public IP address
 - Optional background music from your own MP3s

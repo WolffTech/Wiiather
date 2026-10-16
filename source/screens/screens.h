@@ -165,6 +165,22 @@ void spc_outlook_view_prepare(const WeatherSnapshot *snap, SpcOutlookView *out);
 bool spc_outlook_view_outdated(const SpcOutlookView *view);
 void spc_outlook_view_draw(const SpcOutlookView *view);
 
+// Local Radar: the newest composite images over the radar map, looped.
+typedef struct {
+	u32 generation; // weather_radar's, for the images in the textures
+	size_t count; // images in the textures, oldest first
+	time_t times[RADAR_IMAGES]; // UTC
+	bool has_utc_offset;
+	long utc_offset; // RTC minus UTC, for the images' local times
+	int map_x, map_y; // radar map pixel at the main area's top-left
+} RadarView;
+
+void radar_view_prepare(const WeatherSnapshot *snap, RadarView *out);
+// Loads new images into the textures. Call every frame.
+void radar_view_update(RadarView *view);
+bool radar_view_ready(const RadarView *view);
+void radar_view_draw(const RadarView *view, size_t image);
+
 // Hazards: unviewed alerts wrapped for a full-screen vertical scroll, plus
 // the most severe alert's crawl for the bottom bar.
 #define HAZARDS_MAX_LINES 640
