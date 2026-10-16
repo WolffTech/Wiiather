@@ -29,7 +29,8 @@ in the style of The Weather Channel's 1990s local forecast.
 - A scrolling bottom bar with conditions and active NWS hazard alerts
 - ZIP code lookup, with a suggestion based on the Wii's public IP address
 - Optional background music from your own MP3s
-- A settings menu for the location, with an About page and a reset option
+- A settings menu for the location and which displays rotate, with an About
+  page and a reset option
 - Signed certificate authority updates, so HTTPS keeps working after release
 
 US locations only, since all data comes from the NWS.
@@ -75,6 +76,8 @@ The displays pause while the menu is open, and changes are saved when it
 closes.
 
 - **Location** opens the ZIP code entry.
+- **Displays** turns displays on and off. Hazards always shows when there are
+  active alerts, and at least one other display has to stay on.
 - **About** shows the version, the location's coordinates, the date of the
   certificate bundle in use and when the weather last updated. Its **Reset
   Settings** option deletes `settings.ini` and asks for a location again.

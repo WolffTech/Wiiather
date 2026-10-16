@@ -19,6 +19,14 @@
 #define BAR_HEIGHT 42
 #define POINTER_LEFT 76
 
+// The Displays page's checklist: two columns of six.
+#define CHECK_ROWS 6
+#define CHECK_LEFT 78
+#define CHECK_COLUMN_PITCH 252
+#define CHECK_TOP 112
+#define CHECK_PITCH 46
+#define CHECK_BOX 20
+
 #define RGBA_DIM 0x9AA3C8FF
 #define RGBA_BAR 0xFFFFFF1A
 #define RGBA_BAR_TOP 0xFFFFFF2E
@@ -29,11 +37,29 @@ static const TextStyle label_selected_style = { FONT_STAR4000_32, RGBA_YELLOW, t
 static const TextStyle label_dim_style = { FONT_STAR4000_32, RGBA_DIM, true, false, 0 };
 static const TextStyle value_style = { FONT_STAR4000_LARGE_28, RGBA_WHITE, true, false, 0 };
 static const TextStyle value_selected_style = { FONT_STAR4000_LARGE_28, RGBA_YELLOW, true, false, 0 };
+static const TextStyle check_style = { FONT_STAR4000_24, RGBA_WHITE, true, false, 0 };
+static const TextStyle check_selected_style = { FONT_STAR4000_24, RGBA_YELLOW, true, false, 0 };
+static const TextStyle check_dim_style = { FONT_STAR4000_24, RGBA_DIM, true, false, 0 };
 static const TextStyle prompt_style = { FONT_STAR4000_32, RGBA_WHITE, true, false, 0 };
 static const TextStyle note_style = { FONT_STAR4000_LARGE_20, RGBA_WHITE, true, true, 24 };
 
-typedef enum { MAIN_LOCATION, MAIN_ABOUT, MAIN_ROWS } MainRow;
-static const char *const main_labels[MAIN_ROWS] = { "Location", "About" };
+typedef enum { MAIN_LOCATION, MAIN_DISPLAYS, MAIN_ABOUT, MAIN_ROWS } MainRow;
+static const char *const main_labels[MAIN_ROWS] = { "Location", "Displays", "About" };
+
+static const char *const display_names[DISPLAY_COUNT] = {
+	[DISPLAY_HAZARDS] = "Hazards",
+	[DISPLAY_CURRENT] = "Current Conditions",
+	[DISPLAY_LATEST_OBSERVATIONS] = "Latest Obs.",
+	[DISPLAY_HOURLY] = "Hourly Forecast",
+	[DISPLAY_HOURLY_GRAPH] = "Hourly Graph",
+	[DISPLAY_TRAVEL] = "Travel Forecast",
+	[DISPLAY_REGIONAL] = "Regional Forecast",
+	[DISPLAY_LOCAL] = "Local Forecast",
+	[DISPLAY_EXTENDED] = "Extended Forecast",
+	[DISPLAY_ALMANAC] = "Almanac",
+	[DISPLAY_SPC_OUTLOOK] = "SPC Outlook",
+	[DISPLAY_RADAR] = "Local Radar",
+};
 
 typedef enum { ABOUT_VERSION, ABOUT_LOCATION, ABOUT_CERTIFICATES, ABOUT_WEATHER, ABOUT_RESET, ABOUT_ROWS } AboutRow;
 
@@ -66,12 +92,33 @@ static void update_main(SettingsMenu *m, u32 pressed, const Config *config, Sett
 		m->page = PAGE_LOCATION;
 		weather_request_zip_guess();
 		break;
+	case MAIN_DISPLAYS:
+		m->page = PAGE_DISPLAYS;
+		break;
 	case MAIN_ABOUT:
 		m->page = PAGE_ABOUT;
 		break;
 	case MAIN_ROWS:
 		break;
 	}
+}
+
+// Up and down move within a column, left and right between them.
+static void update_displays(SettingsMenu *m, u32 pressed, Config *config, SettingsResult *result)
+{
+	size_t column = m->display_row / CHECK_ROWS, row = m->display_row % CHECK_ROWS;
+	move_cursor(&row, CHECK_ROWS, pressed);
+	if (pressed & (WPAD_BUTTON_LEFT | WPAD_BUTTON_RIGHT))
+		column = !column;
+	m->display_row = (DisplayId)(column * CHECK_ROWS + row);
+
+	if (pressed & WPAD_BUTTON_A) {
+		DisplayId id = m->display_row;
+		if (config_set_display_shown(config, id, !config_display_shown(config, id)))
+			result->changed |= SETTINGS_DISPLAYS;
+	}
+	if (pressed & WPAD_BUTTON_B)
+		m->page = PAGE_MAIN;
 }
 
 SettingsResult settings_menu_update(SettingsMenu *m, u32 pressed, Config *config, const WeatherSnapshot *snap)
@@ -93,6 +140,9 @@ SettingsResult settings_menu_update(SettingsMenu *m, u32 pressed, Config *config
 			m->page = PAGE_MAIN;
 		break;
 	}
+	case PAGE_DISPLAYS:
+		update_displays(m, pressed, config, &result);
+		break;
 	case PAGE_ABOUT:
 		if (pressed & WPAD_BUTTON_A)
 			m->page = PAGE_RESET;
@@ -171,6 +221,13 @@ static void main_draw(const SettingsMenu *m, const Config *config)
 		case MAIN_LOCATION:
 			location_name(&config->location, value, sizeof value);
 			break;
+		case MAIN_DISPLAYS: {
+			int shown = 0;
+			for (int id = 0; id < DISPLAY_COUNT; id++)
+				shown += config_display_shown(config, id);
+			snprintf(value, sizeof value, "%d of %d on", shown, DISPLAY_COUNT);
+			break;
+		}
 		case MAIN_ABOUT:
 			snprintf(value, sizeof value, "%s", WIIATHER_VERSION);
 			break;
@@ -178,6 +235,33 @@ static void main_draw(const SettingsMenu *m, const Config *config)
 			break;
 		}
 		row_draw(i, i == m->main_row ? ROW_SELECTED : ROW_PLAIN, main_labels[i], value);
+	}
+}
+
+// A checkbox with the text's drop shadow, filled in when `checked`.
+static void checkbox_draw(f32 x, f32 y, bool checked, bool selected)
+{
+	GRRLIB_Rectangle(x + 2, y + 2, CHECK_BOX, CHECK_BOX, RGBA_BLACK, true);
+	GRRLIB_Rectangle(x, y, CHECK_BOX, CHECK_BOX, selected ? RGBA_YELLOW : RGBA_WHITE, true);
+	GRRLIB_Rectangle(x + 2, y + 2, CHECK_BOX - 4, CHECK_BOX - 4, 0x000000FF, true);
+	GRRLIB_Rectangle(x + 3, y + 3, CHECK_BOX - 6, CHECK_BOX - 6, 0x1F2A5CFF, true);
+	if (checked)
+		GRRLIB_Rectangle(x + 5, y + 5, CHECK_BOX - 10, CHECK_BOX - 10, RGBA_YELLOW, true);
+}
+
+static void displays_draw(const SettingsMenu *m, const Config *config)
+{
+	frame_draw("Displays", "A: Toggle  B: Back");
+	for (int id = 0; id < DISPLAY_COUNT; id++) {
+		f32 x = CHECK_LEFT + id / CHECK_ROWS * CHECK_COLUMN_PITCH;
+		f32 top = CHECK_TOP + id % CHECK_ROWS * CHECK_PITCH;
+		bool selected = (int)m->display_row == id;
+		checkbox_draw(x, top + 2, config_display_shown(config, id), selected);
+		// Hazards can't be turned off.
+		const TextStyle *style = selected ? &check_selected_style
+			: id == DISPLAY_HAZARDS ? &check_dim_style
+			: &check_style;
+		gfx_text(style, x + 30, top, ALIGN_LEFT, display_names[id]);
 	}
 }
 
@@ -237,6 +321,9 @@ void settings_menu_draw(const SettingsMenu *m, const Config *config, const Weath
 		break;
 	case PAGE_LOCATION:
 		location_picker_draw(&m->picker, &snap->zip_guess);
+		break;
+	case PAGE_DISPLAYS:
+		displays_draw(m, config);
 		break;
 	case PAGE_ABOUT:
 		about_draw(config, snap);

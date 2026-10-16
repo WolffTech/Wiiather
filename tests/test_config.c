@@ -67,6 +67,39 @@ static void test_save(void)
 	CHECK_NEAR(loaded.location.lon, c.location.lon);
 }
 
+static void test_displays(void)
+{
+	Config c;
+	write_settings("zip=73069\nhide_display=almanac\nhide_display=hazards\nhide_display=bogus\n");
+	config_load(boot, &c);
+	CHECK(!config_display_shown(&c, DISPLAY_ALMANAC));
+	CHECK(config_display_shown(&c, DISPLAY_HAZARDS));
+	CHECK(config_display_shown(&c, DISPLAY_RADAR));
+
+	CHECK(!config_set_display_shown(&c, DISPLAY_HAZARDS, false));
+	CHECK(config_set_display_shown(&c, DISPLAY_RADAR, false));
+	CHECK(config_save(&c));
+	Config loaded;
+	config_load(boot, &loaded);
+	CHECK(loaded.has_location && loaded.location.zip == 73069);
+	CHECK(loaded.hidden_displays == c.hidden_displays);
+
+	// The last display shown can't be hidden.
+	CHECK(config_set_display_shown(&c, DISPLAY_RADAR, true));
+	for (int i = DISPLAY_CURRENT; i < DISPLAY_RADAR; i++)
+		CHECK(config_set_display_shown(&c, i, false));
+	CHECK(!config_set_display_shown(&c, DISPLAY_RADAR, false));
+	CHECK(config_display_shown(&c, DISPLAY_RADAR));
+
+	// Nor can a hand-edited file hide them all.
+	write_settings("hide_display=current_conditions\nhide_display=latest_observations\n"
+		"hide_display=hourly_forecast\nhide_display=hourly_graph\nhide_display=travel_forecast\n"
+		"hide_display=regional_forecast\nhide_display=local_forecast\nhide_display=extended_forecast\n"
+		"hide_display=almanac\nhide_display=spc_outlook\nhide_display=local_radar\n");
+	config_load(boot, &c);
+	CHECK(c.hidden_displays == 0);
+}
+
 static void test_reset(void)
 {
 	Config c;
@@ -90,6 +123,7 @@ int main(void)
 	test_load();
 	test_save();
 	test_reset();
+	test_displays();
 
 	char path[128];
 	snprintf(path, sizeof path, "%s/settings.ini", dir);

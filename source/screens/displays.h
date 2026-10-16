@@ -3,6 +3,7 @@
 #pragma once
 #include <gctypes.h>
 
+#include "config.h"
 #include "screens.h"
 
 // Formatted data for every display, rebuilt when the weather changes.
@@ -30,14 +31,15 @@ void displays_prepare(const WeatherSnapshot *snap, DisplayData *out);
 void displays_tick(const WeatherSnapshot *snap, DisplayData *data);
 
 typedef struct {
-	size_t display;
+	DisplayId display;
 	size_t screen;
 	u32 started_ms;
 	bool running; // false until the first update, so the first screen gets its full time
 } Rotation;
 
-// Advances to the next screen when the current one's time is up.
-void rotation_update(Rotation *r, DisplayData *data, u32 now_ms);
+// Advances to the next screen when the current one's time is up, skipping
+// displays hidden in `config`.
+void rotation_update(Rotation *r, DisplayData *data, const Config *config, u32 now_ms);
 
 void displays_draw(const Rotation *r, const DisplayData *data, u32 now_ms);
 

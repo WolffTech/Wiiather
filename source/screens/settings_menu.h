@@ -7,18 +7,20 @@
 #include "location_picker.h"
 #include "weather/weather.h"
 
-typedef enum { PAGE_MAIN, PAGE_LOCATION, PAGE_ABOUT, PAGE_RESET } SettingsPage;
+typedef enum { PAGE_MAIN, PAGE_LOCATION, PAGE_DISPLAYS, PAGE_ABOUT, PAGE_RESET } SettingsPage;
 
 typedef struct {
 	SettingsPage page;
 	size_t main_row;
+	DisplayId display_row;
 	LocationPicker picker; // while on PAGE_LOCATION
 } SettingsMenu;
 
 // Settings changed by one update, for the caller to apply.
 typedef enum {
 	SETTINGS_LOCATION = 1 << 0,
-	SETTINGS_RESET = 1 << 1, // the config holds the defaults and no location
+	SETTINGS_DISPLAYS = 1 << 1,
+	SETTINGS_RESET = 1 << 2, // the config holds the defaults and no location
 } SettingsChange;
 
 typedef struct {

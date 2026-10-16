@@ -132,7 +132,7 @@ int main(int argc, char **argv)
 
 		u32 clock_ms = now_ms - paused_ms;
 		if (data.has_current) {
-			rotation_update(&rotation, &data, clock_ms);
+			rotation_update(&rotation, &data, &config, clock_ms);
 			displays_draw(&rotation, &data, clock_ms);
 			scroll_bar_draw(&scroll_bar, &data, displays_scroll_visible(&rotation), clock_ms);
 		} else {

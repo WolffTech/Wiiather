@@ -218,21 +218,27 @@ static void radar_draw(const DisplayData *d, size_t screen, u32 time_ms)
 }
 
 // ws4kp's order, limited to the displays ported so far.
-static const Display displays[] = {
-	{ hazards_count, hazards_screen_ms, hazards_display_draw },
-	{ current_count, current_ms, current_draw },
-	{ latest_observations_count, latest_observations_ms, latest_observations_screen },
-	{ hourly_count, hourly_ms, hourly_draw },
-	{ hourly_graph_count, hourly_graph_ms, hourly_graph_draw },
-	{ travel_count, travel_ms, travel_draw },
-	{ regional_count, regional_ms, regional_draw },
-	{ local_count, local_ms, local_draw },
-	{ extended_count, extended_ms, extended_draw },
-	{ almanac_count, almanac_ms, almanac_draw },
-	{ spc_outlook_count, spc_outlook_ms, spc_outlook_draw },
-	{ radar_count, radar_ms, radar_draw },
+static const Display displays[DISPLAY_COUNT] = {
+	[DISPLAY_HAZARDS] = { hazards_count, hazards_screen_ms, hazards_display_draw },
+	[DISPLAY_CURRENT] = { current_count, current_ms, current_draw },
+	[DISPLAY_LATEST_OBSERVATIONS] = { latest_observations_count, latest_observations_ms, latest_observations_screen },
+	[DISPLAY_HOURLY] = { hourly_count, hourly_ms, hourly_draw },
+	[DISPLAY_HOURLY_GRAPH] = { hourly_graph_count, hourly_graph_ms, hourly_graph_draw },
+	[DISPLAY_TRAVEL] = { travel_count, travel_ms, travel_draw },
+	[DISPLAY_REGIONAL] = { regional_count, regional_ms, regional_draw },
+	[DISPLAY_LOCAL] = { local_count, local_ms, local_draw },
+	[DISPLAY_EXTENDED] = { extended_count, extended_ms, extended_draw },
+	[DISPLAY_ALMANAC] = { almanac_count, almanac_ms, almanac_draw },
+	[DISPLAY_SPC_OUTLOOK] = { spc_outlook_count, spc_outlook_ms, spc_outlook_draw },
+	[DISPLAY_RADAR] = { radar_count, radar_ms, radar_draw },
 };
-#define DISPLAY_COUNT (sizeof displays / sizeof displays[0])
+
+// Hidden displays have no screens, so the rotation skips them like
+// displays without data.
+static size_t screen_count(const DisplayData *data, DisplayId id, const Config *config)
+{
+	return config_display_shown(config, id) ? displays[id].screen_count(data) : 0;
+}
 
 void displays_prepare(const WeatherSnapshot *snap, DisplayData *out)
 {
@@ -274,14 +280,14 @@ void displays_tick(const WeatherSnapshot *snap, DisplayData *data)
 	radar_view_update(&data->radar);
 }
 
-void rotation_update(Rotation *r, DisplayData *data, u32 now_ms)
+void rotation_update(Rotation *r, DisplayData *data, const Config *config, u32 now_ms)
 {
 	if (!r->running) {
 		r->running = true;
 		r->started_ms = now_ms;
 	}
 	const Display *d = &displays[r->display];
-	size_t screens = d->screen_count(data);
+	size_t screens = screen_count(data, r->display, config);
 	if (r->screen < screens && now_ms - r->started_ms < d->screen_ms(data, r->screen))
 		return;
 	r->started_ms = now_ms;
@@ -295,8 +301,8 @@ void rotation_update(Rotation *r, DisplayData *data, u32 now_ms)
 	r->screen = 0;
 	for (size_t i = 1; i <= DISPLAY_COUNT; i++) {
 		size_t next = (r->display + i) % DISPLAY_COUNT;
-		if (displays[next].screen_count(data) > 0) {
-			r->display = next;
+		if (screen_count(data, next, config) > 0) {
+			r->display = (DisplayId)next;
 			return;
 		}
 	}
