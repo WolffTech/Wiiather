@@ -16,7 +16,7 @@
 #define HIGH_LEFT 510
 #define HIGH_WIDTH 60
 
-void travel_forecast_prepare(const TravelForecast *travel, TravelForecastView *out)
+void travel_forecast_prepare(const TravelForecast *travel, Units units, TravelForecastView *out)
 {
 	// ws4kp drops cities without data, so the list closes up around them.
 	out->count = 0;
@@ -30,8 +30,8 @@ void travel_forecast_prepare(const TravelForecast *travel, TravelForecastView *o
 		TravelRow *row = &out->rows[out->count++];
 		row->city = travel_cities[i].name;
 		row->icon = nws_small_icon(day->icon_url);
-		snprintf(row->low, sizeof row->low, "%d", day->low);
-		snprintf(row->high, sizeof row->high, "%d", day->high);
+		snprintf(row->low, sizeof row->low, "%d", units_temperature_convert(day->low, UNITS_US, units));
+		snprintf(row->high, sizeof row->high, "%d", units_temperature_convert(day->high, UNITS_US, units));
 	}
 	out->content_height = list_content_height(out->count);
 

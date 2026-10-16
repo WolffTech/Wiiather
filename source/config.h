@@ -3,6 +3,7 @@
 #include <stdint.h>
 
 #include "weather/location.h"
+#include "weather/units.h"
 
 // The displays in rotation order.
 typedef enum {
@@ -39,6 +40,7 @@ typedef struct {
 	// File names left out of playback, kept by name so new files play.
 	char skipped_tracks[MAX_SKIPPED_TRACKS][128];
 	size_t skipped_count;
+	Units units;
 	Speed speed;
 	bool clock_24h;
 	bool bottom_bar; // the conditions lines; hazard crawls show regardless

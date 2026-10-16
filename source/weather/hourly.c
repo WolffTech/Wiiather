@@ -145,30 +145,25 @@ static const char *direction_to_nsew(Measure dir)
 	return names[index < 0 ? index + 16 : index];
 }
 
-static int fahrenheit(double celsius)
-{
-	return js_round(celsius * 9 / 5 + 32);
-}
-
-static void format_temperature(Measure c, char *out, size_t out_len)
+static void format_temperature(Measure c, Units units, char *out, size_t out_len)
 {
 	if (c.valid)
-		snprintf(out, out_len, "%3d", fahrenheit(c.value));
+		snprintf(out, out_len, "%3d", units_temperature(c.value, units));
 	else
 		snprintf(out, out_len, "  -");
 }
 
 // ws4kp pads the wind to five characters between direction and speed.
-static void format_wind(Measure speed_kph, Measure direction, char *out, size_t out_len)
+static void format_wind(Measure speed_kph, Measure direction, Units units, char *out, size_t out_len)
 {
-	int mph = speed_kph.valid ? js_round(speed_kph.value / 1.60934) : 0;
-	if (mph <= 0) {
+	int value = speed_kph.valid ? units_speed(speed_kph.value, units) : 0;
+	if (value <= 0) {
 		snprintf(out, out_len, "Calm");
 		return;
 	}
 	const char *dir = direction_to_nsew(direction);
 	char speed[8];
-	int speed_len = snprintf(speed, sizeof speed, "%d", mph);
+	int speed_len = snprintf(speed, sizeof speed, "%d", value);
 	int spaces = 5 - (int)strlen(dir) - speed_len;
 	snprintf(out, out_len, "%s%*s%s", dir, spaces > 0 ? spaces : 0, "", speed);
 }
@@ -229,7 +224,7 @@ static size_t current_index(const HourlyForecast *f, time_t now)
 	return current_hour > f->start ? (size_t)((current_hour - f->start) / HOUR) : 0;
 }
 
-size_t hourly_rows(const HourlyForecast *f, double lat, double lon, time_t now, long utc_offset,
+size_t hourly_rows(const HourlyForecast *f, double lat, double lon, time_t now, long utc_offset, Units units,
 	HourlyRow out[HOURLY_ROWS])
 {
 	size_t first = current_index(f, now);
@@ -239,8 +234,8 @@ size_t hourly_rows(const HourlyForecast *f, double lat, double lon, time_t now, 
 		HourlyRow *row = &out[n];
 		time_t hour = f->start + (time_t)i * HOUR;
 		format_hour(hour, utc_offset, row->hour, sizeof row->hour);
-		format_temperature(f->temperature[i], row->temp, sizeof row->temp);
-		format_temperature(f->apparent_temperature[i], row->like, sizeof row->like);
+		format_temperature(f->temperature[i], units, row->temp, sizeof row->temp);
+		format_temperature(f->apparent_temperature[i], units, row->like, sizeof row->like);
 		row->like_color = HOURLY_LIKE_PLAIN;
 		if (f->temperature[i].valid && f->apparent_temperature[i].valid) {
 			int temp = atoi(row->temp), like = atoi(row->like);
@@ -249,15 +244,15 @@ size_t hourly_rows(const HourlyForecast *f, double lat, double lon, time_t now, 
 			else if (like > temp)
 				row->like_color = HOURLY_LIKE_HEAT_INDEX;
 		}
-		format_wind(f->wind_speed[i], f->wind_direction[i], row->wind, sizeof row->wind);
+		format_wind(f->wind_speed[i], f->wind_direction[i], units, row->wind, sizeof row->wind);
 		row->icon = hourly_icon(f, i, is_night(&sun, hour, lat, lon, utc_offset));
 	}
 	return n;
 }
 
-static Measure to_fahrenheit(Measure c)
+static Measure to_units(Measure c, Units units)
 {
-	return (Measure){ c.valid, c.valid ? fahrenheit(c.value) : 0 };
+	return (Measure){ c.valid, c.valid ? units_temperature(c.value, units) : 0 };
 }
 
 // ws4kp's (value + '\xb0').substring(0, 3), which drops the degree sign from
@@ -269,16 +264,16 @@ static void format_axis_temperature(int value, char out[4])
 	snprintf(out, 4, "%.3s", full);
 }
 
-bool hourly_graph(const HourlyForecast *f, time_t now, long utc_offset, HourlyGraph *out)
+bool hourly_graph(const HourlyForecast *f, time_t now, long utc_offset, Units units, HourlyGraph *out)
 {
-	*out = (HourlyGraph){ 0 };
+	*out = (HourlyGraph){ .units = units };
 	size_t first = current_index(f, now);
 	if (first >= f->count)
 		return false;
 	out->count = f->count - first < HOURLY_GRAPH_HOURS ? f->count - first : HOURLY_GRAPH_HOURS;
 	for (size_t i = 0; i < out->count; i++) {
-		out->temperature[i] = to_fahrenheit(f->temperature[first + i]);
-		out->dewpoint[i] = to_fahrenheit(f->dewpoint[first + i]);
+		out->temperature[i] = to_units(f->temperature[first + i], units);
+		out->dewpoint[i] = to_units(f->dewpoint[first + i], units);
 		out->sky_cover[i] = f->sky_cover[first + i];
 		out->probability_of_precipitation[i] = f->probability_of_precipitation[first + i];
 	}

@@ -134,19 +134,19 @@ static void test_general(void)
 	Config c;
 	write_settings("zip=73069\n");
 	config_load(boot, &c);
-	CHECK(c.speed == SPEED_NORMAL && !c.clock_24h && c.bottom_bar && c.locate_by_ip);
+	CHECK(c.units == UNITS_US && c.speed == SPEED_NORMAL && !c.clock_24h && c.bottom_bar && c.locate_by_ip);
 	CHECK(config_speed_percent(c.speed) == 100);
 
-	write_settings("speed=very_slow\nclock=24\nbottom_bar=off\nlocate_by_ip=off\n");
+	write_settings("units=metric\nspeed=very_slow\nclock=24\nbottom_bar=off\nlocate_by_ip=off\n");
 	config_load(boot, &c);
-	CHECK(c.speed == SPEED_VERY_SLOW && c.clock_24h && !c.bottom_bar && !c.locate_by_ip);
+	CHECK(c.units == UNITS_METRIC && c.speed == SPEED_VERY_SLOW && c.clock_24h && !c.bottom_bar && !c.locate_by_ip);
 	CHECK(config_speed_percent(SPEED_VERY_FAST) == 50 && config_speed_percent(SPEED_VERY_SLOW) == 150);
 
 	c.speed = SPEED_FAST;
 	CHECK(config_save(&c));
 	Config loaded;
 	config_load(boot, &loaded);
-	CHECK(loaded.speed == SPEED_FAST && loaded.clock_24h && !loaded.bottom_bar && !loaded.locate_by_ip);
+	CHECK(loaded.units == UNITS_METRIC && loaded.speed == SPEED_FAST && loaded.clock_24h && !loaded.bottom_bar && !loaded.locate_by_ip);
 }
 
 static void test_reset(void)

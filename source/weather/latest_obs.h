@@ -6,6 +6,7 @@
 #include <time.h>
 
 #include "obs.h"
+#include "units.h"
 
 #define LATEST_OBS_STATIONS 7    // ws4kp's MaximumRegionalStations
 #define LATEST_OBS_CANDIDATES 30 // nearest stations tried before giving up
@@ -48,7 +49,7 @@ typedef struct {
 // Fills `out` and returns true when the reading has every required field.
 bool latest_obs_accept(const ObsReading *r, const char *city, LatestStation *out);
 
-// One display row in US units. Location and weather are collapsed the way
+// One display row. Location and weather are collapsed the way
 // HTML renders them; wind keeps its padding (white-space: pre).
 typedef struct {
 	char location[16];
@@ -58,4 +59,4 @@ typedef struct {
 } LatestObsRow;
 
 // Formats every station, nearest first. Returns the row count.
-size_t latest_obs_format(const LatestObservations *obs, LatestObsRow *rows);
+size_t latest_obs_format(const LatestObservations *obs, Units units, LatestObsRow *rows);

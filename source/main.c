@@ -37,7 +37,7 @@ int main(int argc, char **argv)
 
 	Config config;
 	config_load(argc > 0 ? argv[0] : NULL, &config);
-	weather_start(config.has_location ? &config.location : NULL, config.dir);
+	weather_start(config.has_location ? &config.location : NULL, config.units, config.dir);
 	char music_dir[sizeof config.dir + 8];
 	snprintf(music_dir, sizeof music_dir, "%s/music", config.dir);
 	music_start(music_dir, &config);
@@ -114,6 +114,7 @@ int main(int argc, char **argv)
 			if (result.closed) {
 				in_menu = false;
 				header_set_clock_24h(config.clock_24h);
+				weather_set_units(config.units);
 				// Don't let the B that closed the menu toggle the music.
 				pressed = 0;
 				if (menu_changes & SETTINGS_RESET) {

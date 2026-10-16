@@ -43,6 +43,7 @@ typedef struct {
 	char message[128];
 	NwsPoint point;
 	Location location; // zeroed until one is set
+	Units units; // for the displays; the forecast records its own
 	bool has_utc_offset;
 	long utc_offset; // RTC (local time) minus UTC in seconds, a multiple of 15 minutes
 	Observation observation;
@@ -66,9 +67,12 @@ typedef struct {
 
 // Starts the background thread that brings up the network and refreshes
 // weather for the location periodically. Without a location, it waits for
-// weather_set_location.
-// `dir` is the app's folder, which holds the downloaded CA bundle.
-void weather_start(const Location *location, const char *dir);
+// weather_set_location. `dir` is the app's folder, which holds the downloaded
+// CA bundle.
+void weather_start(const Location *location, Units units, const char *dir);
+
+// Switches units, refetching the forecast, whose text is in its units.
+void weather_set_units(Units units);
 
 // Switches to a new location, dropping the old location's data.
 void weather_set_location(const Location *location);

@@ -65,7 +65,7 @@ static const char *const main_labels[MAIN_ROWS] = { "Location", "Displays", "Mus
 
 typedef enum { MUSIC_ON, MUSIC_ORDER, MUSIC_VOLUME, MUSIC_TRACKS, MUSIC_ROWS } MusicRow;
 
-typedef enum { GENERAL_SPEED, GENERAL_CLOCK, GENERAL_BOTTOM_BAR, GENERAL_LOCATE, GENERAL_ROWS } GeneralRow;
+typedef enum { GENERAL_UNITS, GENERAL_SPEED, GENERAL_CLOCK, GENERAL_BOTTOM_BAR, GENERAL_LOCATE, GENERAL_ROWS } GeneralRow;
 
 static const char *const speed_names[SPEED_COUNT] = {
 	[SPEED_VERY_FAST] = "Very Fast",
@@ -242,6 +242,12 @@ static void update_general(SettingsMenu *m, u32 pressed, Config *config, Setting
 	bool flip = pressed & (WPAD_BUTTON_LEFT | WPAD_BUTTON_RIGHT | WPAD_BUTTON_A);
 	bool *toggle = NULL;
 	switch ((GeneralRow)m->general_row) {
+	case GENERAL_UNITS:
+		if (flip) {
+			config->units = config->units == UNITS_US ? UNITS_METRIC : UNITS_US;
+			result->changed |= SETTINGS_GENERAL;
+		}
+		break;
 	case GENERAL_SPEED: {
 		int speed = config->speed;
 		if ((pressed & WPAD_BUTTON_LEFT) && speed > 0)
@@ -531,6 +537,9 @@ static void general_draw(const SettingsMenu *m, const Config *config)
 	for (size_t i = 0; i < GENERAL_ROWS; i++) {
 		RowLook look = i == m->general_row ? ROW_CHOICE : ROW_PLAIN;
 		switch ((GeneralRow)i) {
+		case GENERAL_UNITS:
+			row_draw(i, look, "Units", config->units == UNITS_US ? "US" : "Metric");
+			break;
 		case GENERAL_SPEED:
 			row_draw(i, look, "Speed", speed_names[config->speed]);
 			break;

@@ -94,7 +94,7 @@ TEST_LIB	:=	source/weather/obs.c source/weather/forecast.c source/util/utc.c sou
 TEST_LIB	+=	source/weather/latest_obs.c source/weather/sun_moon.c source/weather/alerts.c source/weather/hourly.c
 TEST_LIB	+=	source/net/ca_bundle.c source/config.c source/weather/location.c source/gen/stations_gen.c source/gen/zips_gen.c
 TEST_LIB	+=	source/weather/regional.c source/gen/regional_cities_gen.c
-TEST_LIB	+=	source/weather/spc.c source/weather/radar.c
+TEST_LIB	+=	source/weather/spc.c source/weather/radar.c source/weather/units.c
 TESTS		:=	$(patsubst tests/%.c,$(BUILD)/host/%,$(wildcard tests/test_*.c))
 
 test: $(TESTS)

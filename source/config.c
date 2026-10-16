@@ -88,6 +88,8 @@ static void parse_line(char *line, IniValues *s, Config *out)
 			out->music_volume = (uint8_t)(volume / MUSIC_VOLUME_STEP * MUSIC_VOLUME_STEP);
 	} else if (strcmp(key, "skip_track") == 0) {
 		config_set_track_enabled(out, value, false);
+	} else if (strcmp(key, "units") == 0) {
+		out->units = strcmp(value, "metric") == 0 ? UNITS_METRIC : UNITS_US;
 	} else if (strcmp(key, "speed") == 0) {
 		for (int i = 0; i < SPEED_COUNT; i++)
 			if (strcmp(value, speed_keys[i]) == 0)
@@ -216,6 +218,7 @@ bool config_save(const Config *config)
 		config->music_order == MUSIC_IN_ORDER ? "in_order" : "shuffle", (unsigned)config->music_volume);
 	for (size_t i = 0; i < config->skipped_count; i++)
 		fprintf(f, "skip_track=%s\n", config->skipped_tracks[i]);
+	fprintf(f, "units=%s\n", config->units == UNITS_METRIC ? "metric" : "us");
 	fprintf(f, "speed=%s\nclock=%s\nbottom_bar=%s\nlocate_by_ip=%s\n", speed_keys[config->speed],
 		config->clock_24h ? "24" : "12", config->bottom_bar ? "on" : "off", config->locate_by_ip ? "on" : "off");
 	return fclose(f) == 0;

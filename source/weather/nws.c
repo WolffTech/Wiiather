@@ -271,11 +271,14 @@ static bool get_forecast(const char *url, Forecast *out, char *err, size_t err_l
 	return true;
 }
 
-bool nws_get_forecast(const NwsPoint *point, Forecast *out, char *err, size_t err_len)
+bool nws_get_forecast(const NwsPoint *point, Units units, Forecast *out, char *err, size_t err_len)
 {
 	char url[200];
-	snprintf(url, sizeof url, "%s?units=us", point->forecast_url);
-	return get_forecast(url, out, err, err_len);
+	snprintf(url, sizeof url, "%s?units=%s", point->forecast_url, units == UNITS_METRIC ? "si" : "us");
+	if (!get_forecast(url, out, err, err_len))
+		return false;
+	out->units = units;
+	return true;
 }
 
 bool nws_get_travel_day(const TravelCity *city, TravelDay *out)

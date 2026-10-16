@@ -246,20 +246,20 @@ void displays_prepare(const WeatherSnapshot *snap, DisplayData *out)
 	out->has_current = snap->status == WEATHER_READY;
 	out->stale = snap->observation.stale;
 	if (out->has_current)
-		format_current_conditions(&snap->observation, &out->current);
+		format_current_conditions(&snap->observation, snap->units, &out->current);
 	if (snap->has_forecast) {
 		local_forecast_prepare(&snap->forecast, &out->local);
-		extended_forecast_prepare(&snap->forecast, &out->extended);
+		extended_forecast_prepare(&snap->forecast, snap->units, &out->extended);
 	} else {
 		out->local.page_count = 0;
 		out->extended.count = 0;
 	}
 	hourly_view_prepare(snap, &out->hourly);
 	hourly_graph_view_prepare(snap, &out->hourly_graph);
-	travel_forecast_prepare(&snap->travel, &out->travel);
-	regional_forecast_prepare(&snap->regional, &out->regional);
+	travel_forecast_prepare(&snap->travel, snap->units, &out->travel);
+	regional_forecast_prepare(&snap->regional, snap->units, &out->regional);
 	if (snap->has_latest_observations)
-		latest_observations_prepare(&snap->latest_observations, &out->latest_observations);
+		latest_observations_prepare(&snap->latest_observations, snap->units, &out->latest_observations);
 	else
 		out->latest_observations.count = 0;
 	almanac_view_prepare(snap, &out->almanac);

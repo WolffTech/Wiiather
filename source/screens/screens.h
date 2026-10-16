@@ -85,7 +85,7 @@ typedef struct {
 	int content_height;
 } TravelForecastView;
 
-void travel_forecast_prepare(const TravelForecast *travel, TravelForecastView *out);
+void travel_forecast_prepare(const TravelForecast *travel, Units units, TravelForecastView *out);
 u32 travel_forecast_ms(const TravelForecastView *view);
 void travel_forecast_draw(const TravelForecastView *view, u32 elapsed_ms, u32 time_ms);
 
@@ -106,7 +106,7 @@ typedef struct {
 	char title_bottom[REGIONAL_SCREENS][24]; // "Observations", "Thursday Night"
 } RegionalForecastView;
 
-void regional_forecast_prepare(const RegionalForecast *regional, RegionalForecastView *out);
+void regional_forecast_prepare(const RegionalForecast *regional, Units units, RegionalForecastView *out);
 const char *regional_forecast_title_top(size_t screen);
 void regional_forecast_draw(const RegionalForecastView *view, size_t screen, u32 time_ms);
 
@@ -134,16 +134,17 @@ typedef struct {
 	IconId icons[EXTENDED_DAYS_PER_SCREEN * EXTENDED_SCREENS];
 } ExtendedForecastView;
 
-void extended_forecast_prepare(const Forecast *f, ExtendedForecastView *out);
+void extended_forecast_prepare(const Forecast *f, Units units, ExtendedForecastView *out);
 void extended_forecast_draw(const ExtendedForecastView *view, size_t screen, u32 time_ms);
 
 // Latest Observations: one row per nearby station.
 typedef struct {
+	Units units;
 	size_t count;
 	LatestObsRow rows[LATEST_OBS_STATIONS];
 } LatestObservationsView;
 
-void latest_observations_prepare(const LatestObservations *obs, LatestObservationsView *out);
+void latest_observations_prepare(const LatestObservations *obs, Units units, LatestObservationsView *out);
 void latest_observations_draw(const LatestObservationsView *view);
 
 // Almanac: today's and tomorrow's sun times and the next four moon phases.

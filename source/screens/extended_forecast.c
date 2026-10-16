@@ -24,11 +24,16 @@ static const TextStyle low_style = { FONT_STAR4000_32, RGBA_EXTENDED_LOW, true, 
 static const TextStyle hi_style = { FONT_STAR4000_32, RGBA_YELLOW, true, false, 0 };
 static const TextStyle value_style = { FONT_STAR4000_LARGE_32, RGBA_WHITE, true, false, 0 };
 
-void extended_forecast_prepare(const Forecast *f, ExtendedForecastView *out)
+void extended_forecast_prepare(const Forecast *f, Units units, ExtendedForecastView *out)
 {
 	out->count = forecast_extended_days(f, out->days, EXTENDED_DAYS_PER_SCREEN * EXTENDED_SCREENS);
-	for (size_t i = 0; i < out->count; i++)
-		out->icons[i] = nws_large_icon(out->days[i].icon_url);
+	for (size_t i = 0; i < out->count; i++) {
+		ExtendedDay *day = &out->days[i];
+		out->icons[i] = nws_large_icon(day->icon_url);
+		// The forecast may still be in the old units until it's refetched.
+		day->low = units_temperature_convert(day->low, f->units, units);
+		day->high = units_temperature_convert(day->high, f->units, units);
+	}
 }
 
 static void temperature_block(f32 left, f32 top, const TextStyle *label_style, const char *label, bool valid,

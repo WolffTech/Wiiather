@@ -37,7 +37,7 @@ static MapId map_id(RegionalMap map)
 	return MAP_CONUS;
 }
 
-void regional_forecast_prepare(const RegionalForecast *regional, RegionalForecastView *out)
+void regional_forecast_prepare(const RegionalForecast *regional, Units units, RegionalForecastView *out)
 {
 	out->map = map_id(regional->frame.map);
 	out->origin_x = regional->frame.origin_x;
@@ -58,7 +58,8 @@ void regional_forecast_prepare(const RegionalForecast *regional, RegionalForecas
 		label->y = site->y;
 		for (size_t s = 0; s < REGIONAL_SCREENS; s++) {
 			label->icons[s] = nws_small_icon(data->periods[s].icon_url);
-			snprintf(label->temperatures[s], sizeof label->temperatures[s], "%d", data->periods[s].temperature);
+			snprintf(label->temperatures[s], sizeof label->temperatures[s], "%d",
+				units_temperature_convert(data->periods[s].temperature, UNITS_US, units));
 		}
 	}
 

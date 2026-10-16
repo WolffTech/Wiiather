@@ -3,6 +3,7 @@
 // temperatures on the left, times below and a legend in the clock's place.
 #include <grrlib.h>
 #include <math.h>
+#include <stdio.h>
 #include <time.h>
 
 #include "render/gfx.h"
@@ -43,7 +44,8 @@ void hourly_graph_view_prepare(const WeatherSnapshot *snap, HourlyGraphView *out
 	out->rtc_hour = rtc_hour();
 	// Labels are in local time, which needs the RTC's offset from UTC.
 	out->ready = snap->has_hourly && snap->has_utc_offset &&
-		     hourly_graph(&snap->hourly, time(NULL) - snap->utc_offset, snap->utc_offset, &out->graph);
+		     hourly_graph(&snap->hourly, time(NULL) - snap->utc_offset, snap->utc_offset, snap->units,
+			&out->graph);
 }
 
 bool hourly_graph_view_outdated(const HourlyGraphView *view)
@@ -92,14 +94,17 @@ static void draw_series(const Measure *values, size_t count, double min, double 
 	}
 }
 
-static void draw_legend(void)
+static void draw_legend(Units units)
 {
-	static const struct {
+	char temperature[16], dewpoint[16];
+	snprintf(temperature, sizeof temperature, "Temperature \xb0%s", units_temperature_name(units));
+	snprintf(dewpoint, sizeof dewpoint, "Dewpoint \xb0%s", units_temperature_name(units));
+	const struct {
 		const char *text;
 		u32 color;
 	} lines[] = {
-		{ "Temperature \xb0" "F", RGBA_RED },
-		{ "Dewpoint \xb0" "F", RGBA_GREEN },
+		{ temperature, RGBA_RED },
+		{ dewpoint, RGBA_GREEN },
 		{ "Cloud %", RGBA_LIGHT_GREY },
 		{ "Precip %", RGBA_AQUA },
 	};
@@ -137,7 +142,7 @@ static void draw_labels(const HourlyGraph *g)
 void hourly_graph_view_draw(const HourlyGraphView *view)
 {
 	const HourlyGraph *g = &view->graph;
-	draw_legend();
+	draw_legend(g->units);
 
 	// Last drawn is on top, as in ws4kp.
 	gfx_clip(CHART_LEFT, MAIN_TOP, CHART_WIDTH, CHART_HEIGHT);
