@@ -8,6 +8,7 @@
 #include <time.h>
 
 #include "obs.h"
+#include "units.h"
 
 #define HOURLY_MAX_HOURS 48 // like ws4kp's expand(); extra hours cover failed refreshes
 #define HOURLY_ROWS 24
@@ -90,7 +91,7 @@ typedef struct {
 // Rows for the 24 hours starting with the hour containing `now` (UTC), fewer
 // if the forecast runs out. `utc_offset` is local minus UTC in seconds, and
 // night is between the location's sunset and sunrise.
-size_t hourly_rows(const HourlyForecast *f, double lat, double lon, time_t now, long utc_offset,
+size_t hourly_rows(const HourlyForecast *f, double lat, double lon, time_t now, long utc_offset, Units units,
 	HourlyRow out[HOURLY_ROWS]);
 
 #define HOURLY_GRAPH_HOURS 36
@@ -100,7 +101,8 @@ size_t hourly_rows(const HourlyForecast *f, double lat, double lon, time_t now, 
 // The Hourly Graph's series and axis labels in ws4kp's standard layout.
 typedef struct {
 	size_t count; // hours of temperature from the current one; other series may be shorter
-	// Whole degF, as ws4kp rounds them before plotting.
+	Units units;
+	// Whole degrees, as ws4kp rounds them before plotting.
 	Measure temperature[HOURLY_GRAPH_HOURS];
 	Measure dewpoint[HOURLY_GRAPH_HOURS];
 	// Percentages.
@@ -117,4 +119,4 @@ typedef struct {
 // Fills `out` for the hours starting with the one containing `now` (UTC), and
 // returns false if the forecast has none. `utc_offset` is local minus UTC in
 // seconds.
-bool hourly_graph(const HourlyForecast *f, time_t now, long utc_offset, HourlyGraph *out);
+bool hourly_graph(const HourlyForecast *f, time_t now, long utc_offset, Units units, HourlyGraph *out);

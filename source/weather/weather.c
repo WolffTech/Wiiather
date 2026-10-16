@@ -83,6 +83,9 @@ static bool bring_up_network(void)
 		return false;
 	}
 	ca_update_init(app_dir);
+	LWP_MutexLock(lock);
+	shared.ca_date = ca_update_date();
+	LWP_MutexUnlock(lock);
 	return true;
 }
 
@@ -125,7 +128,7 @@ static void refresh_radar(const Location *loc, u32 version, const NwsPoint *poin
 	LWP_MutexUnlock(lock);
 }
 
-static bool refresh(const Location *loc, u32 version, NwsPoint *point, bool *have_point)
+static bool refresh(const Location *loc, u32 version, Units units, NwsPoint *point, bool *have_point)
 {
 	char err[128];
 	if (!*have_point) {
@@ -149,13 +152,14 @@ static bool refresh(const Location *loc, u32 version, NwsPoint *point, bool *hav
 	shared.message[0] = '\0';
 	shared.point = *point;
 	shared.observation = obs;
+	shared.updated = time(NULL);
 	update_utc_offset();
 	shared.generation++;
 	LWP_MutexUnlock(lock);
 
 	// The forecast is optional: displays that need it are skipped without it.
 	static Forecast forecast;
-	if (nws_get_forecast(point, &forecast, err, sizeof err) && lock_current(version)) {
+	if (nws_get_forecast(point, units, &forecast, err, sizeof err) && lock_current(version)) {
 		shared.has_forecast = true;
 		shared.forecast = forecast;
 		shared.generation++;
@@ -294,11 +298,13 @@ static void *worker(void *arg)
 {
 	while (!bring_up_network())
 		sleep(RETRY_SECONDS);
-	guess_zip();
 
 	NwsPoint point;
 	bool have_point = false;
 	u32 seen_version = 0;
+	LWP_MutexLock(lock);
+	Units seen_units = shared.units;
+	LWP_MutexUnlock(lock);
 	u64 next_alerts = 0, next_refresh = 0, next_ca_rescue = 0, next_travel = 0;
 	size_t travel_city = TRAVEL_CITY_COUNT; // the next to fetch, or TRAVEL_CITY_COUNT between rounds
 	// Regional sites for `regional_version`, fetched in rounds like the travel cities.
@@ -321,13 +327,22 @@ static void *worker(void *arg)
 			ca_update_check(false);
 			next_ca_check = gettime() + secs_to_ticks(CA_CHECK_SECONDS);
 		}
+		LWP_MutexLock(lock);
+		shared.ca_date = ca_update_date();
+		LWP_MutexUnlock(lock);
+		guess_zip();
 
 		LWP_MutexLock(lock);
 		u32 version = location_version;
 		Location loc = shared.location;
+		Units units = shared.units;
 		LWP_MutexUnlock(lock);
 		if (version == 0)
 			continue;
+		if (units != seen_units) {
+			seen_units = units;
+			next_refresh = gettime();
+		}
 		if (version != seen_version) {
 			seen_version = version;
 			have_point = false;
@@ -340,7 +355,7 @@ static void *worker(void *arg)
 			next_alerts = gettime() + secs_to_ticks(ALERTS_SECONDS);
 		}
 		if (gettime() >= next_refresh) {
-			bool ok = refresh(&loc, version, &point, &have_point);
+			bool ok = refresh(&loc, version, units, &point, &have_point);
 			next_refresh = gettime() + secs_to_ticks(ok ? REFRESH_SECONDS : RETRY_SECONDS);
 		}
 		// Travel cities refresh as often as the rest, but one per pass so
@@ -369,17 +384,16 @@ static void *worker(void *arg)
 	return NULL;
 }
 
-void weather_start(const Location *location, const char *dir)
+void weather_start(const Location *location, Units units, const char *dir)
 {
 	snprintf(app_dir, sizeof app_dir, "%s", dir);
 	LWP_MutexInit(&lock, false);
+	shared.units = units;
 	shared.status = WEATHER_LOADING;
 	snprintf(shared.message, sizeof shared.message, "Starting...");
 	if (location) {
 		shared.location = *location;
 		location_version = 1;
-	} else {
-		shared.zip_guess.status = GUESS_PENDING;
 	}
 	LWP_CreateThread(&thread, worker, NULL, NULL, STACK_SIZE, 48);
 }
@@ -388,24 +402,48 @@ void weather_set_location(const Location *location)
 {
 	LWP_MutexLock(lock);
 	location_version++;
-	// The clock reading, guess and travel cities don't depend on the location.
+	// The units, clock reading, guess and travel cities don't depend on the
+	// location.
 	WeatherSnapshot *s = &shared;
+	Units units = s->units;
 	bool has_utc_offset = s->has_utc_offset;
 	long utc_offset = s->utc_offset;
 	ZipGuess zip_guess = s->zip_guess;
 	u32 generation = s->generation;
+	u64 ca_date = s->ca_date;
 	TravelForecast travel = s->travel;
 	memset(s, 0, sizeof *s);
 	s->status = WEATHER_LOADING;
 	snprintf(s->message, sizeof s->message, "Loading...");
 	s->location = *location;
+	s->units = units;
 	s->has_utc_offset = has_utc_offset;
 	s->utc_offset = utc_offset;
 	s->zip_guess = zip_guess;
+	s->ca_date = ca_date;
 	s->travel = travel;
 	s->generation = generation + 1;
 	shared_radar.count = 0;
 	radar_generation++;
+	LWP_MutexUnlock(lock);
+}
+
+void weather_set_units(Units units)
+{
+	LWP_MutexLock(lock);
+	if (shared.units != units) {
+		shared.units = units;
+		shared.generation++;
+	}
+	LWP_MutexUnlock(lock);
+}
+
+void weather_request_zip_guess(void)
+{
+	LWP_MutexLock(lock);
+	GuessStatus status = shared.zip_guess.status;
+	if (status == GUESS_NONE || status == GUESS_FAILED)
+		shared.zip_guess.status = GUESS_PENDING;
 	LWP_MutexUnlock(lock);
 }
 

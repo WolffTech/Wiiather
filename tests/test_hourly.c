@@ -110,7 +110,7 @@ static void test_rows(void)
 	// Washington, DC at 12:30 AM EDT: rows start with the current hour.
 	HourlyRow rows[HOURLY_ROWS];
 	time_t now = iso("2026-10-15T04:30:00Z");
-	CHECK(hourly_rows(&f, 38.8951, -77.0364, now, -4 * HOUR, rows) == HOURLY_ROWS);
+	CHECK(hourly_rows(&f, 38.8951, -77.0364, now, -4 * HOUR, UNITS_US, rows) == HOURLY_ROWS);
 	CHECK_STR(rows[0].hour, "Thu 12 AM");
 	CHECK_STR(rows[0].temp, " 72");
 	CHECK_STR(rows[0].like, " 68");
@@ -133,9 +133,14 @@ static void test_rows(void)
 	CHECK(rows[19].icon == HOURLY_ICON_CLEAR);
 
 	// Old data shows only the hours it still covers.
-	CHECK(hourly_rows(&f, 38.8951, -77.0364, now + 10 * HOUR, -4 * HOUR, rows) == 19);
+	CHECK(hourly_rows(&f, 38.8951, -77.0364, now + 10 * HOUR, -4 * HOUR, UNITS_US, rows) == 19);
 	CHECK_STR(rows[0].hour, "Thu 10 AM");
-	CHECK(hourly_rows(&f, 38.8951, -77.0364, now + 40 * HOUR, -4 * HOUR, rows) == 0);
+	CHECK(hourly_rows(&f, 38.8951, -77.0364, now + 40 * HOUR, -4 * HOUR, UNITS_US, rows) == 0);
+
+	CHECK(hourly_rows(&f, 38.8951, -77.0364, now, -4 * HOUR, UNITS_METRIC, rows) == HOURLY_ROWS);
+	CHECK_STR(rows[0].temp, " 22");
+	CHECK_STR(rows[0].like, " 20");
+	CHECK_STR(rows[0].wind, "SW 13");
 }
 
 static void test_graph(void)
@@ -155,7 +160,7 @@ static void test_graph(void)
 	// current hour.
 	static HourlyGraph g;
 	time_t now = iso("2026-10-15T04:30:00Z");
-	CHECK(hourly_graph(&f, now, -4 * HOUR, &g));
+	CHECK(hourly_graph(&f, now, -4 * HOUR, UNITS_US, &g));
 	CHECK(g.count == HOURLY_GRAPH_HOURS);
 	CHECK(g.temperature[4].value == 72);
 	CHECK(g.dewpoint[5].value == 47);
@@ -176,14 +181,14 @@ static void test_graph(void)
 	// Three-digit temperatures lose the degree sign; quarters of fewer hours
 	// fall between them.
 	f.temperature[47] = m(40); // 104 F
-	CHECK(hourly_graph(&f, now + 29 * HOUR, -4 * HOUR, &g));
+	CHECK(hourly_graph(&f, now + 29 * HOUR, -4 * HOUR, UNITS_US, &g));
 	CHECK(g.count == 18);
 	CHECK_STR(g.y_labels[0], "104");
 	CHECK_STR(g.x_labels[0], "5A");
 	CHECK_STR(g.x_labels[1], "9A"); // 9:30, 4.5 hours later
 	CHECK_STR(g.x_labels[4], "11P");
 
-	CHECK(!hourly_graph(&f, now + 50 * HOUR, -4 * HOUR, &g));
+	CHECK(!hourly_graph(&f, now + 50 * HOUR, -4 * HOUR, UNITS_US, &g));
 }
 
 static void test_timing(void)

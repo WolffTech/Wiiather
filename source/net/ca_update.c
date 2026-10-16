@@ -115,6 +115,11 @@ void ca_update_init(const char *dir)
 	free(sig);
 }
 
+uint64_t ca_update_date(void)
+{
+	return installed_date;
+}
+
 bool ca_update_check(bool unverified)
 {
 	bool (*get)(const char *, const char *, HttpResponse *, char *, size_t) =

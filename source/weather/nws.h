@@ -27,8 +27,8 @@ bool nws_get_point(double lat, double lon, NwsPoint *out, char *err, size_t err_
 // gaps from the METAR report and forecast.weather.gov's MapClick feed.
 bool nws_get_current_observation(const NwsPoint *point, Observation *out, char *err, size_t err_len);
 
-// The 12-hour forecast with expired periods removed.
-bool nws_get_forecast(const NwsPoint *point, Forecast *out, char *err, size_t err_len);
+// The 12-hour forecast in `units`, with expired periods removed.
+bool nws_get_forecast(const NwsPoint *point, Units units, Forecast *out, char *err, size_t err_len);
 
 // One Travel Forecast city's day, from its 12-hour forecast.
 bool nws_get_travel_day(const TravelCity *city, TravelDay *out);

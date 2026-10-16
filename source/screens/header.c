@@ -10,6 +10,23 @@ static const TextStyle title_style = { FONT_STAR4000_32, RGBA_YELLOW, true, fals
 static const TextStyle clock_style = { FONT_STAR4000_SMALL_32, RGBA_WHITE, true, false, 0 };
 static const TextStyle scroll_style = { FONT_STAR4000_32, RGBA_WHITE, true, false, 0 };
 
+static bool clock_24h;
+
+void header_set_clock_24h(bool on)
+{
+	clock_24h = on;
+}
+
+void clock_format(const struct tm *tm, bool hours_24, bool seconds, char *out, size_t size)
+{
+	int hour = hours_24 ? tm->tm_hour : tm->tm_hour % 12 ? tm->tm_hour % 12 : 12;
+	int n = snprintf(out, size, hours_24 ? "%02d:%02d" : "%d:%02d", hour, tm->tm_min);
+	if (seconds && n >= 0 && (size_t)n < size)
+		n += snprintf(out + n, size - (size_t)n, ":%02d", tm->tm_sec);
+	if (!hours_24 && n >= 0 && (size_t)n < size)
+		snprintf(out + n, size - (size_t)n, " %s", tm->tm_hour < 12 ? "AM" : "PM");
+}
+
 static void upcase(char *s)
 {
 	for (; *s; s++)
@@ -39,8 +56,7 @@ void header_draw(const char *title_top, const char *title_bottom, bool noaa_logo
 	struct tm tm;
 	localtime_r(&now, &tm);
 	char clock[16], date[16];
-	int hour = tm.tm_hour % 12 ? tm.tm_hour % 12 : 12;
-	snprintf(clock, sizeof clock, "%d:%02d:%02d %s", hour, tm.tm_min, tm.tm_sec, tm.tm_hour < 12 ? "AM" : "PM");
+	clock_format(&tm, clock_24h, true, clock, sizeof clock);
 	strftime(date, sizeof date, " %a %b ", &tm);
 	snprintf(date + 9, sizeof date - 9, "%2d", tm.tm_mday);
 	upcase(date);

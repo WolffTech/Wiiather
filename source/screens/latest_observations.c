@@ -1,6 +1,8 @@
 // Port of ws4kp's Latest Observations (latestobservations.mjs,
 // _latest-observations.scss). Column headers sit 14px above the main area;
 // rows are 40px apart after 10px of padding, with text 8px into each row.
+#include <stdio.h>
+
 #include "screens.h"
 
 #define MAIN_LEFT 64
@@ -15,14 +17,17 @@
 static const TextStyle header_style = { FONT_STAR4000_SMALL_32, RGBA_WHITE, true, false, 0 };
 static const TextStyle row_style = { FONT_STAR4000_32, RGBA_WHITE, true, false, 0 };
 
-void latest_observations_prepare(const LatestObservations *obs, LatestObservationsView *out)
+void latest_observations_prepare(const LatestObservations *obs, Units units, LatestObservationsView *out)
 {
-	out->count = latest_obs_format(obs, out->rows);
+	out->units = units;
+	out->count = latest_obs_format(obs, units, out->rows);
 }
 
 void latest_observations_draw(const LatestObservationsView *view)
 {
-	gfx_text(&header_style, TEMP_LEFT, HEADER_TOP, ALIGN_LEFT, "\xB0" "F");
+	char degrees[3];
+	snprintf(degrees, sizeof degrees, "\xB0%s", units_temperature_name(view->units));
+	gfx_text(&header_style, TEMP_LEFT, HEADER_TOP, ALIGN_LEFT, degrees);
 	gfx_text(&header_style, WEATHER_LEFT, HEADER_TOP, ALIGN_LEFT, "Weather");
 	gfx_text(&header_style, WIND_LEFT, HEADER_TOP, ALIGN_LEFT, "Wind");
 

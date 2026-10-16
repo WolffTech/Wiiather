@@ -6,6 +6,7 @@
 #include <stddef.h>
 #include <time.h>
 
+#include "units.h"
 #include "util/scroll_timing.h"
 
 #define FORECAST_MAX_PERIODS 14
@@ -16,13 +17,14 @@ typedef struct {
 	time_t end; // UTC
 	bool is_daytime;
 	bool has_temperature;
-	int temperature; // degF
+	int temperature; // in the forecast's units
 	char short_forecast[64];
 	char detailed_forecast[512];
 	char icon_url[160];
 } ForecastPeriod;
 
 typedef struct {
+	Units units; // of the temperatures and the text
 	size_t count;
 	ForecastPeriod periods[FORECAST_MAX_PERIODS];
 } Forecast;

@@ -58,12 +58,6 @@ bool latest_obs_accept(const ObsReading *r, const char *city, LatestStation *out
 
 // ---- Formatting -----------------------------------------------------------
 
-// JavaScript Math.round, which rounds .5 toward +infinity.
-static int js_round(double value)
-{
-	return (int)floor(value + 0.5);
-}
-
 static const char *direction_to_nsew(double degrees)
 {
 	static const char *const names[] = { "N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE",
@@ -143,21 +137,21 @@ static void display_text(char *out, size_t out_len, const char *text, int limit)
 	out[n] = '\0';
 }
 
-static void format_row(const LatestStation *s, LatestObsRow *row)
+static void format_row(const LatestStation *s, Units units, LatestObsRow *row)
 {
 	char text[64];
 	snprintf(text, sizeof text, "%s", s->city);
 	location_cleanup(text);
 	display_text(row->location, sizeof row->location, text, 14);
 
-	snprintf(row->temperature, sizeof row->temperature, "%d", js_round(s->temperature * 9 / 5 + 32));
+	snprintf(row->temperature, sizeof row->temperature, "%d", units_temperature(s->temperature, units));
 
 	snprintf(text, sizeof text, "%s", s->text_description);
 	shorten_conditions(text, sizeof text);
 	display_text(row->weather, sizeof row->weather, text, 9);
 
 	// Direction and speed padded to five characters, e.g. "W   9" or "WNW14".
-	int speed = js_round(s->wind_speed / 1.60934);
+	int speed = units_speed(s->wind_speed, units);
 	if (speed > 0) {
 		const char *dir = direction_to_nsew(s->wind_direction);
 		char digits[12];
@@ -169,12 +163,12 @@ static void format_row(const LatestStation *s, LatestObsRow *row)
 	}
 }
 
-size_t latest_obs_format(const LatestObservations *obs, LatestObsRow *rows)
+size_t latest_obs_format(const LatestObservations *obs, Units units, LatestObsRow *rows)
 {
 	// ws4kp means to sort by station name, but compares a property that
 	// doesn't exist, so the live site keeps distance order. Match the site.
 	size_t count = obs->count < LATEST_OBS_STATIONS ? obs->count : LATEST_OBS_STATIONS;
 	for (size_t i = 0; i < count; i++)
-		format_row(&obs->stations[i], &rows[i]);
+		format_row(&obs->stations[i], units, &rows[i]);
 	return count;
 }

@@ -81,7 +81,7 @@ static void test_format(void)
 			station("Chicago/Waukegan", "Partly Cloudy", 20, 100, 337),
 		} };
 	LatestObsRow rows[LATEST_OBS_STATIONS];
-	CHECK(latest_obs_format(&obs, rows) == 6);
+	CHECK(latest_obs_format(&obs, UNITS_US, rows) == 6);
 
 	// Kept in distance order, like the live site.
 	CHECK_STR(rows[0].location, "Washington");
@@ -111,6 +111,11 @@ static void test_format(void)
 	CHECK_STR(rows[5].location, "Waukegan");
 	CHECK_STR(rows[5].weather, "P Cloudy");
 	CHECK_STR(rows[5].wind, "NNW62");
+
+	CHECK(latest_obs_format(&obs, UNITS_METRIC, rows) == 6);
+	CHECK_STR(rows[0].temperature, "29");
+	CHECK_STR(rows[0].wind, "S  15");
+	CHECK_STR(rows[2].temperature, "0");
 }
 
 int main(void)

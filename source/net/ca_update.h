@@ -3,6 +3,7 @@
 // the app installs newer signed copies to the SD card.
 #pragma once
 #include <stdbool.h>
+#include <stdint.h>
 
 // Switches to the SD card copy in `dir` if it is signed and newer than the
 // built-in bundle. Call after https_init.
@@ -13,3 +14,7 @@ void ca_update_init(const char *dir);
 // can no longer verify the server; the signature still guards the content.
 // Returns true if a newer bundle was installed.
 bool ca_update_check(bool unverified);
+
+// The date of the bundle in use as YYYYMMDDhhmmss, or 0 before
+// ca_update_init. Call from the weather thread only.
+uint64_t ca_update_date(void);

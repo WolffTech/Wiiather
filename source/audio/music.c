@@ -10,23 +10,48 @@
 #include <time.h>
 
 #define MAX_TRACKS 64
-#define VOLUME 191 // ws4kp's default 75%
 
 static char folder[256];
 static char tracks[MAX_TRACKS][128];
-static size_t track_count, next_track;
+static bool skipped[MAX_TRACKS];
+static size_t track_count;
+// The play order for this pass through the list, and the next position in it.
+static size_t order[MAX_TRACKS], next_position;
+static MusicOrder current_order;
 static FILE *playing_file;
+static int playing = -1;
 static bool enabled;
+// Set when no track would play, so music_update doesn't retry every frame.
+static bool stalled;
 
-static void shuffle(void)
+static int compare_names(const void *a, const void *b)
 {
-	for (size_t i = track_count - 1; i > 0; i--) {
-		size_t j = (size_t)rand() % (i + 1);
-		char tmp[sizeof tracks[0]];
-		snprintf(tmp, sizeof tmp, "%s", tracks[i]);
-		snprintf(tracks[i], sizeof tracks[i], "%s", tracks[j]);
-		snprintf(tracks[j], sizeof tracks[j], "%s", tmp);
+	return strcasecmp(a, b);
+}
+
+// Starts a new pass, shuffled unless playing in order.
+static void new_pass(void)
+{
+	for (size_t i = 0; i < track_count; i++)
+		order[i] = i;
+	if (current_order == MUSIC_SHUFFLE) {
+		for (size_t i = track_count - 1; i > 0; i--) {
+			size_t j = (size_t)rand() % (i + 1);
+			size_t tmp = order[i];
+			order[i] = order[j];
+			order[j] = tmp;
+		}
 	}
+	next_position = 0;
+}
+
+// Starts a new pass that continues after `track`, or from the top for -1.
+static void continue_after(int track)
+{
+	new_pass();
+	for (size_t i = 0; track >= 0 && i < track_count; i++)
+		if (order[i] == (size_t)track)
+			next_position = i + 1;
 }
 
 static s32 read_file(void *file, void *dst, s32 size)
@@ -41,29 +66,37 @@ static void stop(void)
 		fclose(playing_file);
 		playing_file = NULL;
 	}
+	playing = -1;
+}
+
+static bool play_track(size_t track)
+{
+	stop();
+	char path[sizeof folder + sizeof tracks[0] + 1];
+	snprintf(path, sizeof path, "%.255s/%.127s", folder, tracks[track]);
+	playing_file = fopen(path, "rb");
+	if (!playing_file)
+		return false;
+	MP3Player_PlayFile(playing_file, read_file, NULL);
+	playing = (int)track;
+	return true;
 }
 
 static void play_next(void)
 {
 	stop();
-	// Give up after one pass of unreadable files rather than spinning.
-	for (size_t tries = 0; tries < track_count; tries++) {
-		if (next_track == track_count) {
-			shuffle();
-			next_track = 0;
-		}
-		char path[sizeof folder + sizeof tracks[0] + 1];
-		snprintf(path, sizeof path, "%.255s/%.127s", folder, tracks[next_track++]);
-		playing_file = fopen(path, "rb");
-		if (playing_file) {
-			MP3Player_PlayFile(playing_file, read_file, NULL);
+	// Two passes' worth of tries, since a new pass can reorder the tracks.
+	for (size_t tries = 0; tries < 2 * track_count; tries++) {
+		if (next_position == track_count)
+			new_pass();
+		size_t track = order[next_position++];
+		if (!skipped[track] && play_track(track))
 			return;
-		}
 	}
-	enabled = false;
+	stalled = true;
 }
 
-void music_start(const char *dir)
+void music_start(const char *dir, const Config *config)
 {
 	snprintf(folder, sizeof folder, "%s", dir);
 	DIR *d = opendir(dir);
@@ -78,29 +111,64 @@ void music_start(const char *dir)
 	closedir(d);
 	if (track_count == 0)
 		return;
+	qsort(tracks, track_count, sizeof tracks[0], compare_names);
 
 	srand((unsigned)time(NULL));
-	next_track = track_count; // shuffle before the first track
 	ASND_Init();
 	MP3Player_Init();
-	MP3Player_Volume(VOLUME);
-	enabled = true;
-	play_next();
+	current_order = config->music_order;
+	new_pass();
+	music_configure(config);
+}
+
+void music_configure(const Config *config)
+{
+	if (track_count == 0)
+		return;
+	for (size_t i = 0; i < track_count; i++)
+		skipped[i] = !config_track_enabled(config, tracks[i]);
+	MP3Player_Volume(255 * config->music_volume / 100);
+	if (config->music_order != current_order) {
+		current_order = config->music_order;
+		continue_after(playing);
+	}
+	stalled = false;
+	if (config->music && !enabled) {
+		enabled = true;
+		play_next();
+	} else if (!config->music && enabled) {
+		enabled = false;
+		stop();
+	}
 }
 
 void music_update(void)
 {
-	if (enabled && !MP3Player_IsPlaying())
+	if (enabled && !stalled && !MP3Player_IsPlaying())
 		play_next();
 }
 
-void music_toggle(void)
+size_t music_track_count(void)
 {
-	if (track_count == 0)
+	return track_count;
+}
+
+const char *music_track_file(size_t track)
+{
+	return tracks[track];
+}
+
+void music_play(size_t track)
+{
+	if (!enabled || track >= track_count)
 		return;
-	enabled = !enabled;
-	if (enabled)
-		play_next();
+	if (play_track(track))
+		continue_after((int)track);
 	else
-		stop();
+		play_next();
+}
+
+int music_playing(void)
+{
+	return playing;
 }

@@ -10,6 +10,8 @@
 #include "render/gfx.h"
 #include "screens/displays.h"
 #include "screens/location_picker.h"
+#include "screens/screens.h"
+#include "screens/settings_menu.h"
 #include "weather/weather.h"
 
 static volatile bool quit, power_off;
@@ -35,10 +37,13 @@ int main(int argc, char **argv)
 
 	Config config;
 	config_load(argc > 0 ? argv[0] : NULL, &config);
-	weather_start(config.has_location ? &config.location : NULL, config.dir);
+	weather_start(config.has_location ? &config.location : NULL, config.units, config.dir);
 	char music_dir[sizeof config.dir + 8];
 	snprintf(music_dir, sizeof music_dir, "%s/music", config.dir);
-	music_start(music_dir);
+	music_start(music_dir, &config);
+	header_set_clock_24h(config.clock_24h);
+	if (!config.has_location && config.locate_by_ip)
+		weather_request_zip_guess();
 
 	u64 start = gettime();
 	static WeatherSnapshot snap;
@@ -48,6 +53,13 @@ int main(int argc, char **argv)
 	u32 shown_generation = 0;
 	bool picking = !config.has_location;
 	LocationPicker picker = location_picker_make(NULL);
+	bool in_menu = false;
+	SettingsMenu menu;
+	unsigned menu_changes = 0;
+	// The rotation runs on its own clock, which runs at the Speed setting's
+	// rate and stops while the menu is open. `scaled_ms` carries the remainder.
+	u32 rotation_ms = 0, last_ms = 0;
+	u64 scaled_ms = 0;
 	while (!quit) {
 		WPAD_ScanPads();
 		u32 pressed = WPAD_ButtonsDown(0);
@@ -56,6 +68,13 @@ int main(int argc, char **argv)
 		music_update();
 
 		u32 now_ms = ticks_to_millisecs(gettime() - start);
+		if (!in_menu) {
+			scaled_ms += (u64)(now_ms - last_ms) * 100;
+			unsigned percent = config_speed_percent(config.speed);
+			rotation_ms += (u32)(scaled_ms / percent);
+			scaled_ms %= percent;
+		}
+		last_ms = now_ms;
 		weather_snapshot(&snap);
 		if (snap.generation != shown_generation) {
 			displays_prepare(&snap, &data);
@@ -65,7 +84,7 @@ int main(int argc, char **argv)
 
 		if (picking) {
 			Location chosen;
-			PickerResult result = location_picker_update(&picker, pressed, &snap.zip_guess, &chosen);
+			PickerResult result = location_picker_update(&picker, pressed, settings_zip_guess(&config, &snap), &chosen);
 			if (result == PICKER_CHOSEN) {
 				config.location = chosen;
 				config.has_location = true;
@@ -79,26 +98,60 @@ int main(int argc, char **argv)
 			picking = result == PICKER_OPEN;
 			// Also hold the picker on screen for the frame a ZIP is chosen,
 			// while `data` still holds the old location.
-			if (result != PICKER_CANCELED) {
-				location_picker_draw(&picker, &snap.zip_guess);
+			location_picker_draw(&picker, settings_zip_guess(&config, &snap));
+			gfx_present();
+			continue;
+		}
+
+		if (in_menu) {
+			SettingsResult result = settings_menu_update(&menu, pressed, &config, &snap);
+			menu_changes |= result.changed;
+			if (result.changed & SETTINGS_LOCATION) {
+				weather_set_location(&config.location);
+				rotation = (Rotation){ 0 };
+				scroll_bar = (ScrollBar){ 0 };
+			}
+			if (result.closed) {
+				in_menu = false;
+				header_set_clock_24h(config.clock_24h);
+				weather_set_units(config.units);
+				// Don't let the B that closed the menu toggle the music.
+				pressed = 0;
+				if (menu_changes & SETTINGS_RESET) {
+					// config_reset removed settings.ini; the next location
+					// chosen saves a new one.
+					picker = location_picker_make(NULL);
+					picking = true;
+					if (config.locate_by_ip)
+						weather_request_zip_guess();
+					music_configure(&config);
+				} else if (menu_changes) {
+					config_save(&config);
+				}
+			} else {
+				settings_menu_draw(&menu, &config, &snap);
 				gfx_present();
 				continue;
 			}
-			// Don't let the B press fall through.
-			pressed = 0;
+		} else if ((pressed & WPAD_BUTTON_A) && config.has_location) {
+			menu = settings_menu_make();
+			menu_changes = 0;
+			in_menu = true;
+			settings_menu_draw(&menu, &config, &snap);
+			gfx_present();
+			continue;
 		}
 
-		if (pressed & WPAD_BUTTON_A)
-			music_toggle();
-		if (pressed & WPAD_BUTTON_PLUS) {
-			picker = location_picker_make(&config.location);
-			picking = true;
+		if (pressed & WPAD_BUTTON_B) {
+			config.music = !config.music;
+			music_configure(&config);
+			config_save(&config);
 		}
 
 		if (data.has_current) {
-			rotation_update(&rotation, &data, now_ms);
-			displays_draw(&rotation, &data, now_ms);
-			scroll_bar_draw(&scroll_bar, &data, displays_scroll_visible(&rotation), now_ms);
+			rotation_update(&rotation, &data, &config, rotation_ms);
+			displays_draw(&rotation, &data, rotation_ms, now_ms);
+			scroll_bar_draw(&scroll_bar, &data, displays_scroll_visible(&rotation), config.bottom_bar, rotation_ms);
 		} else {
 			gfx_image(IMG_BACKGROUND_1, 0, 0);
 			header_draw("Current", "Conditions", true);

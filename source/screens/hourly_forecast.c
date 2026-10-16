@@ -43,7 +43,7 @@ void hourly_view_prepare(const WeatherSnapshot *snap, HourlyView *out)
 	// Rows are labeled in local time, which needs the RTC's offset from UTC.
 	if (snap->has_hourly && snap->has_utc_offset)
 		out->count = hourly_rows(&snap->hourly, snap->location.lat, snap->location.lon,
-			time(NULL) - snap->utc_offset, snap->utc_offset, out->rows);
+			time(NULL) - snap->utc_offset, snap->utc_offset, snap->units, out->rows);
 	out->content_height = list_content_height(out->count);
 }
 
