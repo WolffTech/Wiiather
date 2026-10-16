@@ -26,6 +26,16 @@ typedef struct {
 	TravelDay days[TRAVEL_CITY_COUNT];
 } TravelForecast;
 
+// Regional Forecast sites around the location, each kept from an earlier
+// fetch if a later one fails.
+typedef struct {
+	RegionalFrame frame;
+	size_t count; // 0 until the location's state is known
+	RegionalSite sites[REGIONAL_MAX_SITES];
+	bool has_data[REGIONAL_MAX_SITES];
+	RegionalData data[REGIONAL_MAX_SITES];
+} RegionalForecast;
+
 typedef struct {
 	WeatherStatus status;
 	char message[128];
@@ -41,6 +51,7 @@ typedef struct {
 	bool has_latest_observations; // kept from an earlier refresh if a later one fails
 	LatestObservations latest_observations;
 	TravelForecast travel; // doesn't depend on the location, so kept when it changes
+	RegionalForecast regional;
 	Alerts alerts; // kept from earlier fetches if later ones fail, minus expired ones
 	u32 alert_fetches; // attempts so far; ws4kp re-shows viewed alerts every tenth
 	ZipGuess zip_guess;

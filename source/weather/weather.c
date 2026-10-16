@@ -197,6 +197,43 @@ static void refresh_travel_city(size_t i)
 	LWP_MutexUnlock(lock);
 }
 
+// The worker's copies of the Regional Forecast sites, with cached lookups.
+static RegionalSource regional_sources[REGIONAL_MAX_SITES];
+
+// Picks the sites once the location's state is known. Returns the count.
+static size_t select_regional(const Location *loc, const NwsPoint *point, u32 version)
+{
+	RegionalFrame frame = regional_frame(loc->lat, loc->lon, point->state);
+	static RegionalSite sites[REGIONAL_MAX_SITES];
+	size_t count = regional_select_sites(loc->lat, loc->lon, &frame, sites);
+	for (size_t i = 0; i < count; i++)
+		regional_sources[i] = (RegionalSource){ .site = sites[i] };
+	if (!lock_current(version))
+		return 0;
+	RegionalForecast *r = &shared.regional;
+	memset(r, 0, sizeof *r);
+	r->frame = frame;
+	r->count = count;
+	memcpy(r->sites, sites, count * sizeof sites[0]);
+	LWP_MutexUnlock(lock);
+	return count;
+}
+
+static void refresh_regional_site(u32 version, size_t i)
+{
+	RegionalData data;
+	if (!nws_get_regional(&regional_sources[i], &data) || !lock_current(version))
+		return;
+	// Every display re-prepares on a new generation, so skip unchanged sites.
+	RegionalForecast *r = &shared.regional;
+	if (!r->has_data[i] || memcmp(&r->data[i], &data, sizeof data) != 0) {
+		r->has_data[i] = true;
+		r->data[i] = data;
+		shared.generation++;
+	}
+	LWP_MutexUnlock(lock);
+}
+
 static void guess_zip(void)
 {
 	LWP_MutexLock(lock);
@@ -223,6 +260,10 @@ static void *worker(void *arg)
 	u32 seen_version = 0;
 	u64 next_alerts = 0, next_refresh = 0, next_ca_rescue = 0, next_travel = 0;
 	size_t travel_city = TRAVEL_CITY_COUNT; // the next to fetch, or TRAVEL_CITY_COUNT between rounds
+	// Regional sites for `regional_version`, fetched in rounds like the travel cities.
+	u32 regional_version = 0;
+	size_t regional_count = 0, regional_site = 0;
+	u64 next_regional = 0;
 	// Let the weather load before the first CA check.
 	u64 next_ca_check = gettime() + secs_to_ticks(RETRY_SECONDS);
 	// Poll every second so a new location loads promptly.
@@ -249,6 +290,7 @@ static void *worker(void *arg)
 		if (version != seen_version) {
 			seen_version = version;
 			have_point = false;
+			regional_count = regional_site = 0;
 			next_alerts = next_refresh = gettime();
 		}
 		// Alerts first so the Hazards display can lead the first rotation.
@@ -268,6 +310,20 @@ static void *worker(void *arg)
 		}
 		if (travel_city < TRAVEL_CITY_COUNT)
 			refresh_travel_city(travel_city++);
+
+		// Regional sites likewise, once the point gives the location's state.
+		if (have_point && regional_version != version) {
+			regional_version = version;
+			regional_count = select_regional(&loc, &point, version);
+			regional_site = 0;
+			next_regional = gettime() + secs_to_ticks(REFRESH_SECONDS);
+		}
+		if (regional_site == regional_count && gettime() >= next_regional) {
+			regional_site = 0;
+			next_regional = gettime() + secs_to_ticks(REFRESH_SECONDS);
+		}
+		if (regional_site < regional_count)
+			refresh_regional_site(regional_version, regional_site++);
 	}
 	return NULL;
 }

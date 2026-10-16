@@ -286,6 +286,90 @@ bool nws_get_travel_day(const TravelCity *city, TravelDay *out)
 	return get_forecast(url, &forecast, err, sizeof err) && forecast_travel_day(&forecast, out);
 }
 
+static bool get_gridpoint(double lat, double lon, Gridpoint *out)
+{
+	char url[128], err[128];
+	snprintf(url, sizeof url, API "/points/%.4f,%.4f", lat, lon);
+	json_t *root = get_json(url, GEOJSON, NULL, err, sizeof err);
+	json_t *props = json_object_get(root, "properties");
+	const char *wfo = string_field(props, "gridId");
+	json_t *x = json_object_get(props, "gridX"), *y = json_object_get(props, "gridY");
+	// Offshore marine stations have no land grid, so these are null.
+	bool ok = wfo && strlen(wfo) < sizeof out->wfo && json_is_integer(x) && json_is_integer(y);
+	if (ok) {
+		snprintf(out->wfo, sizeof out->wfo, "%s", wfo);
+		out->x = json_integer_value(x);
+		out->y = json_integer_value(y);
+	}
+	json_decref(root);
+	return ok;
+}
+
+// ws4kp takes the first of the gridpoint's stations with a four-letter ID,
+// which generally has good data.
+static bool get_regional_station(const Gridpoint *g, char station_id[8])
+{
+	char url[128], err[128];
+	snprintf(url, sizeof url, API "/gridpoints/%s/%u,%u/stations?limit=10", g->wfo, g->x, g->y);
+	json_t *root = get_json(url, GEOJSON, NULL, err, sizeof err);
+	json_t *features = json_object_get(root, "features");
+	bool found = false;
+	size_t i;
+	json_t *station;
+	json_array_foreach(features, i, station) {
+		const char *id = string_field(json_object_get(station, "properties"), "stationIdentifier");
+		if (id && strlen(id) == 4) {
+			snprintf(station_id, 8, "%s", id);
+			found = true;
+			break;
+		}
+	}
+	json_decref(root);
+	return found;
+}
+
+static bool get_regional_observation(const char *station_id, ObsReading *out)
+{
+	char url[128], err[128];
+	snprintf(url, sizeof url, API "/stations/%s/observations/latest", station_id);
+	time_t now;
+	json_t *root = get_json(url, GEOJSON, &now, err, sizeof err);
+	if (!root)
+		return false;
+	json_t *props = json_object_get(root, "properties");
+	*out = reading_from_json(props);
+	obs_augment_with_metar(out, string_field(props, "rawMessage"));
+	json_decref(root);
+
+	ObsReading mapclick;
+	if (regional_obs_needs_mapclick(out, now) && get_mapclick(station_id, now, &mapclick) &&
+	    regional_obs_prefer_mapclick(out, &mapclick))
+		*out = mapclick;
+	return true;
+}
+
+bool nws_get_regional(RegionalSource *source, RegionalData *out)
+{
+	RegionalSite *site = &source->site;
+	if (!site->has_gridpoint) {
+		if (!get_gridpoint(site->lat, site->lon, &site->gridpoint))
+			return false;
+		site->has_gridpoint = true;
+	}
+
+	static Forecast forecast;
+	char url[128], err[128];
+	snprintf(url, sizeof url, API "/gridpoints/%s/%u,%u/forecast?units=us", site->gridpoint.wfo, site->gridpoint.x,
+		site->gridpoint.y);
+	if (!get_forecast(url, &forecast, err, sizeof err))
+		return false;
+
+	ObsReading obs;
+	if (!source->station_id[0] && !get_regional_station(&site->gridpoint, source->station_id))
+		return false;
+	return get_regional_observation(source->station_id, &obs) && regional_data(&obs, &forecast, out);
+}
+
 // Expands one gridpoint series into `measures`, or into `weather` flags for
 // the weather series. Returns the number of hours filled.
 static size_t expand_series(json_t *props, const char *key, time_t first_hour, Measure *measures, unsigned *weather)

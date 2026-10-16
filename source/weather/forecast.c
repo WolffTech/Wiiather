@@ -15,16 +15,28 @@ void forecast_drop_expired(Forecast *f, time_t now)
 	f->count = kept;
 }
 
+static const char *const weekdays[][2] = {
+	{ "Sun", "Sunday" }, { "Mon", "Monday" }, { "Tue", "Tuesday" }, { "Wed", "Wednesday" },
+	{ "Thu", "Thursday" }, { "Fri", "Friday" }, { "Sat", "Saturday" },
+};
+
 void forecast_weekday(const char *iso_time, char out[4])
 {
-	static const char *const names[] = { "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat" };
 	int year, month, day;
 	out[0] = '\0';
 	if (!iso_time || sscanf(iso_time, "%d-%d-%d", &year, &month, &day) != 3)
 		return;
 	long days = utc_days_from_civil(year, month, day);
 	int weekday = (int)((days % 7 + 11) % 7); // 1970-01-01 was a Thursday
-	snprintf(out, 4, "%s", names[weekday]);
+	snprintf(out, 4, "%s", weekdays[weekday][0]);
+}
+
+const char *forecast_weekday_name(const char *weekday)
+{
+	for (size_t i = 0; i < sizeof weekdays / sizeof weekdays[0]; i++)
+		if (strcmp(weekday, weekdays[i][0]) == 0)
+			return weekdays[i][1];
+	return "";
 }
 
 void forecast_local_text(const ForecastPeriod *p, char *out, size_t out_len)
