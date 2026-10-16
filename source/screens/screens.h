@@ -7,15 +7,18 @@
 #include "weather/sun_moon.h"
 #include "weather/weather.h"
 
-// Header shared by most displays: logo, two-line title (or one line when
+// Header shared by most displays: two-line title (or one line when
 // `title_bottom` is NULL), clock, and optionally the NOAA logo.
 void header_draw(const char *title_top, const char *title_bottom, bool noaa_logo);
+// The corner logo. Draw it after the main area, which starts above the logo's
+// bottom; ws4kp stacks the logo on top with z-index: 10.
+void header_logo_draw(void);
 // Shows the header clock as 24-hour time rather than 12-hour.
 void header_set_clock_24h(bool on);
 // Formats a time of day as "1:05 PM" or "13:05", with ":SS" after the minutes
 // when `seconds`.
 void clock_format(const struct tm *tm, bool hours_24, bool seconds, char *out, size_t size);
-// Just the logo and title, for displays with something else in the clock's place.
+// Just the title, for displays with something else in the clock's place.
 void header_title_draw(const char *title_top, const char *title_bottom);
 
 // Bottom bar text (ws4kp's "scroll" area).

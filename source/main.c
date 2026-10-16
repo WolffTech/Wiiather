@@ -156,6 +156,7 @@ int main(int argc, char **argv)
 			gfx_image(IMG_BACKGROUND_1, 0, 0);
 			header_draw("Current", "Conditions", true);
 			status_draw(&snap);
+			header_logo_draw();
 		}
 		gfx_present();
 	}

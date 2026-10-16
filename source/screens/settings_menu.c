@@ -646,8 +646,9 @@ void settings_menu_draw(const SettingsMenu *m, const Config *config, const Weath
 		main_draw(m, config);
 		break;
 	case PAGE_LOCATION:
+		// The picker draws its own logo.
 		location_picker_draw(&m->picker, settings_zip_guess(config, snap));
-		break;
+		return;
 	case PAGE_DISPLAYS:
 		displays_draw(m, config);
 		break;
@@ -667,4 +668,5 @@ void settings_menu_draw(const SettingsMenu *m, const Config *config, const Weath
 		reset_draw();
 		break;
 	}
+	header_logo_draw();
 }
