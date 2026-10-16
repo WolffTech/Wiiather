@@ -20,6 +20,24 @@ void current_conditions_draw(const CurrentConditionsText *cc, u32 time_ms);
 // Placeholder body while data loads or after a failure.
 void status_draw(const WeatherSnapshot *snap);
 
+// The scrolling list Hourly and Travel Forecast share: rows scroll up under a
+// sticky column header bar in the main area.
+#define LIST_MAIN_HEIGHT 310
+#define LIST_COLUMN_LABEL_TOP (90 - 14)
+#define LIST_ROW_HEIGHT 72
+#define LIST_ROW_TEXT_TOP 8
+
+extern const TextStyle list_column_style, list_row_style;
+
+int list_content_height(size_t rows);
+// Clips to the main area and draws the background for content scrolled up by
+// `offset`. Returns the top of the first row.
+int list_begin(int content_height, int offset);
+bool list_row_visible(int top);
+// Draws the column header bar over the rows. Label it with list_column_style
+// at LIST_COLUMN_LABEL_TOP, then call gfx_clip_reset().
+void list_column_bar_draw(void);
+
 // Hourly Forecast: the next 24 hours, scrolling up under column headers.
 typedef struct {
 	long rtc_hour; // the RTC hour the rows start from, in hours since the epoch
@@ -46,6 +64,24 @@ void hourly_graph_view_prepare(const WeatherSnapshot *snap, HourlyGraphView *out
 // Whether the hour has changed since the view was prepared.
 bool hourly_graph_view_outdated(const HourlyGraphView *view);
 void hourly_graph_view_draw(const HourlyGraphView *view);
+
+// Travel Forecast: the day's high and low for each city with data.
+typedef struct {
+	const char *city;
+	IconId icon;
+	char low[8], high[8];
+} TravelRow;
+
+typedef struct {
+	size_t count; // 0 without data
+	TravelRow rows[TRAVEL_CITY_COUNT];
+	char title_bottom[16]; // "For Thursday"
+	int content_height;
+} TravelForecastView;
+
+void travel_forecast_prepare(const TravelForecast *travel, TravelForecastView *out);
+u32 travel_forecast_ms(const TravelForecastView *view);
+void travel_forecast_draw(const TravelForecastView *view, u32 elapsed_ms, u32 time_ms);
 
 // Local Forecast: each period's text wrapped and split into 7-line pages.
 #define LOCAL_FORECAST_PAGE_LINES 7

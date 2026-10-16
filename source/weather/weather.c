@@ -181,6 +181,22 @@ static void refresh_alerts(const Location *loc, u32 version)
 	LWP_MutexUnlock(lock);
 }
 
+static void refresh_travel_city(size_t i)
+{
+	TravelDay day;
+	if (!nws_get_travel_day(&travel_cities[i], &day))
+		return;
+	LWP_MutexLock(lock);
+	// Every display re-prepares on a new generation, so skip unchanged cities.
+	TravelForecast *t = &shared.travel;
+	if (!t->has_day[i] || memcmp(&t->days[i], &day, sizeof day) != 0) {
+		t->has_day[i] = true;
+		t->days[i] = day;
+		shared.generation++;
+	}
+	LWP_MutexUnlock(lock);
+}
+
 static void guess_zip(void)
 {
 	LWP_MutexLock(lock);
@@ -205,7 +221,8 @@ static void *worker(void *arg)
 	NwsPoint point;
 	bool have_point = false;
 	u32 seen_version = 0;
-	u64 next_alerts = 0, next_refresh = 0, next_ca_rescue = 0;
+	u64 next_alerts = 0, next_refresh = 0, next_ca_rescue = 0, next_travel = 0;
+	size_t travel_city = TRAVEL_CITY_COUNT; // the next to fetch, or TRAVEL_CITY_COUNT between rounds
 	// Let the weather load before the first CA check.
 	u64 next_ca_check = gettime() + secs_to_ticks(RETRY_SECONDS);
 	// Poll every second so a new location loads promptly.
@@ -243,6 +260,14 @@ static void *worker(void *arg)
 			bool ok = refresh(&loc, version, &point, &have_point);
 			next_refresh = gettime() + secs_to_ticks(ok ? REFRESH_SECONDS : RETRY_SECONDS);
 		}
+		// Travel cities refresh as often as the rest, but one per pass so
+		// alerts and location changes aren't held up behind them.
+		if (travel_city == TRAVEL_CITY_COUNT && gettime() >= next_travel) {
+			travel_city = 0;
+			next_travel = gettime() + secs_to_ticks(REFRESH_SECONDS);
+		}
+		if (travel_city < TRAVEL_CITY_COUNT)
+			refresh_travel_city(travel_city++);
 	}
 	return NULL;
 }
@@ -266,12 +291,13 @@ void weather_set_location(const Location *location)
 {
 	LWP_MutexLock(lock);
 	location_version++;
-	// The clock reading and guess don't depend on the location.
+	// The clock reading, guess and travel cities don't depend on the location.
 	WeatherSnapshot *s = &shared;
 	bool has_utc_offset = s->has_utc_offset;
 	long utc_offset = s->utc_offset;
 	ZipGuess zip_guess = s->zip_guess;
 	u32 generation = s->generation;
+	TravelForecast travel = s->travel;
 	memset(s, 0, sizeof *s);
 	s->status = WEATHER_LOADING;
 	snprintf(s->message, sizeof s->message, "Loading...");
@@ -279,6 +305,7 @@ void weather_set_location(const Location *location)
 	s->has_utc_offset = has_utc_offset;
 	s->utc_offset = utc_offset;
 	s->zip_guess = zip_guess;
+	s->travel = travel;
 	s->generation = generation + 1;
 	LWP_MutexUnlock(lock);
 }

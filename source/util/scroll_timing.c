@@ -14,10 +14,9 @@ static uint32_t scroll_counts(int scrollable)
 uint32_t scroll_timing_ms(ScrollTiming t, int content_height, int view_height)
 {
 	int scrollable = content_height > view_height ? content_height - view_height : 0;
-	uint32_t counts = t.initial_counts + t.final_counts;
-	if (scrollable > 0)
-		counts += scroll_counts(scrollable);
-	return counts * COUNT_MS;
+	if (scrollable == 0)
+		return t.static_counts * COUNT_MS;
+	return (t.initial_counts + scroll_counts(scrollable) + t.final_counts) * COUNT_MS;
 }
 
 int scroll_timing_offset(ScrollTiming t, int content_height, int view_height, uint32_t elapsed_ms)

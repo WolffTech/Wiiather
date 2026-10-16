@@ -1,9 +1,12 @@
-// NWS 12-hour forecast periods and ws4kp's Local/Extended Forecast shaping
-// (localforecast.mjs, extendedforecast.mjs). Pure logic, testable on the host.
+// NWS 12-hour forecast periods and ws4kp's Local/Extended/Travel Forecast
+// shaping (localforecast.mjs, extendedforecast.mjs, travelforecast.mjs). Pure
+// logic, testable on the host.
 #pragma once
 #include <stdbool.h>
 #include <stddef.h>
 #include <time.h>
+
+#include "util/scroll_timing.h"
 
 #define FORECAST_MAX_PERIODS 14
 
@@ -47,3 +50,16 @@ size_t forecast_extended_days(const Forecast *f, ExtendedDay *out, size_t max);
 
 // ws4kp's two-word summary: "Chance Showers And Thunderstorms" -> "Showers T'Storms".
 void forecast_shorten(const char *text, char *out, size_t out_len);
+
+typedef struct {
+	char weekday[4]; // of the daytime period
+	char icon_url[160]; // the daytime period's
+	int high, low;
+} TravelDay;
+
+// The first daytime period's high and the following night's low, skipping a
+// leading night period. False if either is missing.
+bool forecast_travel_day(const Forecast *f, TravelDay *out);
+
+// Travel Forecast shows a list that fits for 5 s.
+#define TRAVEL_SCROLL_TIMING ((ScrollTiming){ 75, 75, 125 })

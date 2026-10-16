@@ -77,10 +77,39 @@ static void test_periods(void)
 	CHECK_STR(text, "Tonight...Clear then cloudy. Low around 60...not as warm.");
 }
 
+static void test_travel(void)
+{
+	Forecast f = { .count = 3 };
+	f.periods[0] = period("Today", "Wed", true, 84, 100);
+	f.periods[1] = period("Tonight", "Wed", false, 60, 200);
+	f.periods[2] = period("Thursday", "Thu", true, 80, 300);
+	snprintf(f.periods[0].icon_url, sizeof f.periods[0].icon_url, "/icons/land/day/sct");
+	TravelDay day;
+	CHECK(forecast_travel_day(&f, &day));
+	CHECK_STR(day.weekday, "Wed");
+	CHECK(day.high == 84 && day.low == 60);
+	CHECK_STR(day.icon_url, "/icons/land/day/sct");
+
+	// Starting at night, the next day's high pairs with the night after it.
+	forecast_drop_expired(&f, 100);
+	CHECK(!forecast_travel_day(&f, &day));
+	f.periods[f.count++] = period("Thursday Night", "Thu", false, 62, 400);
+	CHECK(forecast_travel_day(&f, &day));
+	CHECK_STR(day.weekday, "Thu");
+	CHECK(day.high == 80 && day.low == 62);
+
+	f.periods[2].has_temperature = false;
+	CHECK(!forecast_travel_day(&f, &day));
+
+	CHECK(scroll_timing_ms(TRAVEL_SCROLL_TIMING, 1738, 310) == (75 + 714 + 75) * 40);
+	CHECK(scroll_timing_ms(TRAVEL_SCROLL_TIMING, 300, 310) == 5000);
+}
+
 int main(void)
 {
 	test_shorten();
 	test_periods();
+	test_travel();
 	if (failures) {
 		fprintf(stderr, "%d check(s) failed\n", failures);
 		return 1;

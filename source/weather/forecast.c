@@ -132,3 +132,17 @@ size_t forecast_extended_days(const Forecast *f, ExtendedDay *out, size_t max)
 	}
 	return open ? n + 1 : n;
 }
+
+bool forecast_travel_day(const Forecast *f, TravelDay *out)
+{
+	size_t day = f->count > 0 && !f->periods[0].is_daytime ? 1 : 0;
+	if (day + 1 >= f->count)
+		return false;
+	const ForecastPeriod *p = &f->periods[day], *night = &f->periods[day + 1];
+	if (!p->has_temperature || !night->has_temperature)
+		return false;
+	*out = (TravelDay){ .high = p->temperature, .low = night->temperature };
+	snprintf(out->weekday, sizeof out->weekday, "%s", p->weekday);
+	snprintf(out->icon_url, sizeof out->icon_url, "%s", p->icon_url);
+	return true;
+}

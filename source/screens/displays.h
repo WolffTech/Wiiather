@@ -12,6 +12,7 @@ typedef struct {
 	CurrentConditionsText current;
 	HourlyView hourly;
 	HourlyGraphView hourly_graph;
+	TravelForecastView travel;
 	LocalForecastPages local;
 	ExtendedForecastView extended;
 	LatestObservationsView latest_observations;
